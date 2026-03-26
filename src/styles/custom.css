@@ -14,9 +14,9 @@
 
 /* ── palette (dark) ── */
 :root {
-	--sl-color-accent-low: #2a2235;
+	--sl-color-accent-low: #2d2438;
 	--sl-color-accent: #866db9;
-	--sl-color-accent-high: #c4b0e0;
+	--sl-color-accent-high: #b9a6d6;
 	--sl-color-bg-inline-code: rgba(134, 109, 185, 0.12);
 	--sl-color-bg-nav: #1a211bdd;
 	--sl-color-bg-sidebar: #1a211bcc;
@@ -33,10 +33,10 @@
 
 /* ── palette (light) — warm parchment ── */
 :root[data-theme='light'] {
-	--sl-color-accent-low: #ede5f5;
-	--sl-color-accent: #6d4da0;
-	--sl-color-accent-high: #3b2860;
-	--sl-color-bg-inline-code: rgba(109, 77, 160, 0.08);
+	--sl-color-accent-low: #ece4f3;
+	--sl-color-accent: #866db9;
+	--sl-color-accent-high: #4a3870;
+	--sl-color-bg-inline-code: rgba(134, 109, 185, 0.08);
 	--sl-color-bg-nav: #f5f0e8dd;
 	--sl-color-bg-sidebar: #f5f0e8cc;
 	--sl-color-hairline: rgba(60, 50, 35, 0.12);
@@ -150,32 +150,12 @@ starlight-theme-provider + *::after {
 }
 
 /* ── search results ── */
-[data-pagefind-ui] mark {
-	background: rgba(134, 109, 185, 0.15);
-	color: inherit;
-}
-
-[data-pagefind-ui] .pagefind-ui__result:hover,
-[data-pagefind-ui] .pagefind-ui__result:focus-within {
+#starlight__search .pagefind-ui__result-title:not(:where(.pagefind-ui__result-nested *)):hover,
+#starlight__search .pagefind-ui__result-title:not(:where(.pagefind-ui__result-nested *)):focus-within,
+#starlight__search .pagefind-ui__result-nested:hover,
+#starlight__search .pagefind-ui__result-nested:focus-within {
 	outline: none;
-	box-shadow: none;
-	border-color: var(--sl-color-accent);
-}
-
-dialog .search-result a:hover,
-dialog .search-result a:focus {
-	outline: none;
-	box-shadow: none;
-}
-
-/* Starlight search modal overrides */
-dialog [aria-selected="true"],
-[cmdk-item][aria-selected="true"],
-[cmdk-item]:hover {
-	outline: none !important;
-	box-shadow: none !important;
-	background: var(--sl-color-gray-6) !important;
-	border-color: transparent !important;
+	background-color: var(--sl-color-gray-6);
 }
 
 /* ── misc ── */
