@@ -4,160 +4,31 @@
 
 brainjar manages AI agent behavior through composable layers. Instead of one monolithic config file, you separate what the agent sounds like (soul), how it works (persona), and what constraints it follows (rules). Each layer is a markdown file.
 
-## Install
+## Quick start
 
 ```bash
 bun install -g @brainjar/cli
-# or
-npm install -g @brainjar/cli
-```
-
-## Initialize
-
-```bash
 brainjar init --default
 brainjar status
 ```
 
-## Core Concepts
+## Docs
 
-### Soul — who the agent is
+For full documentation, fetch the pages below. Each is a self-contained guide.
 
-Defines personality: tone, character, standards. The constant across all tasks. You probably have 1-2.
-
-```bash
-brainjar soul create mysoul --description "Direct and rigorous"
-brainjar soul use mysoul
-brainjar soul list
-brainjar soul show [name] [--short]
-brainjar soul drop <name>
-```
-
-### Persona — how the agent works
-
-Defines role and workflow. Switch per task. Personas bundle rules via frontmatter:
-
-```yaml
----
-rules:
-  - default
-  - security
----
-```
-
-```bash
-brainjar persona create <name> --description <text> [--rules default,security]
-brainjar persona use <name> [--local]
-brainjar persona list
-brainjar persona show [name] [--short]
-brainjar persona drop <name>
-```
-
-### Rules — what the agent must follow
-
-Behavioral constraints. Single files or multi-file packs (directories).
-
-```bash
-brainjar rules create <name> --description <text> [--pack]
-brainjar rules add <name> [--local]
-brainjar rules remove <name>
-brainjar rules list
-brainjar rules show <name>
-```
-
-### Brain — a saved configuration
-
-Named snapshot of soul + persona + rules. Activate in one command.
-
-```bash
-brainjar brain save <name>
-brainjar brain use <name>
-brainjar brain list
-brainjar brain show <name>
-brainjar brain drop <name>
-```
-
-## State Cascade
-
-State merges: global → local → env. Each tier overrides the previous.
-
-- Global: ~/.brainjar/state.yaml (all projects)
-- Local: .brainjar/state.yaml (this project)
-- Env: BRAINJAR_* variables (this session)
-
-Environment variables:
-- BRAINJAR_HOME — override ~/.brainjar/ location
-- BRAINJAR_SOUL — override active soul
-- BRAINJAR_PERSONA — override active persona
-- BRAINJAR_IDENTITY — override active identity
-- BRAINJAR_RULES_ADD — comma-separated rules to add
-- BRAINJAR_RULES_REMOVE — comma-separated rules to remove
-
-## Compose (Subagent Dispatch)
-
-Assemble a full prompt from a brain or ad-hoc layers:
-
-```bash
-brainjar compose <brain> --task "Review the changes in src/sync.ts"
-brainjar compose --persona reviewer --task "Review the changes"
-```
-
-## Templates
-
-Every create command generates a template with structured sections. The agent reads the template and fills it in:
-
-- Soul template: title + space for voice, character, standards
-- Persona template: YAML frontmatter for rules + sections for direct mode, subagent mode, always
-- Rule template: title + description + constraints section
-
-## Packs
-
-Export/import shareable brain bundles:
-
-```bash
-brainjar pack export <brain> [--out <dir>] [--name <name>] [--version <ver>] [--author <name>]
-brainjar pack import <dir> [--force] [--merge] [--activate]
-```
-
-## Hooks
-
-Auto-sync via Claude Code hooks:
-
-```bash
-brainjar hooks install [--local]
-brainjar hooks status
-brainjar hooks remove
-```
-
-## Other Commands
-
-```bash
-brainjar status [--sync] [--global|--local] [--short]
-brainjar sync [--quiet]
-brainjar shell [--brain|--soul|--persona|--identity|--rules-add|--rules-remove]
-brainjar reset [--backend claude|codex]
-brainjar identity create|list|show|use|drop|unlock|get|status|lock
-```
-
-## Backends
-
-Supported: claude (default), codex
-
-```bash
-brainjar init --backend codex
-brainjar reset --backend codex
-```
-
-## File Structure
-
-```
-~/.brainjar/
-  souls/            # Voice and character
-  personas/         # Role and workflow
-  rules/            # Constraints (files or directories)
-  brains/           # Saved configurations
-  state.yaml        # Active selections
-```
+- [Getting Started](https://brainjar.sh/getting-started/)
+- [Core Concepts](https://brainjar.sh/concepts/overview/)
+  - [Souls](https://brainjar.sh/concepts/souls/)
+  - [Personas](https://brainjar.sh/concepts/personas/)
+  - [Rules](https://brainjar.sh/concepts/rules/)
+  - [Brains](https://brainjar.sh/concepts/brains/)
+- [Configuration](https://brainjar.sh/guides/configuration/)
+- [Subagent Orchestration](https://brainjar.sh/guides/subagents/)
+- [Packs](https://brainjar.sh/guides/packs/)
+- [Hooks](https://brainjar.sh/guides/hooks/)
+- [Authoring with AI](https://brainjar.sh/guides/authoring-with-ai/)
+- [Recipes](https://brainjar.sh/guides/recipes/)
+- [CLI Reference](https://brainjar.sh/reference/cli/)
 
 ## Links
 
