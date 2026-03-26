@@ -1,38 +1,51 @@
-@import '@fontsource-variable/inter';
-@import '@fontsource-variable/jetbrains-mono';
-
-/* ── palette ── */
-:root {
-	--sl-color-accent-low: #1a1a2e;
-	--sl-color-accent: #7c3aed;
-	--sl-color-accent-high: #c4b5fd;
-	--sl-color-bg-inline-code: rgba(124, 58, 237, 0.1);
+@font-face {
+	font-family: 'Inter Variable';
+	font-style: normal;
+	font-display: swap;
+	font-weight: 100 900;
+	src: url('@fontsource-variable/inter/files/inter-latin-wght-normal.woff2') format('woff2');
+	unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+0304, U+0308, U+0329, U+2000-206F, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD;
 }
 
-:root[data-theme='light'] {
-	--sl-color-accent-low: #ede9fe;
-	--sl-color-accent: #6d28d9;
-	--sl-color-accent-high: #3b0764;
-	--sl-color-bg-inline-code: rgba(124, 58, 237, 0.08);
+@font-face {
+	font-family: 'JetBrains Mono Variable';
+	font-style: normal;
+	font-display: swap;
+	font-weight: 100 800;
+	src: url('@fontsource-variable/jetbrains-mono/files/jetbrains-mono-latin-wght-normal.woff2') format('woff2');
+	unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+0304, U+0308, U+0329, U+2000-206F, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD;
 }
 
 /* ── typography ── */
 :root {
-	--sl-font: 'Inter Variable', 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
-	--sl-font-mono: 'JetBrains Mono Variable', 'JetBrains Mono', 'Fira Code', monospace;
-	--sl-text-body: 1rem;
-	--sl-line-height: 1.7;
-	--sl-line-height-headings: 1.2;
+	--sl-font: 'Inter Variable', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+	--sl-font-mono: 'JetBrains Mono Variable', 'Fira Code', monospace;
 }
 
-/* tighter heading weight */
+/* ── palette (dark) ── */
+:root {
+	--sl-color-accent-low: #1a1a2e;
+	--sl-color-accent: #7c3aed;
+	--sl-color-accent-high: #c4b5fd;
+	--sl-color-bg-inline-code: rgba(139, 92, 246, 0.15);
+}
+
+/* ── palette (light) ── */
+:root[data-theme='light'] {
+	--sl-color-accent-low: #ede9fe;
+	--sl-color-accent: #6d28d9;
+	--sl-color-accent-high: #3b0764;
+	--sl-color-bg-inline-code: rgba(124, 58, 237, 0.1);
+}
+
+/* ── headings ── */
 h1, h2, h3, h4 {
 	font-weight: 650;
-	letter-spacing: -0.02em;
+	letter-spacing: -0.025em;
 }
 
 h1 {
-	letter-spacing: -0.03em;
+	letter-spacing: -0.035em;
 }
 
 /* ── hero ── */
@@ -47,7 +60,6 @@ h1 {
 	color: var(--sl-color-gray-2);
 }
 
-/* primary CTA */
 .hero .action.primary a {
 	border-radius: 8px;
 	font-weight: 600;
@@ -62,29 +74,51 @@ h1 {
 .card {
 	border-radius: 12px;
 	border: 1px solid var(--sl-color-gray-5);
-	transition: border-color 0.15s ease;
+	transition: border-color 0.2s ease, box-shadow 0.2s ease;
 }
 
 .card:hover {
 	border-color: var(--sl-color-accent);
+	box-shadow: 0 0 12px rgba(124, 58, 237, 0.1);
 }
 
 /* ── code blocks ── */
-pre {
+.expressive-code {
+	margin-block: 1.25rem !important;
+}
+
+.expressive-code .frame {
 	border-radius: 10px !important;
-	font-size: 0.875rem !important;
-	line-height: 1.65 !important;
+	border: 1px solid var(--sl-color-gray-5) !important;
+	box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15) !important;
+	overflow: hidden !important;
+}
+
+/* remove gap between tab bar and code */
+.expressive-code .frame .header {
+	margin-bottom: 0 !important;
+	border-bottom: 1px solid var(--sl-color-gray-5);
+	border-radius: 10px 10px 0 0 !important;
+}
+
+.expressive-code .frame pre {
+	border-radius: 0 0 10px 10px !important;
+	margin-top: 0 !important;
+}
+
+.expressive-code pre {
+	font-size: 0.85rem !important;
+	line-height: 1.7 !important;
 	padding: 1.25rem !important;
 }
 
-code {
-	font-size: 0.875em;
-	border-radius: 4px;
-	padding: 0.15em 0.35em;
-}
-
-pre code {
-	padding: 0;
+/* inline code */
+:not(pre) > code {
+	font-size: 0.85em;
+	border-radius: 5px;
+	padding: 0.2em 0.4em;
+	border: 1px solid var(--sl-color-gray-5);
+	font-weight: 450;
 }
 
 /* ── tables ── */
@@ -103,12 +137,11 @@ nav.sidebar .top-level > li > a {
 	font-weight: 600;
 }
 
-/* ── smooth scrolling ── */
+/* ── misc ── */
 html {
 	scroll-behavior: smooth;
 }
 
-/* ── subtle content max-width for readability ── */
 .sl-markdown-content {
 	max-width: 72ch;
 }
