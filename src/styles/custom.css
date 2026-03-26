@@ -149,6 +149,35 @@ starlight-theme-provider + *::after {
 	z-index: 9999;
 }
 
+/* ── search results ── */
+[data-pagefind-ui] mark {
+	background: rgba(134, 109, 185, 0.15);
+	color: inherit;
+}
+
+[data-pagefind-ui] .pagefind-ui__result:hover,
+[data-pagefind-ui] .pagefind-ui__result:focus-within {
+	outline: none;
+	box-shadow: none;
+	border-color: var(--sl-color-accent);
+}
+
+dialog .search-result a:hover,
+dialog .search-result a:focus {
+	outline: none;
+	box-shadow: none;
+}
+
+/* Starlight search modal overrides */
+dialog [aria-selected="true"],
+[cmdk-item][aria-selected="true"],
+[cmdk-item]:hover {
+	outline: none !important;
+	box-shadow: none !important;
+	background: var(--sl-color-gray-6) !important;
+	border-color: transparent !important;
+}
+
 /* ── misc ── */
 html {
 	scroll-behavior: smooth;
