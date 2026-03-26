@@ -4,7 +4,7 @@ import starlight from '@astrojs/starlight';
 
 // https://astro.build/config
 export default defineConfig({
-	site: 'https://brainjar-sh.github.io',
+	site: 'https://brainjar.sh',
 	integrations: [
 		starlight({
 			title: 'brainjar',
