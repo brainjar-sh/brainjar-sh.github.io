@@ -3,19 +3,26 @@ title: Authoring with AI
 description: Use your AI agent to help you create souls, personas, and rules.
 ---
 
-You don't have to write souls, personas, and rules from scratch. Your AI agent can help you create them — and it's often the fastest way to get a configuration that fits how you actually work.
+You don't have to write souls, personas, and rules from scratch. Every `create` command generates a **template** with structured sections — your agent sees the template and fills it in based on your description.
 
-## Creating a soul with your agent
+## How templates work
 
-Ask your agent to help define your voice. Be specific about what you want:
+When you run a create command, brainjar generates a markdown file with section headers that guide the content:
+
+- **Soul template:** title + space for voice, character, and standards
+- **Persona template:** YAML frontmatter for bundled rules + sections for direct mode, subagent mode, and baseline behaviors
+- **Rule template:** title + description placeholder + constraints section
+
+Your agent reads these templates and populates them. You describe what you want in natural language, the agent runs the CLI command, then edits the generated file.
+
+## Creating a soul
 
 ```
 Create a brainjar soul called "pragmatist" that's direct, avoids jargon,
-and values shipping over perfection. Run: brainjar soul create pragmatist
-then edit the file.
+and values shipping over perfection.
 ```
 
-The agent will run the CLI command and then edit `~/.brainjar/souls/pragmatist.md` with content based on your description.
+The agent runs `brainjar soul create pragmatist --description "Direct and pragmatic"`, then fills in the generated template at `~/.brainjar/souls/pragmatist.md`.
 
 ### Tips for good souls
 
@@ -31,9 +38,7 @@ too many rewrites. Pragmatic, slightly skeptical of abstractions,
 values simplicity. Speaks plainly. Create it as "veteran".
 ```
 
-## Creating a persona with your agent
-
-Personas define workflow. Tell your agent what role you need:
+## Creating a persona
 
 ```
 Create a brainjar persona called "debugger". It should:
@@ -43,7 +48,7 @@ Create a brainjar persona called "debugger". It should:
 Bundle the "default" and "testing" rules.
 ```
 
-The agent creates the file and includes the rules in the frontmatter:
+The agent runs the create command with `--rules default,testing`. The generated template includes:
 
 ```yaml
 ---
@@ -52,6 +57,8 @@ rules:
   - testing
 ---
 ```
+
+Plus section headers for **direct mode**, **subagent mode**, and **always** — which the agent fills in based on your description.
 
 ### Tips for good personas
 
@@ -69,9 +76,7 @@ issues. Bundle the "boundaries" rule. It should never write
 implementation code — only specs.
 ```
 
-## Creating rules with your agent
-
-Rules are constraints. Tell the agent what behavior to enforce:
+## Creating rules
 
 ```
 Create a brainjar rule called "no-delete" that prevents the agent
@@ -79,11 +84,13 @@ from deleting any file without explicit user confirmation. It should
 list what will be deleted and why before asking.
 ```
 
+The generated template includes a **Constraints** section with bullet points for the agent to populate.
+
 ### Tips for good rules
 
 - One rule, one concern. Don't cram multiple unrelated constraints into one file.
 - Be specific enough that the agent can follow it unambiguously.
-- If you have several related rules, create a rule pack (directory).
+- If you have several related rules, ask for a rule pack: `brainjar rules create api-safety --pack`.
 
 **Example prompt:**
 
@@ -132,7 +139,7 @@ The agent edits the markdown files directly. Run `brainjar sync` (or let hooks h
 
 ## Sharing what you built
 
-Once you have a setup you like, export it as a pack so others can use it:
+Export your setup as a pack so others can use it:
 
 ```bash
 brainjar pack export bug-hunt --author yourname --version 1.0.0
