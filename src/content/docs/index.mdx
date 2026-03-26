@@ -47,10 +47,12 @@ That gives you a soul, a persona, and rules — all wired into your `CLAUDE.md` 
 
 ## Composition model
 
-```
-soul + persona + rules = full agent behavior
-       │                    │
-       └── bundled rules ───┘  (from persona frontmatter)
-```
+Layers merge at sync time. Personas can bundle their own rules via frontmatter, so activating a persona automatically pulls in the constraints it needs.
+
+| Input | Source |
+|-------|--------|
+| Soul | Explicitly activated |
+| Persona | Explicitly activated |
+| Rules | Explicitly activated **+** bundled in persona frontmatter |
 
 A brain captures all three layers. The `compose` command assembles them into a single prompt — perfect for subagent dispatch.

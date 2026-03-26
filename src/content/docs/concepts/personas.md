@@ -37,7 +37,7 @@ requirements into concrete, actionable plans.
 
 ## Bundled rules
 
-The `rules` frontmatter automatically activates those rules when the persona is active. They merge with any explicitly activated rules.
+The `rules` field in the frontmatter automatically activates those rules when the persona is active. They merge with any explicitly activated rules — deduplication is automatic.
 
 ## Activating a persona
 

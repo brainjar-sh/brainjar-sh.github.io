@@ -16,17 +16,18 @@ brainjar manages AI agent behavior through four composable layers. Each layer is
 
 ## How they compose
 
-```
-soul + persona + rules = full agent behavior
-       │                    │
-       └── bundled rules ───┘  (from persona frontmatter)
-```
+At sync time, brainjar merges the active soul, persona, and rules into a single config block. Rules come from two sources:
 
-Rules come from two sources:
 1. **Explicitly activated** via `brainjar rules add`
 2. **Bundled with a persona** via its frontmatter
 
 Both sources merge. Deduplication is automatic.
+
+| Input | Source |
+|-------|--------|
+| Soul | Explicitly activated |
+| Persona | Explicitly activated |
+| Rules | Explicitly activated **+** bundled in persona frontmatter |
 
 ## State cascade
 
