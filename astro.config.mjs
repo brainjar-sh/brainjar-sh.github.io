@@ -38,6 +38,7 @@ export default defineConfig({
 						{ label: 'Subagent Orchestration', slug: 'guides/subagents' },
 						{ label: 'Packs', slug: 'guides/packs' },
 						{ label: 'Hooks', slug: 'guides/hooks' },
+						{ label: 'Authoring with AI', slug: 'guides/authoring-with-ai' },
 						{ label: 'Recipes', slug: 'guides/recipes' },
 					],
 				},
