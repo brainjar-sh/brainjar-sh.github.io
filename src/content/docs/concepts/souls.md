@@ -13,7 +13,9 @@ Think of it as the agent's **voice**.
 brainjar soul create mysoul --description "Direct and rigorous"
 ```
 
-This creates `~/.brainjar/souls/mysoul.md`. Edit it to define the personality:
+This creates `~/.brainjar/souls/mysoul.md` with a starter template — a title and your description. You fill in the rest, or let your AI agent do it (see [Authoring with AI](/guides/authoring-with-ai/)).
+
+A good soul covers three areas:
 
 ```markdown
 # My Soul

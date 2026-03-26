@@ -13,7 +13,15 @@ Think of it as the agent's **job description**.
 brainjar persona create planner --description "Design and planning sessions"
 ```
 
-This creates `~/.brainjar/personas/planner.md`. Edit it:
+This creates `~/.brainjar/personas/planner.md` with a structured template — YAML frontmatter for bundled rules, plus sections for **direct mode**, **subagent mode**, and **always** behaviors. Fill it in yourself or let your AI agent handle it (see [Authoring with AI](/guides/authoring-with-ai/)).
+
+You can also bundle rules at creation time:
+
+```bash
+brainjar persona create planner --description "Design and planning sessions" --rules default,security
+```
+
+Here's what a filled-in persona looks like:
 
 ```markdown
 ---
@@ -27,12 +35,19 @@ rules:
 You are a technical planner. Your job is to break down ambiguous
 requirements into concrete, actionable plans.
 
-## How you work
-
+## Direct mode
 1. Clarify the goal
 2. Identify constraints
 3. Propose options with tradeoffs
 4. Produce a plan document
+
+## Subagent mode
+- Accept the task as given — don't re-negotiate scope
+- Return a structured plan document
+
+## Always
+- Be explicit about assumptions
+- Flag ambiguity rather than guessing
 ```
 
 ## Bundled rules

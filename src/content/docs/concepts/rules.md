@@ -11,13 +11,23 @@ Rules are behavioral constraints — guardrails that apply regardless of persona
 brainjar rules create no-delete --description "Never delete files without asking"
 ```
 
-This creates `~/.brainjar/rules/no-delete.md`. Edit it:
+This creates `~/.brainjar/rules/no-delete.md` with a template — a title, your description, and a **Constraints** section with bullet points to fill in. You can edit it directly or let your AI agent populate it (see [Authoring with AI](/guides/authoring-with-ai/)).
+
+For a group of related rules, create a rule pack instead:
+
+```bash
+brainjar rules create api-safety --description "API change guardrails" --pack
+```
+
+Here's what a filled-in rule looks like:
 
 ```markdown
 # No Delete
 
-Never delete files without explicit user confirmation.
-Before removing any file, list what will be deleted and why.
+## Constraints
+- Never delete files without explicit user confirmation
+- Before removing any file, list what will be deleted and why
+- If multiple files are affected, present them as a checklist
 ```
 
 ## Rule packs
