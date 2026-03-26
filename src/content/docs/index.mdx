@@ -45,7 +45,24 @@ brainjar init --default
 
 That gives you a soul, a persona, and rules — all wired into your `CLAUDE.md` and ready to go.
 
+## Agent-friendly by design
+
+brainjar is built with [incur](https://github.com/wevm/incur), a CLI framework designed for agent consumption. Every command auto-detects whether it's talking to a human or an agent:
+
+- **Agents** get structured output (TOON, JSON, YAML) with typed schemas
+- **Humans** get formatted text with helpful context and next steps
+- **Discovery** via `--llms`, MCP server, or skill files — agents can learn the full CLI without documentation
+
+```bash
+# Human output
+brainjar status
+
+# Agent output (auto-detected when piped, or explicit)
+brainjar status --json
+brainjar status --format yaml
+```
+
 ## AI-friendly docs
 
-Point your agent at [`brainjar.sh/llms.txt`](https://brainjar.sh/llms.txt) — a plain-text version of these docs designed for LLMs to read directly.
+Point your agent at [`brainjar.sh/llms.txt`](https://brainjar.sh/llms.txt) for a doc index, or append `.md` to any page URL for raw markdown (e.g. [`brainjar.sh/getting-started.md`](https://brainjar.sh/getting-started.md)).
 
