@@ -5,7 +5,7 @@
   "scripts": {
     "dev": "astro dev",
     "start": "astro dev",
-    "build": "astro build",
+    "build": "astro build && bash scripts/copy-raw-md.sh",
     "preview": "astro preview",
     "astro": "astro"
   },

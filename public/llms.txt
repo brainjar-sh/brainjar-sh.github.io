@@ -14,21 +14,22 @@ brainjar status
 
 ## Docs
 
-For full documentation, fetch the pages below. Each is a self-contained guide.
+Every page is available as raw markdown by appending `.md` to the URL path.
+For example: `https://brainjar.sh/getting-started.md`
 
-- [Getting Started](https://brainjar.sh/getting-started/)
-- [Core Concepts](https://brainjar.sh/concepts/overview/)
-  - [Souls](https://brainjar.sh/concepts/souls/)
-  - [Personas](https://brainjar.sh/concepts/personas/)
-  - [Rules](https://brainjar.sh/concepts/rules/)
-  - [Brains](https://brainjar.sh/concepts/brains/)
-- [Configuration](https://brainjar.sh/guides/configuration/)
-- [Subagent Orchestration](https://brainjar.sh/guides/subagents/)
-- [Packs](https://brainjar.sh/guides/packs/)
-- [Hooks](https://brainjar.sh/guides/hooks/)
-- [Authoring with AI](https://brainjar.sh/guides/authoring-with-ai/)
-- [Recipes](https://brainjar.sh/guides/recipes/)
-- [CLI Reference](https://brainjar.sh/reference/cli/)
+- [Getting Started](https://brainjar.sh/getting-started.md)
+- [Core Concepts](https://brainjar.sh/concepts/overview.md)
+  - [Souls](https://brainjar.sh/concepts/souls.md)
+  - [Personas](https://brainjar.sh/concepts/personas.md)
+  - [Rules](https://brainjar.sh/concepts/rules.md)
+  - [Brains](https://brainjar.sh/concepts/brains.md)
+- [Configuration](https://brainjar.sh/guides/configuration.md)
+- [Subagent Orchestration](https://brainjar.sh/guides/subagents.md)
+- [Packs](https://brainjar.sh/guides/packs.md)
+- [Hooks](https://brainjar.sh/guides/hooks.md)
+- [Authoring with AI](https://brainjar.sh/guides/authoring-with-ai.md)
+- [Recipes](https://brainjar.sh/guides/recipes.md)
+- [CLI Reference](https://brainjar.sh/reference/cli.md)
 
 ## Links
 
