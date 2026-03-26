@@ -155,7 +155,14 @@ starlight-theme-provider + *::after {
 #starlight__search .pagefind-ui__result-nested:hover,
 #starlight__search .pagefind-ui__result-nested:focus-within {
 	outline: none;
-	background-color: var(--sl-color-gray-6);
+	background-color: var(--sl-color-gray-5);
+}
+
+:root[data-theme='light'] #starlight__search .pagefind-ui__result-title:not(:where(.pagefind-ui__result-nested *)):hover,
+:root[data-theme='light'] #starlight__search .pagefind-ui__result-title:not(:where(.pagefind-ui__result-nested *)):focus-within,
+:root[data-theme='light'] #starlight__search .pagefind-ui__result-nested:hover,
+:root[data-theme='light'] #starlight__search .pagefind-ui__result-nested:focus-within {
+	background-color: var(--sl-color-gray-5);
 }
 
 /* ── misc ── */
