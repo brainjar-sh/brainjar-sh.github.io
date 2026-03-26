@@ -1,0 +1,79 @@
+---
+title: Recipes
+description: Common workflows and patterns for using brainjar.
+---
+
+## Code review session
+
+Save a review brain once, activate it anytime:
+
+```bash
+# Set up the configuration
+brainjar soul use craftsman
+brainjar persona use reviewer
+brainjar rules add default
+brainjar rules add security
+brainjar brain save review
+
+# Activate anytime
+brainjar brain use review
+
+# Or scope to a single session
+brainjar shell --brain review
+```
+
+## CI pipeline — enforce rules without a persona
+
+Use environment variables in CI to override behavior:
+
+```bash
+BRAINJAR_PERSONA=auditor \
+BRAINJAR_RULES_ADD=security,compliance \
+brainjar status --sync
+```
+
+## Project-specific persona
+
+Override behavior for a specific project without affecting your global config:
+
+```bash
+cd my-project
+brainjar persona use planner --local
+brainjar rules add no-delete --local
+
+brainjar status
+# soul     craftsman (global)
+# persona  planner (local)
+# rules    default (global), no-delete (+local)
+```
+
+## Scoped shell sessions
+
+Temporarily switch context without changing any state files:
+
+```bash
+brainjar shell --persona reviewer --rules-add security
+# Inside this shell, BRAINJAR_* env vars are set
+# Exit the shell and everything reverts
+```
+
+## Team sharing with packs
+
+Export your setup and share it with teammates:
+
+```bash
+# You
+brainjar pack export review --author frank --version 1.0.0
+
+# Teammate
+brainjar pack import ./review --activate
+```
+
+## Multiple backends
+
+Work with both Claude Code and Codex:
+
+```bash
+brainjar init --backend claude    # Default
+brainjar init --backend codex     # Also set up Codex
+```

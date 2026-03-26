@@ -1,0 +1,56 @@
+---
+title: brainjar
+description: Shape how your AI thinks — composable identity, soul, persona, and rules for AI agents.
+template: splash
+hero:
+  tagline: Shape how your AI thinks. Composable layers for AI agent identity, behavior, and constraints.
+  actions:
+    - text: Get Started
+      link: /getting-started/
+      icon: right-arrow
+      variant: primary
+    - text: View on GitHub
+      link: https://github.com/brainjar-sh/brainjar-cli
+      icon: external
+      variant: minimal
+---
+
+import { Card, CardGrid } from '@astrojs/starlight/components';
+
+## How it works
+
+Instead of one monolithic config file, brainjar separates agent behavior into composable layers. Each layer is a markdown file. Mix and match them per project, per task, or per session.
+
+<CardGrid>
+	<Card title="Soul" icon="heart">
+		Who the agent **is** — voice, character, standards. The constant across all tasks. Think personality.
+	</Card>
+	<Card title="Persona" icon="puzzle">
+		How the agent **works** — role and workflow. An engineer works differently than a reviewer. Switch per task.
+	</Card>
+	<Card title="Rules" icon="warning">
+		What the agent **must follow** — behavioral constraints and guardrails. Apply regardless of persona.
+	</Card>
+	<Card title="Brain" icon="rocket">
+		A saved snapshot of soul + persona + rules. Activate a full configuration in one command.
+	</Card>
+</CardGrid>
+
+## Quick install
+
+```bash
+bun install -g @brainjar/cli
+brainjar init --default
+```
+
+That gives you a soul, a persona, and rules — all wired into your `CLAUDE.md` and ready to go.
+
+## Composition model
+
+```
+soul + persona + rules = full agent behavior
+       │                    │
+       └── bundled rules ───┘  (from persona frontmatter)
+```
+
+A brain captures all three layers. The `compose` command assembles them into a single prompt — perfect for subagent dispatch.
