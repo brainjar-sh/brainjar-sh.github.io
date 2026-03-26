@@ -31,12 +31,23 @@
 	--sl-color-white: #d4c4a0;
 }
 
-/* ── palette (light) ── */
+/* ── palette (light) — warm parchment ── */
 :root[data-theme='light'] {
 	--sl-color-accent-low: #ede5f5;
 	--sl-color-accent: #6d4da0;
 	--sl-color-accent-high: #3b2860;
-	--sl-color-bg-inline-code: rgba(134, 109, 185, 0.1);
+	--sl-color-bg-inline-code: rgba(109, 77, 160, 0.08);
+	--sl-color-bg-nav: #f5f0e8dd;
+	--sl-color-bg-sidebar: #f5f0e8cc;
+	--sl-color-hairline: rgba(60, 50, 35, 0.12);
+	--sl-color-gray-1: #2c2418;
+	--sl-color-gray-2: #4a3f30;
+	--sl-color-gray-3: #6b5d4a;
+	--sl-color-gray-4: #9a8d7a;
+	--sl-color-gray-5: #d5cbbe;
+	--sl-color-gray-6: #ebe4d8;
+	--sl-color-black: #f5f0e8;
+	--sl-color-white: #2c2418;
 }
 
 /* ── selection ── */
