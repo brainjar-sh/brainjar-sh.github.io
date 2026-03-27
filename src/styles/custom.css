@@ -62,6 +62,11 @@
 }
 
 /* ── scrollbar ── */
+html {
+	scrollbar-width: thin;
+	scrollbar-color: var(--sl-color-gray-4) transparent;
+}
+
 ::-webkit-scrollbar {
 	width: 6px;
 }
@@ -84,7 +89,7 @@ body {
 	-webkit-font-smoothing: antialiased;
 	-moz-osx-font-smoothing: grayscale;
 	font-size: 15px;
-	line-height: 1.75;
+	line-height: 1.65;
 }
 
 /* ── headings ── */
@@ -94,33 +99,64 @@ h1, h2, h3, h4 {
 }
 
 h2 {
-	font-size: 0.85em;
-	letter-spacing: 0.02em;
-	color: var(--sl-color-gray-4);
+	font-size: 1.15em;
+	letter-spacing: 0.04em;
+	color: var(--sl-color-gray-2);
+}
+
+h3 {
+	font-size: 1em;
+	color: var(--sl-color-white);
+}
+
+h4 {
+	font-size: 0.9em;
+	color: var(--sl-color-gray-2);
 }
 
 /* ── hero ── */
 .hero {
-	padding-block: 3rem 2rem;
+	padding-block: 5rem 3rem;
+}
+
+.hero h1 {
+	font-size: clamp(2.4rem, 5vw, 3.2rem);
+	font-weight: 300;
+	letter-spacing: 0.03em;
 }
 
 .hero .tagline {
 	font-size: clamp(1rem, 2.5vw, 1.2rem) !important;
 	max-width: 50ch;
 	line-height: 1.7;
-	color: var(--sl-color-gray-3);
+	color: var(--sl-color-gray-2);
+}
+
+/* ── splash page sections ── */
+[data-page-type="splash"] .sl-markdown-content h2 {
+	margin-top: 3.5rem;
+	padding-top: 1.5rem;
+	border-top: 1px solid var(--sl-color-hairline);
+}
+
+[data-page-type="splash"] .sl-markdown-content h2:first-child {
+	border-top: none;
 }
 
 /* ── cards ── */
 .card {
 	border-radius: 0;
 	border: none;
-	border-left: 2px solid var(--sl-color-hairline, rgba(212, 196, 160, 0.1));
+	border-left: 2px solid var(--sl-color-gray-5);
 	padding-left: 1.25rem;
-	transition: border-color 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+	transition: border-color 0.2s cubic-bezier(0.16, 1, 0.3, 1);
 }
 
 .card:hover {
+	border-color: var(--sl-color-accent);
+}
+
+.card:focus-within {
 	border-color: var(--sl-color-accent);
 }
 
@@ -129,6 +165,7 @@ h2 {
 	font-size: 0.9em;
 	border-radius: 2px;
 	padding: 0.1em 0.3em;
+	border: 1px solid var(--sl-color-hairline);
 }
 
 /* ── links ── */
@@ -138,6 +175,16 @@ h2 {
 
 .sl-markdown-content a:not([class]):hover {
 	color: var(--sl-color-accent);
+	text-decoration: underline;
+	text-underline-offset: 3px;
+	text-decoration-thickness: 1px;
+}
+
+/* ── horizontal rules ── */
+.sl-markdown-content hr {
+	border: none;
+	border-top: 1px solid var(--sl-color-hairline);
+	margin-block: 2.5rem;
 }
 
 /* ── noise texture overlay ── */
@@ -150,28 +197,40 @@ starlight-theme-provider + *::after {
 	background-repeat: repeat;
 	background-size: 180px 180px;
 	pointer-events: none;
-	z-index: 9999;
+	z-index: 100;
 }
 
 /* ── search results ── */
 #starlight__search .pagefind-ui__result-title:not(:where(.pagefind-ui__result-nested *)):hover,
-#starlight__search .pagefind-ui__result-title:not(:where(.pagefind-ui__result-nested *)):focus-within,
-#starlight__search .pagefind-ui__result-nested:hover,
-#starlight__search .pagefind-ui__result-nested:focus-within {
+#starlight__search .pagefind-ui__result-nested:hover {
 	outline: none;
 	background-color: var(--sl-color-gray-5);
 }
 
+#starlight__search .pagefind-ui__result-title:not(:where(.pagefind-ui__result-nested *)):focus-within,
+#starlight__search .pagefind-ui__result-nested:focus-within {
+	outline: 2px solid var(--sl-color-accent);
+	outline-offset: 1px;
+	background-color: var(--sl-color-gray-5);
+}
+
 :root[data-theme='light'] #starlight__search .pagefind-ui__result-title:not(:where(.pagefind-ui__result-nested *)):hover,
+:root[data-theme='light'] #starlight__search .pagefind-ui__result-nested:hover {
+	background-color: var(--sl-color-gray-5);
+}
+
 :root[data-theme='light'] #starlight__search .pagefind-ui__result-title:not(:where(.pagefind-ui__result-nested *)):focus-within,
-:root[data-theme='light'] #starlight__search .pagefind-ui__result-nested:hover,
 :root[data-theme='light'] #starlight__search .pagefind-ui__result-nested:focus-within {
+	outline: 2px solid var(--sl-color-accent);
+	outline-offset: 1px;
 	background-color: var(--sl-color-gray-5);
 }
 
 /* ── misc ── */
-html {
-	scroll-behavior: smooth;
+@media (prefers-reduced-motion: no-preference) {
+	html {
+		scroll-behavior: smooth;
+	}
 }
 
 .sl-markdown-content {

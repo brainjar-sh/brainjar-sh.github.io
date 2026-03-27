@@ -3,9 +3,9 @@ title: Core Concepts
 description: Understanding brainjar's composable layer system.
 ---
 
-brainjar manages AI agent behavior through four composable layers. Each layer is a markdown file. They compose together to form the agent's full behavior.
+brainjar manages AI agent behavior through composable layers. Each layer is a markdown file. They compose together to form the agent's full behavior.
 
-## The four layers
+## The layers
 
 | Layer | Purpose | Changes how often |
 |-------|---------|-------------------|
@@ -13,6 +13,7 @@ brainjar manages AI agent behavior through four composable layers. Each layer is
 | [Persona](/concepts/personas/) | How the agent works — role, workflow | Per task or session |
 | [Rules](/concepts/rules/) | What constraints apply — guardrails | Per project or persona |
 | [Brain](/concepts/brains/) | Saved snapshot of all three | When you want a repeatable setup |
+| [Identity](/concepts/identity/) | Who the agent acts as — name, email, credentials | Per project or environment |
 
 ## How they compose
 

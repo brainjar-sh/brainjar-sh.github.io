@@ -7,7 +7,7 @@ export default defineConfig({
 	site: 'https://brainjar.sh',
 	integrations: [
 		starlight({
-			title: 'brainjar',
+			title: '{ brainjar }',
 			tagline: 'Shape how your AI thinks',
 			social: [
 				{ icon: 'github', label: 'GitHub', href: 'https://github.com/brainjar-sh/brainjar-cli' },
@@ -29,6 +29,7 @@ export default defineConfig({
 						{ label: 'Personas', slug: 'concepts/personas' },
 						{ label: 'Rules', slug: 'concepts/rules' },
 						{ label: 'Brains', slug: 'concepts/brains' },
+					{ label: 'Identity', slug: 'concepts/identity' },
 					],
 				},
 				{

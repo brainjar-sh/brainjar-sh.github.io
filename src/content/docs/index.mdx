@@ -3,9 +3,10 @@ title: brainjar
 description: Shape how your AI thinks — composable identity, soul, persona, and rules for AI agents.
 template: splash
 hero:
-  tagline: Shape how your AI thinks. Composable layers for AI agent identity, behavior, and constraints.
+  title: Shape how your AI thinks
+  tagline: Composable layers for agent identity, behavior, and constraints. Define once, switch instantly.
   actions:
-    - text: Get Started
+    - text: Quick Start
       link: /getting-started/
       icon: right-arrow
       variant: primary
@@ -17,6 +18,10 @@ hero:
 
 import { Card, CardGrid, LinkCard } from '@astrojs/starlight/components';
 
+## The problem
+
+Agent config files grow into unmanageable walls of text. One monolithic prompt for every task. Copy-paste between projects. No way to switch behavior without rewriting everything.
+
 ## How it works
 
 Instead of one monolithic config file, brainjar separates agent behavior into composable layers. Each layer is a markdown file. Mix and match them per project, per task, or per session.
@@ -26,6 +31,7 @@ Instead of one monolithic config file, brainjar separates agent behavior into co
 	<LinkCard title="🎭 Persona" href="/concepts/personas/" description="How the agent works — role and workflow. Switch per task." />
 	<LinkCard title="🚧 Rules" href="/concepts/rules/" description="What the agent must follow — behavioral constraints and guardrails." />
 	<LinkCard title="🧠 Brain" href="/concepts/brains/" description="A saved snapshot of soul + persona + rules. One command to activate." />
+	<LinkCard title="🔑 Identity" href="/concepts/identity/" description="Who the agent acts as — name, email, and credential access." />
 </CardGrid>
 
 ## Quick install

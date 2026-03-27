@@ -23,6 +23,7 @@ For example: `https://brainjar.sh/getting-started.md`
   - [Personas](https://brainjar.sh/concepts/personas.md)
   - [Rules](https://brainjar.sh/concepts/rules.md)
   - [Brains](https://brainjar.sh/concepts/brains.md)
+  - [Identity](https://brainjar.sh/concepts/identity.md)
 - [Configuration](https://brainjar.sh/guides/configuration.md)
 - [Subagent Orchestration](https://brainjar.sh/guides/subagents.md)
 - [Packs](https://brainjar.sh/guides/packs.md)
