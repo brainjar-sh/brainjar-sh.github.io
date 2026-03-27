@@ -15,25 +15,17 @@ hero:
       variant: minimal
 ---
 
-import { Card, CardGrid } from '@astrojs/starlight/components';
+import { Card, CardGrid, LinkCard } from '@astrojs/starlight/components';
 
 ## How it works
 
 Instead of one monolithic config file, brainjar separates agent behavior into composable layers. Each layer is a markdown file. Mix and match them per project, per task, or per session.
 
 <CardGrid>
-	<Card title="👻 Soul">
-		Who the agent **is** — voice, character, standards. The constant across all tasks. Think personality.
-	</Card>
-	<Card title="🎭 Persona">
-		How the agent **works** — role and workflow. An engineer works differently than a reviewer. Switch per task.
-	</Card>
-	<Card title="🚧 Rules">
-		What the agent **must follow** — behavioral constraints and guardrails. Apply regardless of persona.
-	</Card>
-	<Card title="🧠 Brain">
-		A saved snapshot of soul + persona + rules. Activate a full configuration in one command.
-	</Card>
+	<LinkCard title="👻 Soul" href="/concepts/souls/" description="Who the agent is — voice, character, standards. The constant across all tasks." />
+	<LinkCard title="🎭 Persona" href="/concepts/personas/" description="How the agent works — role and workflow. Switch per task." />
+	<LinkCard title="🚧 Rules" href="/concepts/rules/" description="What the agent must follow — behavioral constraints and guardrails." />
+	<LinkCard title="🧠 Brain" href="/concepts/brains/" description="A saved snapshot of soul + persona + rules. One command to activate." />
 </CardGrid>
 
 ## Quick install
