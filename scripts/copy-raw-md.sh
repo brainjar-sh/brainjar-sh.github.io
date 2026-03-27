@@ -18,6 +18,8 @@ find "$DOCS_DIR" -name '*.md' -o -name '*.mdx' | while read -r file; do
 
   mkdir -p "$DIST_DIR/$(dirname "$rel")"
 
-  # Strip frontmatter and copy
-  awk 'BEGIN{skip=0} /^---$/{skip++; next} skip<2{next} {print}' "$file" > "$DIST_DIR/$rel"
+  # Strip frontmatter, rewrite internal links to full .md URLs, and copy
+  awk 'BEGIN{skip=0} /^---$/{skip++; next} skip<2{next} {print}' "$file" \
+    | sed -E 's|\]\((/[^)]*)/\)|\](https://brainjar.sh\1.md)|g' \
+    > "$DIST_DIR/$rel"
 done
