@@ -1,6 +1,6 @@
 # brainjar
 
-> Shape how your AI thinks — composable identity, soul, persona, and rules for AI agents.
+> Shape how your AI thinks — composable soul, persona, and rules for AI agents.
 
 brainjar manages AI agent behavior through composable layers. Instead of one monolithic config file, you separate what the agent sounds like (soul), how it works (persona), and what constraints it follows (rules). Each layer is a markdown file.
 
@@ -23,7 +23,6 @@ For example: `https://brainjar.sh/getting-started.md`
   - [Personas](https://brainjar.sh/concepts/personas.md)
   - [Rules](https://brainjar.sh/concepts/rules.md)
   - [Brains](https://brainjar.sh/concepts/brains.md)
-  - [Identity](https://brainjar.sh/concepts/identity.md)
 - [Configuration](https://brainjar.sh/guides/configuration.md)
 - [Subagent Orchestration](https://brainjar.sh/guides/subagents.md)
 - [Packs](https://brainjar.sh/guides/packs.md)
