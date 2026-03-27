@@ -46,7 +46,6 @@ Override everything for a single session:
 | `BRAINJAR_HOME` | Override `~/.brainjar/` location |
 | `BRAINJAR_SOUL` | Override active soul |
 | `BRAINJAR_PERSONA` | Override active persona |
-| `BRAINJAR_IDENTITY` | Override active identity |
 | `BRAINJAR_RULES_ADD` | Comma-separated rules to add |
 | `BRAINJAR_RULES_REMOVE` | Comma-separated rules to remove |
 

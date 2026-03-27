@@ -51,7 +51,7 @@ brainjar status [--sync] [--global] [--local] [--short]
 | `--sync` | Regenerate config file after showing status |
 | `--global` | Show only global state |
 | `--local` | Show only local overrides |
-| `--short` | One-line output: `soul \| persona \| identity` |
+| `--short` | One-line output: `soul \| persona` |
 
 ---
 
@@ -331,107 +331,6 @@ brainjar brain drop <name>
 
 ---
 
-## identity
-
-Manage digital identities — one active at a time. Integrates with credential engines (e.g. Bitwarden) for secure secret retrieval.
-
-### identity create
-
-Create a new identity.
-
-```bash
-brainjar identity create <slug> [--name <text>] [--email <text>] [--engine bitwarden]
-```
-
-| Flag | Description |
-|------|-------------|
-| `--name` | Full display name |
-| `--email` | Email address |
-| `--engine` | Credential engine (default: `bitwarden`) |
-
-### identity list
-
-List available identities.
-
-```bash
-brainjar identity list
-```
-
-### identity show
-
-Show the active identity.
-
-```bash
-brainjar identity show [--local] [--short]
-```
-
-| Flag | Description |
-|------|-------------|
-| `--local` | Show local identity override (if any) |
-| `--short` | Print only the active identity slug |
-
-### identity use
-
-Activate an identity.
-
-```bash
-brainjar identity use <slug> [--local]
-```
-
-| Flag | Description |
-|------|-------------|
-| `--local` | Write to local `.claude/CLAUDE.md` instead of global |
-
-### identity drop
-
-Deactivate the current identity.
-
-```bash
-brainjar identity drop [--local]
-```
-
-| Flag | Description |
-|------|-------------|
-| `--local` | Remove local identity override or deactivate global identity |
-
-### identity unlock
-
-Store the credential engine session token.
-
-```bash
-brainjar identity unlock [session]
-```
-
-If `session` is omitted, reads from stdin.
-
-### identity lock
-
-Lock the credential engine session.
-
-```bash
-brainjar identity lock
-```
-
-### identity get
-
-Retrieve a credential from the active identity engine.
-
-```bash
-brainjar identity get <item>
-```
-
-The `item` argument is the item name or ID to retrieve from the vault.
-
-### identity status
-
-Check if the credential engine session is active.
-
-```bash
-brainjar identity status
-```
-
----
-
 ## pack
 
 Export and import brainjar packs — self-contained shareable bundles.
@@ -514,7 +413,7 @@ brainjar hooks status [--local]
 Spawn a subshell with `BRAINJAR_*` environment variables set.
 
 ```bash
-brainjar shell [--brain <name>] [--soul <name>] [--persona <name>] [--identity <name>] [--rules-add <names>] [--rules-remove <names>]
+brainjar shell [--brain <name>] [--soul <name>] [--persona <name>] [--rules-add <names>] [--rules-remove <names>]
 ```
 
 | Flag | Description |
@@ -522,7 +421,6 @@ brainjar shell [--brain <name>] [--soul <name>] [--persona <name>] [--identity <
 | `--brain` | Brain name — sets soul, persona, and rules from brain file |
 | `--soul` | Soul override for this session |
 | `--persona` | Persona override for this session |
-| `--identity` | Identity override for this session |
 | `--rules-add` | Comma-separated rules to add |
 | `--rules-remove` | Comma-separated rules to remove |
 

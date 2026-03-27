@@ -13,7 +13,6 @@ brainjar manages AI agent behavior through composable layers. Each layer is a ma
 | [Persona](/concepts/personas/) | How the agent works — role, workflow | Per task or session |
 | [Rules](/concepts/rules/) | What constraints apply — guardrails | Per project or persona |
 | [Brain](/concepts/brains/) | Saved snapshot of all three | When you want a repeatable setup |
-| [Identity](/concepts/identity/) | Who the agent acts as — name, email, credentials | Per project or environment |
 
 ## How they compose
 
