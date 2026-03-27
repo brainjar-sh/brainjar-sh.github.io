@@ -33,10 +33,10 @@
 
 /* ── palette (light) — warm parchment ── */
 :root[data-theme='light'] {
-	--sl-color-accent-low: #ece4f3;
-	--sl-color-accent: #866db9;
-	--sl-color-accent-high: #4a3870;
-	--sl-color-bg-inline-code: rgba(134, 109, 185, 0.08);
+	--sl-color-accent-low: #f3ebe2;
+	--sl-color-accent: #b97d3c;
+	--sl-color-accent-high: #6b4520;
+	--sl-color-bg-inline-code: rgba(185, 125, 60, 0.08);
 	--sl-color-bg-nav: #f5f0e8dd;
 	--sl-color-bg-sidebar: #f5f0e8cc;
 	--sl-color-hairline: rgba(60, 50, 35, 0.12);
@@ -53,6 +53,11 @@
 /* ── selection ── */
 ::selection {
 	background: rgba(134, 109, 185, 0.25);
+	color: var(--sl-color-white);
+}
+
+:root[data-theme='light'] ::selection {
+	background: rgba(185, 125, 60, 0.25);
 	color: var(--sl-color-white);
 }
 
@@ -89,9 +94,8 @@ h1, h2, h3, h4 {
 }
 
 h2 {
-	text-transform: uppercase;
 	font-size: 0.85em;
-	letter-spacing: 0.1em;
+	letter-spacing: 0.02em;
 	color: var(--sl-color-gray-4);
 }
 
