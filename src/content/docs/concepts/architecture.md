@@ -180,7 +180,7 @@ The server upgrade always targets the local binary, regardless of which context 
 The CLI checks the server version on connect. If the server is too old for the CLI, you'll get a clear error:
 
 ```
-Server v0.1.4 is incompatible with this CLI (requires >= 0.2.1).
+Server v0.2.3 is incompatible with this CLI (requires >= 0.2.4).
 Run `brainjar upgrade` to update both CLI and server.
 ```
 
