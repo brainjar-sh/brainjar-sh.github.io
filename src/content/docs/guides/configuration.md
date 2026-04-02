@@ -57,20 +57,23 @@ BRAINJAR_PERSONA=reviewer claude
 
 ## Config file
 
-The CLI config lives at `~/.brainjar/config.yaml`:
+The CLI config lives at `~/.brainjar/config.yaml` and uses named contexts:
 
 ```yaml
-server:
-  url: http://localhost:7742
-  mode: local
-  bin: ~/.brainjar/bin/brainjar-server
-  pid_file: ~/.brainjar/server.pid
-  log_file: ~/.brainjar/server.log
-workspace: default
+version: 2
+current_context: local
+contexts:
+  local:
+    url: http://localhost:7742
+    mode: local
+    bin: ~/.brainjar/bin/brainjar-server
+    pid_file: ~/.brainjar/server.pid
+    log_file: ~/.brainjar/server.log
+    workspace: default
 backend: claude
 ```
 
-See [Architecture](/concepts/architecture/) for details on server modes.
+Each context has its own URL, mode, and workspace. See [Architecture](/concepts/architecture/) for details on server modes and contexts.
 
 ## Backends
 

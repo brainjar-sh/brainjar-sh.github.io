@@ -226,6 +226,39 @@ starlight-theme-provider + *::after {
 	background-color: var(--sl-color-gray-5);
 }
 
+/* ── version bar ── */
+.version-bar {
+	display: flex;
+	gap: 0.5em;
+	font-size: 0.85em;
+	opacity: 0;
+	transition: opacity 0.3s ease;
+	margin-bottom: 1.5rem;
+}
+
+.version-bar.loaded {
+	opacity: 1;
+}
+
+.version-bar span {
+	color: var(--sl-color-gray-3);
+	padding: 0.15em 0.5em;
+	border: 1px solid var(--sl-color-hairline);
+	border-radius: 3px;
+}
+
+.version-bar span::before {
+	content: '';
+	display: inline-block;
+	width: 6px;
+	height: 6px;
+	border-radius: 50%;
+	background: #4ade80;
+	margin-right: 0.4em;
+	vertical-align: middle;
+	box-shadow: 0 0 4px #4ade8066;
+}
+
 /* ── misc ── */
 @media (prefers-reduced-motion: no-preference) {
 	html {

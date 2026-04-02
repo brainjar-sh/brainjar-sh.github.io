@@ -18,6 +18,10 @@ export default defineConfig({
 					tag: 'meta',
 					attrs: { property: 'og:image', content: 'https://brainjar-sh.github.io/og.png' },
 				},
+				{
+					tag: 'script',
+					attrs: { src: '/versions.js', defer: true },
+				},
 			],
 			sidebar: [
 				{ label: 'Getting Started', slug: 'getting-started' },

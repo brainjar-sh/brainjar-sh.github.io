@@ -13,6 +13,9 @@ yarn-error.log*
 pnpm-debug.log*
 
 
+# generated at build time
+public/versions.json
+
 # environment variables
 .env
 .env.production

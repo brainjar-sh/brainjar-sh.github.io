@@ -507,7 +507,7 @@ brainjar server logs [--lines <n>] [--follow]
 
 ### server local
 
-Switch to managed local server.
+Switch to managed local server. Creates or switches to the `local` context.
 
 ```bash
 brainjar server local
@@ -515,18 +515,87 @@ brainjar server local
 
 ### server remote
 
-Switch to a remote server.
+Switch to a remote server. Creates a context for the URL if one doesn't exist.
 
 ```bash
 brainjar server remote <url>
 ```
 
-### server upgrade
+---
 
-Upgrade the server binary to the latest version. Only works in local mode.
+## upgrade
+
+Upgrade brainjar CLI and server to latest versions.
 
 ```bash
-brainjar server upgrade
+brainjar upgrade                    # upgrade both
+brainjar upgrade --cli-only         # upgrade CLI only
+brainjar upgrade --server-only      # upgrade server only
+```
+
+| Flag | Description |
+|------|-------------|
+| `--cli-only` | Only upgrade the CLI |
+| `--server-only` | Only upgrade the server binary |
+
+The server upgrade always targets the local binary, regardless of which context is active.
+
+---
+
+## context
+
+Manage server contexts — named server profiles for switching between local, staging, production, and team servers.
+
+### context list
+
+List all contexts. The active context is marked.
+
+```bash
+brainjar context list
+```
+
+### context add
+
+Add a remote context. Validates the server is reachable before adding.
+
+```bash
+brainjar context add <name> <url> [--workspace <name>]
+```
+
+| Flag | Description |
+|------|-------------|
+| `--workspace` | Workspace name (default: `default`) |
+
+### context remove
+
+Remove a context. Cannot remove `local` or the active context.
+
+```bash
+brainjar context remove <name>
+```
+
+### context use
+
+Switch active context. Syncs configuration from the new server.
+
+```bash
+brainjar context use <name>
+```
+
+### context show
+
+Show context details. Defaults to the active context.
+
+```bash
+brainjar context show [name]
+```
+
+### context rename
+
+Rename a context. Cannot rename `local`.
+
+```bash
+brainjar context rename <old> <new>
 ```
 
 ---

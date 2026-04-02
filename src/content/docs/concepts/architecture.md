@@ -52,18 +52,27 @@ All content (souls, personas, rules, brains) and state (what's active) lives on 
 
 ## Config file
 
-`~/.brainjar/config.yaml` is created by `brainjar init`:
+`~/.brainjar/config.yaml` uses named contexts to manage multiple servers:
 
 ```yaml
-server:
-  url: http://localhost:7742
-  mode: local
-  bin: ~/.brainjar/bin/brainjar-server
-  pid_file: ~/.brainjar/server.pid
-  log_file: ~/.brainjar/server.log
-workspace: default
+version: 2
+current_context: local
+contexts:
+  local:
+    url: http://localhost:7742
+    mode: local
+    bin: ~/.brainjar/bin/brainjar-server
+    pid_file: ~/.brainjar/server.pid
+    log_file: ~/.brainjar/server.log
+    workspace: default
+  staging:
+    url: https://staging.brainjar.example.com
+    mode: remote
+    workspace: default
 backend: claude
 ```
+
+The `local` context is always present. Each context has its own URL, mode, and workspace. Switch between them with `brainjar context use <name>`.
 
 ## Server modes
 
@@ -84,19 +93,19 @@ The CLI:
 Manage the local server with:
 
 ```bash
-brainjar server status    # check health, PID, mode
+brainjar server status    # check health, PID, mode, server version
 brainjar server logs      # view server logs
 brainjar server stop      # stop the daemon
 brainjar server start     # start the daemon
-brainjar server upgrade   # download latest server version
 ```
 
 ### Remote mode
 
-Point the CLI at a server you run yourself:
+Add a remote server as a named context:
 
 ```bash
-brainjar server remote https://brainjar.example.com
+brainjar context add staging https://brainjar.example.com
+brainjar context use staging
 ```
 
 This is useful for teams sharing a single server, or for running the server in Docker with an external Postgres:
@@ -114,10 +123,21 @@ docker run -d \
 
 The Docker image has `BRAINJAR_POSTGRES_EMBEDDED=false` baked in — you only need to provide the connection details.
 
-Switch back to local mode:
+Switch back to local:
 
 ```bash
-brainjar server local
+brainjar context use local
+```
+
+### Managing contexts
+
+```bash
+brainjar context list               # list all contexts
+brainjar context add prod <url>     # add a remote context
+brainjar context use staging        # switch active context
+brainjar context show               # show active context details
+brainjar context rename old new     # rename a context
+brainjar context remove staging     # remove a context
 ```
 
 ## Workspaces
@@ -139,12 +159,28 @@ brainjar sync
 
 ## Upgrading
 
-The CLI and server are versioned independently:
+Upgrade both CLI and server in one command:
 
 ```bash
-# Upgrade the CLI
-npm update -g @brainjar/cli
-
-# Upgrade the server binary (local mode only)
-brainjar server upgrade
+brainjar upgrade
 ```
+
+Or upgrade selectively:
+
+```bash
+brainjar upgrade --cli-only       # just the CLI
+brainjar upgrade --server-only    # just the server binary
+```
+
+The server upgrade always targets the local binary, regardless of which context is active.
+
+## Version compatibility
+
+The CLI checks the server version on connect. If the server is too old for the CLI, you'll get a clear error:
+
+```
+Server v0.1.4 is incompatible with this CLI (requires >= 0.2.1).
+Run `brainjar upgrade` to update both CLI and server.
+```
+
+Check the current server version with `brainjar server status`.
