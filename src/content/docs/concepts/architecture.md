@@ -41,8 +41,9 @@ The only thing stored locally:
 
 ```
 ~/.brainjar/
-  config.yaml           # server URL, mode, workspace, backend
+  config.yaml           # server contexts, backend
   bin/brainjar-server   # server binary (local mode only)
+  pg-data/              # embedded Postgres data (persists across upgrades)
   server.pid            # process ID (local mode only)
   server.log            # server logs (local mode only)
   server-version        # installed version tracker
