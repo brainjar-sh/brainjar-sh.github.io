@@ -24,7 +24,7 @@ All commands support `--help` for usage information.
 
 ## init
 
-Initialize brainjar: download server, create workspace, and optionally seed content.
+Initialize brainjar: config, server, and optional seed content.
 
 ```bash
 brainjar init [--default] [--backend claude|codex]
@@ -47,7 +47,7 @@ brainjar status [--sync] [--workspace] [--project] [--short]
 
 | Flag | Description |
 |------|-------------|
-| `--sync` | Regenerate config file after showing status |
+| `--sync` | Regenerate config file from active layers |
 | `--workspace` | Show only workspace state |
 | `--project` | Show only project overrides |
 | `--short` | One-line output: `soul \| persona` |
@@ -123,6 +123,14 @@ brainjar soul show [name] [--project] [--short]
 | `--project` | Show project soul override (if any) |
 | `--short` | Print only the active soul name |
 
+### soul update
+
+Update a soul's content. Reads new content from stdin.
+
+```bash
+cat content.md | brainjar soul update <name>
+```
+
 ### soul use
 
 Activate a soul.
@@ -187,6 +195,18 @@ brainjar persona show [name] [--project] [--short]
 | `--project` | Show project persona override (if any) |
 | `--short` | Print only the active persona name |
 
+### persona update
+
+Update a persona's content. Reads new content from stdin. Optionally update bundled rules.
+
+```bash
+cat content.md | brainjar persona update <name> [--rules <list>]
+```
+
+| Flag | Description |
+|------|-------------|
+| `--rules` | Update bundled rules |
+
 ### persona use
 
 Activate a persona.
@@ -249,6 +269,14 @@ Show the content of a rule by name.
 brainjar rules show <name>
 ```
 
+### rules update
+
+Update a rule's content. Reads new content from stdin.
+
+```bash
+cat content.md | brainjar rules update <name>
+```
+
 ### rules add
 
 Activate a rule or rule pack.
@@ -289,7 +317,7 @@ brainjar brain save <name> [--overwrite]
 
 | Flag | Description |
 |------|-------------|
-| `--overwrite` | Overwrite existing brain file |
+| `--overwrite` | Overwrite existing brain |
 
 ### brain list
 
@@ -350,23 +378,21 @@ brainjar pack export <brain> [--out <dir>] [--name <name>] [--version <ver>] [--
 
 ### pack import
 
-Import a pack into the server.
+Import a pack directory into the server.
 
 ```bash
-brainjar pack import <path> [--force] [--merge] [--activate]
+brainjar pack import <path> [--activate]
 ```
 
 | Flag | Description |
 |------|-------------|
-| `--force` | Overwrite existing files on conflict |
-| `--merge` | Rename incoming files on conflict as `<name>-from-<packname>` |
 | `--activate` | Activate the brain after successful import |
 
 ---
 
 ## hooks
 
-Manage Claude Code hook integration.
+Manage Claude Code hooks for brainjar.
 
 ### hooks install
 
@@ -408,7 +434,7 @@ brainjar hooks status [--local]
 
 ## shell
 
-Spawn a subshell with `BRAINJAR_*` environment variables set.
+Spawn a subshell with session-scoped state overrides.
 
 ```bash
 brainjar shell [--brain <name>] [--soul <name>] [--persona <name>] [--rules-add <names>] [--rules-remove <names>]
@@ -507,7 +533,7 @@ brainjar server upgrade
 
 ## migrate
 
-Migrate content from filesystem-based brainjar to the server.
+Import file-based content into the server.
 
 ```bash
 brainjar migrate [--dry-run] [--skip-backup]
@@ -515,5 +541,52 @@ brainjar migrate [--dry-run] [--skip-backup]
 
 | Flag | Description |
 |------|-------------|
-| `--dry-run` | Show what would be migrated without making changes |
-| `--skip-backup` | Skip creating a backup before migration |
+| `--dry-run` | Preview what would be imported without making changes |
+| `--skip-backup` | Skip renaming source directories to `.bak` |
+
+---
+
+## Integrations
+
+### completions
+
+Generate shell completion script.
+
+```bash
+brainjar completions <bash|fish|nushell|zsh>
+```
+
+Setup examples:
+
+```bash
+eval "$(brainjar completions bash)"    # add to ~/.bashrc
+eval "$(brainjar completions zsh)"     # add to ~/.zshrc
+brainjar completions fish | source     # add to ~/.config/fish/config.fish
+```
+
+### mcp add
+
+Register brainjar as an MCP server for your agent.
+
+```bash
+brainjar mcp add [--agent <name>] [--command <cmd>] [--no-global]
+```
+
+| Flag | Description |
+|------|-------------|
+| `--agent` | Target a specific agent (e.g. `claude-code`, `cursor`) |
+| `--command`, `-c` | Override the command agents will run |
+| `--no-global` | Install to project instead of globally |
+
+### skills add
+
+Sync brainjar skill files to your agent.
+
+```bash
+brainjar skills add [--depth <n>] [--no-global]
+```
+
+| Flag | Description |
+|------|-------------|
+| `--depth` | Grouping depth for skill files (default: 1) |
+| `--no-global` | Install to project instead of globally |

@@ -14,10 +14,10 @@ brainjar hooks install --local   # This project only
 
 ## How it works
 
-The hook runs `brainjar sync --quiet` on Claude Code's `PreToolUse` event. This means:
+The hook runs `brainjar sync --quiet` on Claude Code's `SessionStart` event. This means:
 
 1. You change a soul, persona, or rule
-2. Next time Claude Code starts a tool call, the hook fires
+2. Next time Claude Code starts a session, the hook fires
 3. Your `CLAUDE.md` is updated with the latest config
 4. The agent picks up the new behavior
 

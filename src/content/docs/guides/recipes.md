@@ -69,6 +69,34 @@ brainjar pack export review --author frank --version 1.0.0
 brainjar pack import ./review --activate
 ```
 
+## MCP server registration
+
+Register brainjar as an MCP server so agents can discover and use all commands:
+
+```bash
+brainjar mcp add                         # Global, auto-detect agent
+brainjar mcp add --agent cursor          # Target a specific agent
+brainjar mcp add --no-global             # Project-local only
+```
+
+## Skill files
+
+Sync brainjar skill files to your agent for slash-command integration:
+
+```bash
+brainjar skills add                      # Global install
+brainjar skills add --no-global          # Project-local only
+```
+
+## Shell completions
+
+Set up tab completion for brainjar commands:
+
+```bash
+eval "$(brainjar completions zsh)"       # Add to ~/.zshrc
+eval "$(brainjar completions bash)"      # Add to ~/.bashrc
+```
+
 ## Multiple backends
 
 Work with both Claude Code and Codex:

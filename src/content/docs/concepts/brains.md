@@ -48,4 +48,4 @@ Brains are the primary input to `compose`, which assembles a full prompt for sub
 brainjar compose review --task "Review the changes in src/sync.ts"
 ```
 
-This outputs the complete prompt (soul + persona + rules + task) ready to pass to a subagent. See [Subagent Orchestration](/guides/subagents/) for details.
+This outputs the complete prompt (soul + persona + rules + task) ready to pass to a subagent. See [Subagent Orchestration](/guides/subagents/) for compose basics and [Orchestration Patterns](/guides/orchestration-patterns/) for multi-agent workflow patterns.

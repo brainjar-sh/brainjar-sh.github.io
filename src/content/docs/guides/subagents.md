@@ -51,3 +51,7 @@ brainjar persona show reviewer    # Get just the persona content
 brainjar rules show security      # Get just a rule's content
 brainjar soul show                # Get the active soul
 ```
+
+## Going deeper
+
+For advanced multi-agent patterns — parallel dispatch, sequential pipelines, coordinator phases, and specialist teams — see [Orchestration Patterns](/guides/orchestration-patterns/).

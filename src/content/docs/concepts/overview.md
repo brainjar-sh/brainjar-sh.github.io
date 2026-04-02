@@ -3,7 +3,7 @@ title: Core Concepts
 description: Understanding brainjar's composable layer system.
 ---
 
-brainjar manages AI agent behavior through composable layers. Each layer is a markdown document stored on the brainjar server. They compose together to form the agent's full behavior.
+brainjar manages AI agent behavior through composable layers. Each layer is a markdown document stored on the brainjar server. They compose together to form the agent's full behavior. For the full rationale behind this approach, see [Why Composable Prompts](/concepts/why-composable/).
 
 ## The layers
 

@@ -5,24 +5,61 @@ description: Use your AI agent to help you create souls, personas, and rules.
 
 You don't have to write souls, personas, and rules from scratch. Every `create` command generates a **template** with structured sections — your agent sees the template and fills it in based on your description.
 
+If you already have a large config file, see [Migrating from Monolithic Prompts](/guides/migration/) for a step-by-step decomposition guide. This page covers creating new content from scratch.
+
 ## How templates work
 
-When you run a create command, brainjar generates a template with section headers that guide the content:
+When you run a create command, brainjar generates a template on the server with section headers that guide the content:
 
 - **Soul template:** title + space for voice, character, and standards
 - **Persona template:** YAML frontmatter for bundled rules + sections for direct mode, subagent mode, and baseline behaviors
 - **Rule template:** title + description placeholder + constraints section
 
-Your agent reads these templates and populates them. You describe what you want in natural language, and the agent runs the CLI commands to create and update the content on the server.
+The workflow is create → show → update:
+
+1. `create` stores a template on the server
+2. `show` reads it back so the agent can see the structure
+3. `update` writes the populated content back (reads from stdin)
+
+```bash
+# 1. Create — generates template on server
+brainjar soul create pragmatist --description "Direct and pragmatic"
+
+# 2. Show — agent reads the template to see the structure
+brainjar soul show pragmatist
+
+# 3. Update — agent writes the filled-in content back
+cat <<'EOF' | brainjar soul update pragmatist
+# Pragmatist
+
+Direct and pragmatic.
+
+## Voice
+- Plain language. No jargon unless the audience expects it.
+- Say what you mean in the fewest words that are still clear.
+
+## Character
+- Ship over perfection. Done is better than perfect.
+- Skeptical of abstractions. Prove it works first.
+
+## Standards
+- If it's not tested, it's not done.
+- Simplest solution that solves the problem.
+EOF
+```
+
+You can also let agents discover brainjar's full CLI via `brainjar --llms` or by registering it as an MCP server with `brainjar mcp add`.
 
 ## Creating a soul
+
+Tell your agent what you want:
 
 ```
 Create a brainjar soul called "pragmatist" that's direct, avoids jargon,
 and values shipping over perfection.
 ```
 
-The agent runs `brainjar soul create pragmatist --description "Direct and pragmatic"`, then updates the generated template on the server.
+The agent runs `create`, reads the template with `show`, fills in the sections, and writes it back with `update`. The template's section headers (Voice, Character, Standards) guide what the agent writes.
 
 ### Tips for good souls
 
@@ -48,7 +85,7 @@ Create a brainjar persona called "debugger". It should:
 Bundle the "boundaries" and "testing" rules.
 ```
 
-The agent runs the create command with `--rules boundaries,testing`. The template includes section headers for **direct mode**, **subagent mode**, and **always** — which the agent fills in based on your description.
+The agent runs `create` with `--rules boundaries,testing`, reads the template with `show`, and writes the filled-in content with `update`. The template includes section headers for **direct mode**, **subagent mode**, and **always** — which guide the agent's output.
 
 ### Tips for good personas
 
@@ -74,7 +111,7 @@ from deleting any file without explicit user confirmation. It should
 list what will be deleted and why before asking.
 ```
 
-The generated template includes a **Constraints** section with bullet points for the agent to populate.
+The agent creates the rule, reads the template with `show`, and writes the constraints with `update`. The template includes a **Constraints** section with bullet points to populate.
 
 ### Tips for good rules
 
@@ -125,7 +162,28 @@ The "veteran" soul is too terse. Add a line about being generous
 with explanations when the user asks "why".
 ```
 
-The agent updates content on the server via CLI commands. Run `brainjar sync` (or let hooks handle it) and the changes take effect immediately.
+The agent reads the current content with `show`, modifies it, and writes it back with `update`. Run `brainjar sync` (or let hooks handle it) and the changes take effect immediately.
+
+## Building a team of agents
+
+Once you have several personas, you can build them into a specialist team for multi-agent workflows:
+
+```
+Create brains for each workflow:
+- "build" brain: craftsman soul, engineer persona, git-discipline + security rules
+- "review" brain: craftsman soul, reviewer persona, security + boundaries rules
+- "design" brain: craftsman soul, architect persona, boundaries rules
+```
+
+The agent saves each brain. Then your lead persona can dispatch specialists via `compose`:
+
+```bash
+brainjar compose design --task "Analyze the auth requirements in src/auth/"
+brainjar compose build --task "Implement the design in docs/design-auth.md"
+brainjar compose review --task "Review the auth changes against the design doc"
+```
+
+See [Orchestration Patterns](/guides/orchestration-patterns/) for more multi-agent workflows.
 
 ## Sharing what you built
 

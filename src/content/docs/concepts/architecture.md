@@ -74,11 +74,12 @@ brainjar init --default
 ```
 
 The CLI:
-1. Downloads the latest server binary from `get.brainjar.sh`
-2. Starts it in the background with embedded Postgres
-3. Creates the `default` workspace
-4. Seeds starter content (if `--default` is passed)
-5. Writes `CLAUDE.md` with the active configuration
+1. Creates the config file at `~/.brainjar/config.yaml`
+2. Downloads the server binary from `get.brainjar.sh`
+3. Starts it in the background with embedded Postgres
+4. Creates the `default` workspace
+5. Seeds starter content (if `--default` is passed)
+6. Writes `CLAUDE.md` with the active configuration
 
 Manage the local server with:
 

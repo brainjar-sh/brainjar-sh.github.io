@@ -21,10 +21,10 @@ npm install -g @brainjar/cli
 brainjar init --default
 ```
 
-This downloads the brainjar server, starts it, and seeds starter content:
+This creates your config, downloads the brainjar server, starts it, and seeds starter content:
 
 - **Soul:** `craftsman` — direct, rigorous, craft-oriented voice
-- **Persona:** `engineer` — software engineering workflow
+- **Personas:** `engineer` (activated), `planner`, `reviewer` — three workflows out of the box
 - **Rules:** `boundaries`, `context-recovery`, `task-completion`, `git-discipline`, `security`
 
 It also syncs everything into your `CLAUDE.md` (or `AGENTS.md` for Codex).
@@ -59,5 +59,6 @@ brainjar fetched your active layers from the server, merged them, and inlined th
 ## Next steps
 
 - Learn about the [core concepts](/concepts/overview/) — soul, persona, rules, brain
+- [Migrate an existing config](/guides/migration/) into composable layers
 - See the full [CLI reference](/reference/cli/)
 - Browse [recipes](/guides/recipes/) for common workflows

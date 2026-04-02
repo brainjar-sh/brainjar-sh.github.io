@@ -25,6 +25,7 @@ export default defineConfig({
 					label: 'Concepts',
 					items: [
 						{ label: 'Overview', slug: 'concepts/overview' },
+						{ label: 'Why Composable Prompts', slug: 'concepts/why-composable' },
 						{ label: 'Architecture', slug: 'concepts/architecture' },
 						{ label: 'Souls', slug: 'concepts/souls' },
 						{ label: 'Personas', slug: 'concepts/personas' },
@@ -36,7 +37,9 @@ export default defineConfig({
 					label: 'Guides',
 					items: [
 						{ label: 'Configuration', slug: 'guides/configuration' },
+						{ label: 'Migrating from Monolithic Prompts', slug: 'guides/migration' },
 						{ label: 'Subagent Orchestration', slug: 'guides/subagents' },
+						{ label: 'Orchestration Patterns', slug: 'guides/orchestration-patterns' },
 						{ label: 'Packs', slug: 'guides/packs' },
 						{ label: 'Hooks', slug: 'guides/hooks' },
 						{ label: 'Authoring with AI', slug: 'guides/authoring-with-ai' },

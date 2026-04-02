@@ -38,19 +38,5 @@ brainjar pack export review --author frank         # Set author field
 
 ```bash
 brainjar pack import ./review                      # Import into server
-brainjar pack import ./review --force              # Overwrite conflicts
-brainjar pack import ./review --merge              # Rename conflicts
 brainjar pack import ./review --activate           # Activate the brain after import
 ```
-
-## Conflict handling
-
-On conflict (a file already exists with different content), import fails by default and lists the conflicts.
-
-| Flag | Behavior |
-|------|----------|
-| `--force` | Overwrite existing files |
-| `--merge` | Keep both — rename incoming as `<name>-from-<packname>` |
-| *(default)* | Fail and list conflicts |
-
-Identical files are silently skipped.

@@ -90,3 +90,5 @@ brainjar reset --backend codex
 ## Backup & restore
 
 On first sync, brainjar backs up any existing config to `CLAUDE.md.pre-brainjar`. Running `brainjar reset` removes brainjar-managed config and restores the backup.
+
+For a step-by-step guide to decomposing an existing config file into brainjar layers, see [Migrating from Monolithic Prompts](/guides/migration/).
