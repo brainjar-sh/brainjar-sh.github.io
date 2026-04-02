@@ -24,16 +24,15 @@ All commands support `--help` for usage information.
 
 ## init
 
-Bootstrap `~/.brainjar/` directory structure.
+Initialize brainjar: download server, create workspace, and optionally seed content.
 
 ```bash
-brainjar init [--default] [--obsidian] [--backend claude|codex]
+brainjar init [--default] [--backend claude|codex]
 ```
 
 | Flag | Description |
 |------|-------------|
 | `--default` | Seed starter soul, personas, and rules |
-| `--obsidian` | Set up `~/.brainjar/` as an Obsidian vault |
 | `--backend` | Agent backend to target (default: `claude`) |
 
 ---
@@ -43,14 +42,14 @@ brainjar init [--default] [--obsidian] [--backend claude|codex]
 Show active brain configuration.
 
 ```bash
-brainjar status [--sync] [--global] [--local] [--short]
+brainjar status [--sync] [--workspace] [--project] [--short]
 ```
 
 | Flag | Description |
 |------|-------------|
 | `--sync` | Regenerate config file after showing status |
-| `--global` | Show only global state |
-| `--local` | Show only local overrides |
+| `--workspace` | Show only workspace state |
+| `--project` | Show only project overrides |
 | `--short` | One-line output: `soul \| persona` |
 
 ---
@@ -116,12 +115,12 @@ brainjar soul list
 Show a soul by name, or the active soul if no name given.
 
 ```bash
-brainjar soul show [name] [--local] [--short]
+brainjar soul show [name] [--project] [--short]
 ```
 
 | Flag | Description |
 |------|-------------|
-| `--local` | Show local soul override (if any) |
+| `--project` | Show project soul override (if any) |
 | `--short` | Print only the active soul name |
 
 ### soul use
@@ -129,24 +128,24 @@ brainjar soul show [name] [--local] [--short]
 Activate a soul.
 
 ```bash
-brainjar soul use <name> [--local]
+brainjar soul use <name> [--project]
 ```
 
 | Flag | Description |
 |------|-------------|
-| `--local` | Write to local `.claude/CLAUDE.md` instead of global |
+| `--project` | Write to project scope instead of workspace |
 
 ### soul drop
 
 Deactivate the current soul.
 
 ```bash
-brainjar soul drop [--local]
+brainjar soul drop [--project]
 ```
 
 | Flag | Description |
 |------|-------------|
-| `--local` | Remove local soul override or deactivate global soul |
+| `--project` | Remove project soul override or deactivate workspace soul |
 
 ---
 
@@ -180,12 +179,12 @@ brainjar persona list
 Show a persona by name, or the active persona if no name given.
 
 ```bash
-brainjar persona show [name] [--local] [--short]
+brainjar persona show [name] [--project] [--short]
 ```
 
 | Flag | Description |
 |------|-------------|
-| `--local` | Show local persona override (if any) |
+| `--project` | Show project persona override (if any) |
 | `--short` | Print only the active persona name |
 
 ### persona use
@@ -193,24 +192,24 @@ brainjar persona show [name] [--local] [--short]
 Activate a persona.
 
 ```bash
-brainjar persona use <name> [--local]
+brainjar persona use <name> [--project]
 ```
 
 | Flag | Description |
 |------|-------------|
-| `--local` | Write to local `.claude/CLAUDE.md` instead of global |
+| `--project` | Write to project scope instead of workspace |
 
 ### persona drop
 
 Deactivate the current persona.
 
 ```bash
-brainjar persona drop [--local]
+brainjar persona drop [--project]
 ```
 
 | Flag | Description |
 |------|-------------|
-| `--local` | Remove local persona override or deactivate global persona |
+| `--project` | Remove project persona override or deactivate workspace persona |
 
 ---
 
@@ -223,25 +222,24 @@ Manage rules — behavioral constraints for the agent.
 Create a new rule.
 
 ```bash
-brainjar rules create <name> [--description <text>] [--pack]
+brainjar rules create <name> [--description <text>]
 ```
 
 | Flag | Description |
 |------|-------------|
 | `--description` | One-line description of the rule |
-| `--pack` | Create as a rule pack (directory of `.md` files) |
 
 ### rules list
 
 List available and active rules.
 
 ```bash
-brainjar rules list [--local]
+brainjar rules list [--project]
 ```
 
 | Flag | Description |
 |------|-------------|
-| `--local` | Show local rules delta only |
+| `--project` | Show project rules delta only |
 
 ### rules show
 
@@ -256,24 +254,24 @@ brainjar rules show <name>
 Activate a rule or rule pack.
 
 ```bash
-brainjar rules add <name> [--local]
+brainjar rules add <name> [--project]
 ```
 
 | Flag | Description |
 |------|-------------|
-| `--local` | Add rule as a local override (delta, not snapshot) |
+| `--project` | Add rule as a project override |
 
 ### rules remove
 
 Deactivate a rule.
 
 ```bash
-brainjar rules remove <name> [--local]
+brainjar rules remove <name> [--project]
 ```
 
 | Flag | Description |
 |------|-------------|
-| `--local` | Remove rule as a local override (delta, not snapshot) |
+| `--project` | Remove rule as a project override |
 
 ---
 
@@ -314,12 +312,12 @@ brainjar brain show <name>
 Activate a brain — sets soul, persona, and rules in one shot.
 
 ```bash
-brainjar brain use <name> [--local]
+brainjar brain use <name> [--project]
 ```
 
 | Flag | Description |
 |------|-------------|
-| `--local` | Apply brain at project scope |
+| `--project` | Apply brain at project scope |
 
 ### brain drop
 
@@ -352,7 +350,7 @@ brainjar pack export <brain> [--out <dir>] [--name <name>] [--version <ver>] [--
 
 ### pack import
 
-Import a pack directory into `~/.brainjar/`.
+Import a pack into the server.
 
 ```bash
 brainjar pack import <path> [--force] [--merge] [--activate]
@@ -437,3 +435,85 @@ brainjar reset [--backend claude|codex]
 | Flag | Description |
 |------|-------------|
 | `--backend` | Agent backend to reset (default: `claude`) |
+
+---
+
+## server
+
+Manage the brainjar server.
+
+### server status
+
+Show server status.
+
+```bash
+brainjar server status
+```
+
+### server start
+
+Start the local server daemon.
+
+```bash
+brainjar server start
+```
+
+### server stop
+
+Stop the local server daemon.
+
+```bash
+brainjar server stop
+```
+
+### server logs
+
+Show server logs.
+
+```bash
+brainjar server logs [--lines <n>] [--follow]
+```
+
+| Flag | Description |
+|------|-------------|
+| `--lines` | Number of lines to show (default: 50) |
+| `--follow` | Follow log output |
+
+### server local
+
+Switch to managed local server.
+
+```bash
+brainjar server local
+```
+
+### server remote
+
+Switch to a remote server.
+
+```bash
+brainjar server remote <url>
+```
+
+### server upgrade
+
+Upgrade the server binary to the latest version. Only works in local mode.
+
+```bash
+brainjar server upgrade
+```
+
+---
+
+## migrate
+
+Migrate content from filesystem-based brainjar to the server.
+
+```bash
+brainjar migrate [--dry-run] [--skip-backup]
+```
+
+| Flag | Description |
+|------|-------------|
+| `--dry-run` | Show what would be migrated without making changes |
+| `--skip-backup` | Skip creating a backup before migration |

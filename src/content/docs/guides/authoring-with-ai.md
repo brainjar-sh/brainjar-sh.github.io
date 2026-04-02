@@ -7,13 +7,13 @@ You don't have to write souls, personas, and rules from scratch. Every `create` 
 
 ## How templates work
 
-When you run a create command, brainjar generates a markdown file with section headers that guide the content:
+When you run a create command, brainjar generates a template with section headers that guide the content:
 
 - **Soul template:** title + space for voice, character, and standards
 - **Persona template:** YAML frontmatter for bundled rules + sections for direct mode, subagent mode, and baseline behaviors
 - **Rule template:** title + description placeholder + constraints section
 
-Your agent reads these templates and populates them. You describe what you want in natural language, the agent runs the CLI command, then edits the generated file.
+Your agent reads these templates and populates them. You describe what you want in natural language, and the agent runs the CLI commands to create and update the content on the server.
 
 ## Creating a soul
 
@@ -22,7 +22,7 @@ Create a brainjar soul called "pragmatist" that's direct, avoids jargon,
 and values shipping over perfection.
 ```
 
-The agent runs `brainjar soul create pragmatist --description "Direct and pragmatic"`, then fills in the generated template at `~/.brainjar/souls/pragmatist.md`.
+The agent runs `brainjar soul create pragmatist --description "Direct and pragmatic"`, then updates the generated template on the server.
 
 ### Tips for good souls
 
@@ -45,20 +45,10 @@ Create a brainjar persona called "debugger". It should:
 - Start by reproducing the bug with a failing test
 - Identify the root cause before proposing fixes
 - Never change more than necessary
-Bundle the "default" and "testing" rules.
+Bundle the "boundaries" and "testing" rules.
 ```
 
-The agent runs the create command with `--rules default,testing`. The generated template includes:
-
-```yaml
----
-rules:
-  - default
-  - testing
----
-```
-
-Plus section headers for **direct mode**, **subagent mode**, and **always** — which the agent fills in based on your description.
+The agent runs the create command with `--rules boundaries,testing`. The template includes section headers for **direct mode**, **subagent mode**, and **always** — which the agent fills in based on your description.
 
 ### Tips for good personas
 
@@ -90,7 +80,7 @@ The generated template includes a **Constraints** section with bullet points for
 
 - One rule, one concern. Don't cram multiple unrelated constraints into one file.
 - Be specific enough that the agent can follow it unambiguously.
-- If you have several related rules, ask for a rule pack: `brainjar rules create api-safety --pack`.
+- If you have several related rules, create them as separate rules with clear names.
 
 **Example prompt:**
 
@@ -135,7 +125,7 @@ The "veteran" soul is too terse. Add a line about being generous
 with explanations when the user asks "why".
 ```
 
-The agent edits the markdown files directly. Run `brainjar sync` (or let hooks handle it) and the changes take effect immediately.
+The agent updates content on the server via CLI commands. Run `brainjar sync` (or let hooks handle it) and the changes take effect immediately.
 
 ## Sharing what you built
 

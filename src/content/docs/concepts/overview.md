@@ -3,7 +3,7 @@ title: Core Concepts
 description: Understanding brainjar's composable layer system.
 ---
 
-brainjar manages AI agent behavior through composable layers. Each layer is a markdown file. They compose together to form the agent's full behavior.
+brainjar manages AI agent behavior through composable layers. Each layer is a markdown document stored on the brainjar server. They compose together to form the agent's full behavior.
 
 ## The layers
 
@@ -34,32 +34,17 @@ Both sources merge. Deduplication is automatic.
 State merges in three tiers. Each tier overrides the previous:
 
 ```
-global  →  local  →  env
+workspace  →  project  →  env
 ```
 
 | Tier | Storage | When to use |
 |------|---------|-------------|
-| **Global** | `~/.brainjar/state.yaml` | Default behavior across all projects |
-| **Local** | `.brainjar/state.yaml` (in project) | Per-project overrides |
+| **Workspace** | Server (default scope) | Default behavior across all projects |
+| **Project** | Server (per-project scope) | Per-project overrides |
 | **Env** | `BRAINJAR_*` environment variables | Per-session or CI overrides |
 
 See [Configuration](/guides/configuration/) for details on each tier.
 
-## File structure
+## Architecture
 
-```
-~/.brainjar/
-  souls/            # Voice and character
-    craftsman.md
-  personas/         # Role and workflow
-    engineer.md
-    reviewer.md
-  rules/            # Constraints
-    default/        # Rule packs (directories)
-    security.md     # Single-file rules
-  brains/           # Saved configurations
-    review.yaml
-  state.yaml        # Active selections
-```
-
-Every layer is a markdown file you can edit directly. Change a layer, run `brainjar sync`, and the agent's behavior updates.
+All content (souls, personas, rules, brains) and state lives on the brainjar server. The CLI is a thin client that talks to the server via HTTP. See [Architecture](/concepts/architecture/) for details on the server, local files, and deployment modes.

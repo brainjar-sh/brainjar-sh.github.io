@@ -12,7 +12,7 @@ Set up the configuration you want, then snapshot it:
 ```bash
 brainjar soul use craftsman
 brainjar persona use reviewer
-brainjar rules add default
+brainjar rules add boundaries
 brainjar rules add security
 brainjar brain save review
 ```

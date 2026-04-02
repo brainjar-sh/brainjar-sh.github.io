@@ -7,7 +7,7 @@ Packs are self-contained, shareable bundles of a brain and all its layers. Expor
 
 ## What's in a pack
 
-A pack mirrors the `~/.brainjar/` structure with a `pack.yaml` manifest at the root. No tarballs, no magic — just files you can inspect with `ls` and `cat`.
+A pack is a directory with a `pack.yaml` manifest and the content files. No tarballs, no magic — just files you can inspect with `ls` and `cat`.
 
 ```
 review/
@@ -17,9 +17,8 @@ review/
   personas/
     reviewer.md
   rules/
-    default/
-      boundaries.md
-      task-completion.md
+    boundaries.md
+    task-completion.md
     security.md
   brains/
     review.yaml
@@ -38,7 +37,7 @@ brainjar pack export review --author frank         # Set author field
 ## Importing
 
 ```bash
-brainjar pack import ./review                      # Import into ~/.brainjar/
+brainjar pack import ./review                      # Import into server
 brainjar pack import ./review --force              # Overwrite conflicts
 brainjar pack import ./review --merge              # Rename conflicts
 brainjar pack import ./review --activate           # Activate the brain after import

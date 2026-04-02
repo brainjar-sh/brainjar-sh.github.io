@@ -21,11 +21,11 @@ npm install -g @brainjar/cli
 brainjar init --default
 ```
 
-This creates `~/.brainjar/` with starter content:
+This downloads the brainjar server, starts it, and seeds starter content:
 
 - **Soul:** `craftsman` — direct, rigorous, craft-oriented voice
 - **Persona:** `engineer` — software engineering workflow
-- **Rules:** `default` — boundaries, context recovery, task completion
+- **Rules:** `boundaries`, `context-recovery`, `task-completion`, `git-discipline`, `security`
 
 It also syncs everything into your `CLAUDE.md` (or `AGENTS.md` for Codex).
 
@@ -36,9 +36,9 @@ brainjar status
 ```
 
 ```
-soul     craftsman (global)
-persona  engineer (global)
-rules    default (global)
+soul     craftsman
+persona  engineer
+rules    boundaries, context-recovery, task-completion, git-discipline, security
 ```
 
 ## Your first switch
@@ -54,7 +54,7 @@ Now your agent behaves as a code reviewer instead of an engineer — same soul, 
 
 ## What happened
 
-brainjar read the markdown files in `~/.brainjar/`, merged the active layers, and inlined them into your agent's config file between `<!-- brainjar:start -->` / `<!-- brainjar:end -->` markers. Everything outside the markers is yours.
+brainjar fetched your active layers from the server, merged them, and inlined them into your agent's config file between `<!-- brainjar:start -->` / `<!-- brainjar:end -->` markers. Everything outside the markers is yours.
 
 ## Next steps
 

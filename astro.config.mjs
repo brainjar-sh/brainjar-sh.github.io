@@ -25,6 +25,7 @@ export default defineConfig({
 					label: 'Concepts',
 					items: [
 						{ label: 'Overview', slug: 'concepts/overview' },
+						{ label: 'Architecture', slug: 'concepts/architecture' },
 						{ label: 'Souls', slug: 'concepts/souls' },
 						{ label: 'Personas', slug: 'concepts/personas' },
 						{ label: 'Rules', slug: 'concepts/rules' },

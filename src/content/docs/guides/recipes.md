@@ -11,7 +11,7 @@ Save a review brain once, activate it anytime:
 # Set up the configuration
 brainjar soul use craftsman
 brainjar persona use reviewer
-brainjar rules add default
+brainjar rules add boundaries
 brainjar rules add security
 brainjar brain save review
 
@@ -38,13 +38,13 @@ Override behavior for a specific project without affecting your global config:
 
 ```bash
 cd my-project
-brainjar persona use planner --local
-brainjar rules add no-delete --local
+brainjar persona use planner --project
+brainjar rules add no-delete --project
 
 brainjar status
-# soul     craftsman (global)
-# persona  planner (local)
-# rules    default (global), no-delete (+local)
+# soul     craftsman (workspace)
+# persona  planner (project)
+# rules    boundaries (workspace), no-delete (+project)
 ```
 
 ## Scoped shell sessions

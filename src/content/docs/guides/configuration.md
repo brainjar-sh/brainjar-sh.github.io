@@ -8,33 +8,33 @@ description: State cascade, environment variables, and backend configuration.
 brainjar state merges in three tiers. Each tier overrides the previous:
 
 ```
-global  →  local  →  env
+workspace  →  project  →  env
 ```
 
-### Global state
+### Workspace state
 
-Stored in `~/.brainjar/state.yaml`. Applies to all projects.
+Stored on the server. Applies to all projects within the workspace.
 
 ```bash
-brainjar persona use engineer        # Sets global persona
-brainjar rules add security          # Adds to global rules
+brainjar persona use engineer        # Sets workspace persona
+brainjar rules add security          # Adds to workspace rules
 ```
 
-### Local state
+### Project state
 
-Stored in `.brainjar/state.yaml` in your project directory. Overrides global for that project only.
+Stored on the server at project scope. Overrides workspace for that project only.
 
 ```bash
-brainjar persona use planner --local
-brainjar rules add no-delete --local
+brainjar persona use planner --project
+brainjar rules add no-delete --project
 ```
 
-Global settings still apply — local only overrides what you specify:
+Workspace settings still apply — project only overrides what you specify:
 
 ```
-soul     craftsman (global)
-persona  planner (local)
-rules    default (global), no-delete (+local)
+soul     craftsman (workspace)
+persona  planner (project)
+rules    boundaries (workspace), no-delete (+project)
 ```
 
 ### Environment variables
@@ -55,6 +55,23 @@ Set to empty string to explicitly unset (e.g., `BRAINJAR_SOUL=""` removes the so
 BRAINJAR_PERSONA=reviewer claude
 ```
 
+## Config file
+
+The CLI config lives at `~/.brainjar/config.yaml`:
+
+```yaml
+server:
+  url: http://localhost:7742
+  mode: local
+  bin: ~/.brainjar/bin/brainjar-server
+  pid_file: ~/.brainjar/server.pid
+  log_file: ~/.brainjar/server.log
+workspace: default
+backend: claude
+```
+
+See [Architecture](/concepts/architecture/) for details on server modes.
+
 ## Backends
 
 brainjar supports multiple agent backends:
@@ -73,13 +90,3 @@ brainjar reset --backend codex
 ## Backup & restore
 
 On first sync, brainjar backs up any existing config to `CLAUDE.md.pre-brainjar`. Running `brainjar reset` removes brainjar-managed config and restores the backup.
-
-## Obsidian support
-
-`~/.brainjar/` is a folder of markdown files — it's already almost an Obsidian vault.
-
-```bash
-brainjar init --obsidian
-```
-
-This adds `.obsidian/` config that hides private files from the file explorer and includes templates for creating new souls, personas, and rules from within Obsidian.
