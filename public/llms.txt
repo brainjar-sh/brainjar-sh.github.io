@@ -38,5 +38,5 @@ For example: `https://brainjar.sh/getting-started.md`
 ## Links
 
 - Docs: https://brainjar.sh
-- GitHub: https://github.com/brainjar-sh/brainjar-cli
+- GitHub: https://github.com/brainjar-sh/cli
 - npm: https://www.npmjs.com/package/@brainjar/cli

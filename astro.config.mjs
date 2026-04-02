@@ -10,7 +10,7 @@ export default defineConfig({
 			title: '{ brainjar }',
 			tagline: 'Shape how your AI thinks',
 			social: [
-				{ icon: 'github', label: 'GitHub', href: 'https://github.com/brainjar-sh/brainjar-cli' },
+				{ icon: 'github', label: 'GitHub', href: 'https://github.com/brainjar-sh/cli' },
 			],
 			customCss: ['./src/styles/custom.css'],
 			head: [

@@ -109,7 +109,7 @@ docker run -d \
   -e BRAINJAR_POSTGRES_PASSWORD=brainjar \
   -e BRAINJAR_POSTGRES_DATABASE=brainjar \
   -p 7742:7742 \
-  ghcr.io/brainjar-sh/brainjar-server:latest
+  ghcr.io/brainjar-sh/server:latest
 ```
 
 The Docker image has `BRAINJAR_POSTGRES_EMBEDDED=false` baked in — you only need to provide the connection details.
