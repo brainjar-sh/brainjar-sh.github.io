@@ -61,7 +61,8 @@ brainjar persona use planner --project  # This project only
 brainjar persona list            # See available personas
 brainjar persona show            # View the active persona
 brainjar persona show reviewer   # View a specific persona
-brainjar persona drop reviewer   # Delete a persona
+brainjar persona drop reviewer   # Deactivate a persona
+brainjar persona delete reviewer # Permanently delete a persona
 ```
 
 ## Switching per task

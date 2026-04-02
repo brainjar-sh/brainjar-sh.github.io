@@ -45,7 +45,8 @@ brainjar soul use mysoul
 brainjar soul list          # See available souls
 brainjar soul show          # View the active soul
 brainjar soul show mysoul   # View a specific soul
-brainjar soul drop mysoul   # Delete a soul
+brainjar soul drop mysoul   # Deactivate a soul
+brainjar soul delete mysoul # Permanently delete a soul
 ```
 
 ## When to use different souls

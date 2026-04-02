@@ -95,12 +95,13 @@ Manage souls — the agent's personality and values.
 Create a new soul.
 
 ```bash
-brainjar soul create <name> [--description <text>]
+brainjar soul create <name> [--description <text>] [--content <text>]
 ```
 
 | Flag | Description |
 |------|-------------|
 | `--description` | One-line description of the soul |
+| `--content` | Provide content directly instead of generating a template |
 
 ### soul list
 
@@ -125,11 +126,16 @@ brainjar soul show [name] [--project] [--short]
 
 ### soul update
 
-Update a soul's content. Reads new content from stdin.
+Update a soul's content.
 
 ```bash
+brainjar soul update <name> --content <text>
 cat content.md | brainjar soul update <name>
 ```
+
+| Flag | Description |
+|------|-------------|
+| `--content` | Provide content directly instead of reading from stdin |
 
 ### soul use
 
@@ -155,6 +161,14 @@ brainjar soul drop [--project]
 |------|-------------|
 | `--project` | Remove project soul override or deactivate workspace soul |
 
+### soul delete
+
+Permanently delete a soul.
+
+```bash
+brainjar soul delete <name>
+```
+
 ---
 
 ## persona
@@ -166,13 +180,14 @@ Manage personas — role behavior and workflow for the agent.
 Create a new persona.
 
 ```bash
-brainjar persona create <name> [--description <text>] [--rules <list>]
+brainjar persona create <name> [--description <text>] [--rules <list>] [--content <text>]
 ```
 
 | Flag | Description |
 |------|-------------|
 | `--description` | One-line description of the persona |
 | `--rules` | Rules to bundle with this persona |
+| `--content` | Provide content directly instead of generating a template |
 
 ### persona list
 
@@ -197,14 +212,16 @@ brainjar persona show [name] [--project] [--short]
 
 ### persona update
 
-Update a persona's content. Reads new content from stdin. Optionally update bundled rules.
+Update a persona's content. Optionally update bundled rules.
 
 ```bash
+brainjar persona update <name> [--content <text>] [--rules <list>]
 cat content.md | brainjar persona update <name> [--rules <list>]
 ```
 
 | Flag | Description |
 |------|-------------|
+| `--content` | Provide content directly instead of reading from stdin |
 | `--rules` | Update bundled rules |
 
 ### persona use
@@ -231,6 +248,14 @@ brainjar persona drop [--project]
 |------|-------------|
 | `--project` | Remove project persona override or deactivate workspace persona |
 
+### persona delete
+
+Permanently delete a persona.
+
+```bash
+brainjar persona delete <name>
+```
+
 ---
 
 ## rules
@@ -242,12 +267,13 @@ Manage rules — behavioral constraints for the agent.
 Create a new rule.
 
 ```bash
-brainjar rules create <name> [--description <text>]
+brainjar rules create <name> [--description <text>] [--content <text>]
 ```
 
 | Flag | Description |
 |------|-------------|
 | `--description` | One-line description of the rule |
+| `--content` | Provide content directly instead of generating a template |
 
 ### rules list
 
@@ -271,11 +297,16 @@ brainjar rules show <name>
 
 ### rules update
 
-Update a rule's content. Reads new content from stdin.
+Update a rule's content.
 
 ```bash
+brainjar rules update <name> --content <text>
 cat content.md | brainjar rules update <name>
 ```
+
+| Flag | Description |
+|------|-------------|
+| `--content` | Provide content directly instead of reading from stdin |
 
 ### rules add
 
@@ -289,17 +320,25 @@ brainjar rules add <name> [--project]
 |------|-------------|
 | `--project` | Add rule as a project override |
 
-### rules remove
+### rules drop
 
 Deactivate a rule.
 
 ```bash
-brainjar rules remove <name> [--project]
+brainjar rules drop <name> [--project]
 ```
 
 | Flag | Description |
 |------|-------------|
 | `--project` | Remove rule as a project override |
+
+### rules delete
+
+Permanently delete a rule.
+
+```bash
+brainjar rules delete <name>
+```
 
 ---
 
@@ -349,10 +388,18 @@ brainjar brain use <name> [--project]
 
 ### brain drop
 
-Delete a brain.
+Deactivate a brain — clears soul, persona, and rules.
 
 ```bash
 brainjar brain drop <name>
+```
+
+### brain delete
+
+Permanently delete a brain.
+
+```bash
+brainjar brain delete <name>
 ```
 
 ---

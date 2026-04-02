@@ -30,7 +30,8 @@ This activates the soul, persona, and all rules from the snapshot in one shot.
 ```bash
 brainjar brain list          # See available brains
 brainjar brain show review   # Inspect a brain's config
-brainjar brain drop review   # Delete a brain
+brainjar brain drop review   # Deactivate a brain (clears soul, persona, rules)
+brainjar brain delete review # Permanently delete a brain
 ```
 
 ## Brain vs. individual layers

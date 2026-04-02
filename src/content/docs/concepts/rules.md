@@ -29,7 +29,8 @@ Here's what a filled-in rule looks like:
 ```bash
 brainjar rules add security              # Workspace scope
 brainjar rules add no-delete --project   # This project only
-brainjar rules remove security           # Deactivate
+brainjar rules drop security             # Deactivate
+brainjar rules delete security           # Permanently delete
 ```
 
 Rules bundled with a persona activate automatically — you don't need to add them manually.
