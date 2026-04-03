@@ -17,10 +17,6 @@ When you run a create command, brainjar generates a template on the server with 
 
 The workflow is create → show → update:
 
-1. `create` stores a template on the server
-2. `show` reads it back so the agent can see the structure
-3. `update` writes the populated content back (reads from stdin)
-
 ```bash
 # 1. Create — generates template on server
 brainjar soul create pragmatist --description "Direct and pragmatic"
@@ -47,8 +43,6 @@ Direct and pragmatic.
 - Simplest solution that solves the problem.
 EOF
 ```
-
-You can also let agents discover brainjar's full CLI via `brainjar --llms` or by registering it as an MCP server with `brainjar mcp add`.
 
 ## Creating a soul
 
@@ -175,12 +169,17 @@ Create brains for each workflow:
 - "design" brain: craftsman soul, architect persona, boundaries rules
 ```
 
-The agent saves each brain. Then your lead persona can dispatch specialists via `compose`:
+The agent saves each brain. Then the lead persona dispatches specialists via the `compose` MCP tool, passing each result to Claude Code's Agent tool:
 
-```bash
-brainjar compose design --task "Analyze the auth requirements in src/auth/"
-brainjar compose build --task "Implement the design in docs/design-auth.md"
-brainjar compose review --task "Review the auth changes against the design doc"
+```
+prompt = mcp__brainjar__compose(brain="design", task="Analyze the auth requirements in src/auth/")
+Agent(prompt=prompt, description="Analyze auth requirements")
+
+prompt = mcp__brainjar__compose(brain="build", task="Implement the design in docs/design-auth.md")
+Agent(prompt=prompt, description="Build auth module", isolation="worktree")
+
+prompt = mcp__brainjar__compose(brain="review", task="Review the auth changes against the design doc")
+Agent(prompt=prompt, description="Review auth changes")
 ```
 
 See [Orchestration Patterns](/guides/orchestration-patterns/) for more multi-agent workflows.

@@ -72,13 +72,13 @@ brainjar pack import ./review --activate
 
 One pack, version-controlled, shareable. See [Packs](/guides/packs/).
 
-**Subagent orchestration.** Compose a full prompt from named layers and dispatch it to a subagent. The lead agent doesn't paste raw text — it assembles a prompt from components:
+**Subagent orchestration.** Compose a full prompt from named layers and dispatch it to a subagent. The lead agent doesn't paste raw text — it assembles a prompt from components via the MCP tool:
 
-```bash
-brainjar compose review --task "Review changes in src/sync.ts"
+```
+mcp__brainjar__compose(brain="review", task="Review changes in src/sync.ts")
 ```
 
-The lead agent dispatches workers with specific brains. Each worker gets exactly the identity, role, and constraints it needs. See [Subagent Orchestration](/guides/subagents/).
+The returned prompt is passed to Claude Code's Agent tool to spawn the subagent. Each worker gets exactly the identity, role, and constraints it needs — with worktree isolation available for parallel dispatch. See [Subagent Orchestration](/guides/subagents/).
 
 **Reproducibility.** Save a configuration, restore it anywhere. Same layers in, same behavior out. No drift, no "works on my machine" for agent setups. Debug a misbehaving agent by inspecting each layer independently — you can see exactly which layer introduced a behavior.
 

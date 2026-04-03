@@ -41,6 +41,7 @@ export default defineConfig({
 					label: 'Guides',
 					items: [
 						{ label: 'Configuration', slug: 'guides/configuration' },
+						{ label: 'MCP Integration', slug: 'guides/mcp' },
 						{ label: 'Migrating from Monolithic Prompts', slug: 'guides/migration' },
 						{ label: 'Subagent Orchestration', slug: 'guides/subagents' },
 						{ label: 'Orchestration Patterns', slug: 'guides/orchestration-patterns' },

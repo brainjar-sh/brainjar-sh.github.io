@@ -59,6 +59,7 @@ brainjar fetched your active layers from the server, merged them, and inlined th
 ## Next steps
 
 - Learn about the [core concepts](/concepts/overview/) — soul, persona, rules, brain
+- [Register brainjar as an MCP server](/guides/mcp/) — give your agent native access to all brainjar tools
 - [Migrate an existing config](/guides/migration/) into composable layers
 - See the full [CLI reference](/reference/cli/)
 - Browse [recipes](/guides/recipes/) for common workflows
