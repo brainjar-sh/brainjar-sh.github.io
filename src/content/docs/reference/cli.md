@@ -116,13 +116,34 @@ brainjar soul list
 Show a soul by name, or the active soul if no name given.
 
 ```bash
-brainjar soul show [name] [--project] [--short]
+brainjar soul show [name] [--project] [--short] [--version <n>]
 ```
 
 | Flag | Description |
 |------|-------------|
 | `--project` | Show project soul override (if any) |
 | `--short` | Print only the active soul name |
+| `--version` | Show a specific version from history |
+
+### soul history
+
+List version history for a soul.
+
+```bash
+brainjar soul history <name>
+```
+
+### soul revert
+
+Restore a soul to a previous version (fetches old content and saves it as the current version).
+
+```bash
+brainjar soul revert <name> --to <version>
+```
+
+| Flag | Description |
+|------|-------------|
+| `--to` | Version number to restore |
 
 ### soul update
 
@@ -202,13 +223,34 @@ brainjar persona list
 Show a persona by name, or the active persona if no name given.
 
 ```bash
-brainjar persona show [name] [--project] [--short]
+brainjar persona show [name] [--project] [--short] [--version <n>]
 ```
 
 | Flag | Description |
 |------|-------------|
 | `--project` | Show project persona override (if any) |
 | `--short` | Print only the active persona name |
+| `--version` | Show a specific version from history |
+
+### persona history
+
+List version history for a persona.
+
+```bash
+brainjar persona history <name>
+```
+
+### persona revert
+
+Restore a persona to a previous version (fetches old content and bundled rules, saves them as the current version).
+
+```bash
+brainjar persona revert <name> --to <version>
+```
+
+| Flag | Description |
+|------|-------------|
+| `--to` | Version number to restore |
 
 ### persona update
 
@@ -292,8 +334,32 @@ brainjar rules list [--project]
 Show the content of a rule by name.
 
 ```bash
-brainjar rules show <name>
+brainjar rules show <name> [--version <n>]
 ```
+
+| Flag | Description |
+|------|-------------|
+| `--version` | Show a specific version from history |
+
+### rules history
+
+List version history for a rule.
+
+```bash
+brainjar rules history <name>
+```
+
+### rules revert
+
+Restore a rule to a previous version (fetches old entries and saves them as the current version).
+
+```bash
+brainjar rules revert <name> --to <version>
+```
+
+| Flag | Description |
+|------|-------------|
+| `--to` | Version number to restore |
 
 ### rules update
 
