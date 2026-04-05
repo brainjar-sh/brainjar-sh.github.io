@@ -20,14 +20,14 @@ The CLI makes HTTP requests to the server for every operation. It stores almost 
 
 ### Server (`brainjar-server`)
 
-A Go binary that provides the REST API and stores all content. It runs in one of two modes:
+A Go binary that provides the REST API and stores all content. It connects to a Postgres database that you provide. It runs in one of two modes:
 
 | Mode | Description |
 |------|-------------|
-| **Local** | Managed by the CLI. Auto-downloaded, auto-started, uses embedded Postgres. Zero config. |
+| **Local** | Managed by the CLI. Auto-downloaded, auto-started. Requires Postgres on `localhost:2724`. |
 | **Remote** | You run the server yourself (Docker, bare metal, cloud). CLI connects to it by URL. |
 
-Local mode is the default. When you run `brainjar init`, the CLI downloads the server binary from `get.brainjar.sh`, starts it in the background, and creates your workspace. You don't need to think about the server — it just works.
+Local mode is the default. When you run `brainjar init`, the CLI downloads the server binary from `get.brainjar.sh`, starts it in the background, and creates your workspace. The server auto-creates the `brainjar` database and runs migrations on first connect.
 
 You can also install the server binary manually:
 
@@ -43,7 +43,6 @@ The only thing stored locally:
 ~/.brainjar/
   config.yaml           # server contexts, backend
   bin/brainjar-server   # server binary (local mode only)
-  pg-data/              # embedded Postgres data (persists across upgrades)
   server.pid            # process ID (local mode only)
   server.log            # server logs (local mode only)
   server-version        # installed version tracker
@@ -86,10 +85,12 @@ brainjar init --default
 The CLI:
 1. Creates the config file at `~/.brainjar/config.yaml`
 2. Downloads the server binary from `get.brainjar.sh`
-3. Starts it in the background with embedded Postgres
+3. Starts it in the background (connects to Postgres on `localhost:2724`)
 4. Creates the `default` workspace
 5. Seeds starter content (if `--default` is passed)
 6. Writes `CLAUDE.md` with the active configuration
+
+If Postgres isn't running, the CLI will suggest a Docker one-liner to start it.
 
 Manage the local server with:
 
@@ -109,12 +110,12 @@ brainjar context add staging https://brainjar.example.com
 brainjar context use staging
 ```
 
-This is useful for teams sharing a single server, or for running the server in Docker with an external Postgres:
+This is useful for teams sharing a single server, or for running the server in Docker:
 
 ```bash
 docker run -d \
   -e BRAINJAR_POSTGRES_HOST=your-postgres-host \
-  -e BRAINJAR_POSTGRES_PORT=5432 \
+  -e BRAINJAR_POSTGRES_PORT=2724 \
   -e BRAINJAR_POSTGRES_USERNAME=brainjar \
   -e BRAINJAR_POSTGRES_PASSWORD=brainjar \
   -e BRAINJAR_POSTGRES_DATABASE=brainjar \
@@ -122,7 +123,11 @@ docker run -d \
   ghcr.io/brainjar-sh/server:latest
 ```
 
-The Docker image has `BRAINJAR_POSTGRES_EMBEDDED=false` baked in — you only need to provide the connection details.
+Or use the included `docker-compose.yml` to run both the server and Postgres together:
+
+```bash
+docker compose up -d
+```
 
 Switch back to local:
 
