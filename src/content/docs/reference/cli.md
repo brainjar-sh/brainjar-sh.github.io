@@ -711,6 +711,52 @@ Rename a context. Cannot rename `local`.
 brainjar context rename <old> <new>
 ```
 
+### context set-token
+
+Store an API key for a remote context.
+
+```bash
+brainjar context set-token <name> <key>
+```
+
+Cannot be used on local contexts — local contexts use auto-generated tokens.
+
+---
+
+## api-key
+
+Manage API keys for remote server authentication. All commands require local admin access (local token auth).
+
+### api-key create
+
+Create a new API key. The plaintext key is returned once — save it immediately.
+
+```bash
+brainjar api-key create --name <name> [--user-id <id>] [--expires-in <duration>]
+```
+
+| Flag | Description |
+|------|-------------|
+| `--name` | Key name (e.g. `ci-pipeline`) |
+| `--user-id` | User ID label for the key |
+| `--expires-in` | Expiration duration: `30d`, `90d`, `365d` (1-365 days) |
+
+### api-key list
+
+List all API keys (shows prefix only, not the full key).
+
+```bash
+brainjar api-key list
+```
+
+### api-key revoke
+
+Revoke an API key by ID.
+
+```bash
+brainjar api-key revoke <id>
+```
+
 ---
 
 ## migrate

@@ -58,11 +58,14 @@ brainjar persona use planner --project  # This project only
 ## Managing personas
 
 ```bash
-brainjar persona list            # See available personas
-brainjar persona show            # View the active persona
-brainjar persona show reviewer   # View a specific persona
-brainjar persona drop reviewer   # Deactivate a persona
-brainjar persona delete reviewer # Permanently delete a persona
+brainjar persona list                    # See available personas
+brainjar persona show                    # View the active persona
+brainjar persona show reviewer           # View a specific persona
+brainjar persona history reviewer        # List version history
+brainjar persona show reviewer --rev 2   # View a previous version
+brainjar persona revert reviewer --to 2  # Restore a previous version
+brainjar persona drop reviewer           # Deactivate a persona
+brainjar persona delete reviewer         # Permanently delete a persona
 ```
 
 ## Switching per task

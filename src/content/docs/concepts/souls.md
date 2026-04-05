@@ -42,11 +42,14 @@ brainjar soul use mysoul
 ## Managing souls
 
 ```bash
-brainjar soul list          # See available souls
-brainjar soul show          # View the active soul
-brainjar soul show mysoul   # View a specific soul
-brainjar soul drop mysoul   # Deactivate a soul
-brainjar soul delete mysoul # Permanently delete a soul
+brainjar soul list                  # See available souls
+brainjar soul show                  # View the active soul
+brainjar soul show mysoul           # View a specific soul
+brainjar soul history mysoul        # List version history
+brainjar soul show mysoul --rev 2   # View a previous version
+brainjar soul revert mysoul --to 2  # Restore a previous version
+brainjar soul drop mysoul           # Deactivate a soul
+brainjar soul delete mysoul         # Permanently delete a soul
 ```
 
 ## When to use different souls
