@@ -38,8 +38,11 @@ Rules bundled with a persona activate automatically — you don't need to add th
 ## Managing rules
 
 ```bash
-brainjar rules list              # See all rules with status
-brainjar rules show security     # View a rule's content
+brainjar rules list                      # See all rules with status
+brainjar rules show security             # View a rule's content
+brainjar rules history security          # List version history
+brainjar rules show security --rev 2     # View a previous version
+brainjar rules revert security --to 2    # Restore a previous version
 ```
 
 ## Scope annotations
