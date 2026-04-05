@@ -116,14 +116,14 @@ brainjar soul list
 Show a soul by name, or the active soul if no name given.
 
 ```bash
-brainjar soul show [name] [--project] [--short] [--version <n>]
+brainjar soul show [name] [--project] [--short] [--rev <n>]
 ```
 
 | Flag | Description |
 |------|-------------|
 | `--project` | Show project soul override (if any) |
 | `--short` | Print only the active soul name |
-| `--version` | Show a specific version from history |
+| `--rev` | Show a specific version from history |
 
 ### soul history
 
@@ -223,14 +223,14 @@ brainjar persona list
 Show a persona by name, or the active persona if no name given.
 
 ```bash
-brainjar persona show [name] [--project] [--short] [--version <n>]
+brainjar persona show [name] [--project] [--short] [--rev <n>]
 ```
 
 | Flag | Description |
 |------|-------------|
 | `--project` | Show project persona override (if any) |
 | `--short` | Print only the active persona name |
-| `--version` | Show a specific version from history |
+| `--rev` | Show a specific version from history |
 
 ### persona history
 
@@ -334,12 +334,12 @@ brainjar rules list [--project]
 Show the content of a rule by name.
 
 ```bash
-brainjar rules show <name> [--version <n>]
+brainjar rules show <name> [--rev <n>]
 ```
 
 | Flag | Description |
 |------|-------------|
-| `--version` | Show a specific version from history |
+| `--rev` | Show a specific version from history |
 
 ### rules history
 
