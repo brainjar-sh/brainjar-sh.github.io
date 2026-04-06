@@ -43,6 +43,8 @@ workspace  →  project  →  env
 | **Project** | Server (per-project scope) | Per-project overrides |
 | **Env** | `BRAINJAR_*` environment variables | Per-session or CI overrides |
 
+Project scope is auto-detected when your working directory contains a `.brainjar/` directory. No `--project` flag needed.
+
 See [Configuration](/guides/configuration/) for details on each tier.
 
 ## Architecture
