@@ -34,12 +34,12 @@ brainjar status --sync
 
 ## Project-specific persona
 
-Override behavior for a specific project without affecting your global config:
+Override behavior for a specific project without affecting your global config. Project scope is auto-detected from the `.brainjar/` directory:
 
 ```bash
 cd my-project
-brainjar persona use planner --project
-brainjar rules add no-delete --project
+brainjar persona use planner
+brainjar rules add no-delete
 
 brainjar status
 # soul     craftsman (workspace)

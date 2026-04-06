@@ -27,11 +27,13 @@ Here's what a filled-in rule looks like:
 ## Activating rules
 
 ```bash
-brainjar rules add security              # Workspace scope
-brainjar rules add no-delete --project   # This project only
+brainjar rules add security              # Workspace scope (or project if auto-detected)
+brainjar rules add no-delete --project   # Explicitly force project scope
 brainjar rules drop security             # Deactivate
 brainjar rules delete security           # Permanently delete
 ```
+
+Project scope is auto-detected when your working directory contains a `.brainjar/` directory.
 
 Rules bundled with a persona activate automatically — you don't need to add them manually.
 

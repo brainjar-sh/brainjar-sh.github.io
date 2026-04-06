@@ -22,12 +22,15 @@ brainjar rules add security          # Adds to workspace rules
 
 ### Project state
 
-Stored on the server at project scope. Overrides workspace for that project only.
+Stored on the server at project scope. Overrides workspace for that project only. Project scope is auto-detected when your working directory contains a `.brainjar/` directory — no `--project` flag needed.
 
 ```bash
-brainjar persona use planner --project
-brainjar rules add no-delete --project
+cd my-project         # has .brainjar/ dir
+brainjar persona use planner     # auto-scoped to project
+brainjar rules add no-delete     # auto-scoped to project
 ```
+
+You can also use `--project` explicitly to force project scope.
 
 Workspace settings still apply — project only overrides what you specify:
 

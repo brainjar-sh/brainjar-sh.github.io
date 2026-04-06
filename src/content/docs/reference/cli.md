@@ -168,7 +168,7 @@ brainjar soul use <name> [--project]
 
 | Flag | Description |
 |------|-------------|
-| `--project` | Write to project scope instead of workspace |
+| `--project` | Force project scope (auto-detected from `.brainjar/` dir) |
 
 ### soul drop
 
@@ -180,7 +180,7 @@ brainjar soul drop [--project]
 
 | Flag | Description |
 |------|-------------|
-| `--project` | Remove project soul override or deactivate workspace soul |
+| `--project` | Force project scope (auto-detected from `.brainjar/` dir) |
 
 ### soul delete
 
@@ -276,7 +276,7 @@ brainjar persona use <name> [--project]
 
 | Flag | Description |
 |------|-------------|
-| `--project` | Write to project scope instead of workspace |
+| `--project` | Force project scope (auto-detected from `.brainjar/` dir) |
 
 ### persona drop
 
@@ -288,7 +288,7 @@ brainjar persona drop [--project]
 
 | Flag | Description |
 |------|-------------|
-| `--project` | Remove project persona override or deactivate workspace persona |
+| `--project` | Force project scope (auto-detected from `.brainjar/` dir) |
 
 ### persona delete
 
@@ -384,7 +384,7 @@ brainjar rules add <name> [--project]
 
 | Flag | Description |
 |------|-------------|
-| `--project` | Add rule as a project override |
+| `--project` | Force project scope (auto-detected from `.brainjar/` dir) |
 
 ### rules drop
 
@@ -396,7 +396,7 @@ brainjar rules drop <name> [--project]
 
 | Flag | Description |
 |------|-------------|
-| `--project` | Remove rule as a project override |
+| `--project` | Force project scope (auto-detected from `.brainjar/` dir) |
 
 ### rules delete
 
@@ -450,7 +450,7 @@ brainjar brain use <name> [--project]
 
 | Flag | Description |
 |------|-------------|
-| `--project` | Apply brain at project scope |
+| `--project` | Force project scope (auto-detected from `.brainjar/` dir) |
 
 ### brain drop
 

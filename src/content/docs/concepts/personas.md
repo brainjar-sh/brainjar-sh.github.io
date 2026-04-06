@@ -51,9 +51,11 @@ Rules bundled at creation time (via `--rules`) automatically activate when the p
 ## Activating a persona
 
 ```bash
-brainjar persona use planner            # Workspace scope
-brainjar persona use planner --project  # This project only
+brainjar persona use planner            # Workspace scope (or project if auto-detected)
+brainjar persona use planner --project  # Explicitly force project scope
 ```
+
+Project scope is auto-detected when your working directory contains a `.brainjar/` directory.
 
 ## Managing personas
 
