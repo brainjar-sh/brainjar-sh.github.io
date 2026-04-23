@@ -106,11 +106,24 @@
 	--sl-color-accent-high: #005c39;
 }
 
-/* ── zero rounding, everywhere ── */
-:where(button, input, select, textarea, img, video, iframe,
-	.card, .sl-link-card, [class*='LinkCard'], pre, code, figure,
-	.expressive-code, .expressive-code *, summary, details) {
+/* ── zero rounding, everywhere ──
+   The Instrument uses square edges across the whole system. If you
+   ever need a genuinely round element (avatar, spinner), opt out with
+   a more specific rule further down. */
+*,
+*::before,
+*::after {
 	border-radius: 0 !important;
+}
+
+/* Native <select> (used for theme + language pickers) renders with the
+   OS widget by default — the pill shape on Chrome/Safari is UA chrome,
+   not border-radius. Strip the native appearance so our square edges win. */
+select {
+	-webkit-appearance: none !important;
+	-moz-appearance: none !important;
+	appearance: none !important;
+	background-color: transparent !important;
 }
 
 /* ── selection ── */
@@ -169,6 +182,27 @@ h1 { font-size: 2.25rem; letter-spacing: -0.025em; }
 h2 { font-size: 1.5rem;  letter-spacing: -0.02em;  }
 h3 { font-size: 1.125rem; }
 h4 { font-size: 1rem; }
+
+/* Starlight wraps each heading in .sl-heading-wrapper.level-h* which
+   carries its own font-size — the anchor-link icon sizes and positions
+   relative to the wrapper, not the heading inside. Mirror our heading
+   sizes on the wrapper so the icon lines up with the rendered text. */
+.sl-markdown-content .sl-heading-wrapper.level-h1 { font-size: 2.25rem; }
+.sl-markdown-content .sl-heading-wrapper.level-h2 { font-size: 1.5rem; }
+.sl-markdown-content .sl-heading-wrapper.level-h3 { font-size: 1.125rem; }
+.sl-markdown-content .sl-heading-wrapper.level-h4 { font-size: 1rem; }
+.sl-markdown-content .sl-heading-wrapper.level-h5 { font-size: 0.9rem; }
+.sl-markdown-content .sl-heading-wrapper.level-h6 { font-size: 0.85rem; }
+
+/* Subdue the anchor icon to Steel; lift to Signal Green on hover. */
+.sl-markdown-content .sl-anchor-link {
+	color: var(--sl-color-gray-3);
+}
+
+.sl-markdown-content .sl-heading-wrapper:hover .sl-anchor-link,
+.sl-markdown-content .sl-anchor-link:focus {
+	color: var(--bj-signal);
+}
 
 /* ── hero ── */
 .hero {
@@ -234,7 +268,8 @@ h4 { font-size: 1rem; }
 
 /* ── cards: boxed panels with frame, square corners, no shadow ── */
 .card,
-.sl-link-card {
+.sl-link-card,
+.pagination-links a {
 	border: 1px solid var(--bj-frame) !important;
 	background: transparent !important;
 	padding: 1.25rem 1.5rem !important;
@@ -243,15 +278,163 @@ h4 { font-size: 1rem; }
 }
 
 .card:hover,
-.sl-link-card:hover {
+.sl-link-card:hover,
+.pagination-links a:hover {
 	border-color: var(--bj-signal) !important;
 	background: var(--sl-color-accent-low) !important;
 }
 
 .card:focus-within,
-.sl-link-card:focus-within {
+.sl-link-card:focus-within,
+.pagination-links a:focus-within {
 	border-color: var(--bj-signal) !important;
 }
+
+/* ── LinkCard contents: match the Prev/Next pager treatment ── */
+.sl-link-card .title {
+	font-family: var(--sl-font) !important;
+	font-weight: 500 !important;
+	font-size: 1rem !important;
+	letter-spacing: -0.005em !important;
+}
+
+.sl-link-card .description {
+	font-size: 0.875rem;
+	color: var(--sl-color-gray-3) !important;
+	line-height: 1.45 !important;
+}
+
+.sl-link-card .icon {
+	color: var(--sl-color-gray-3) !important;
+	transition: color 0.15s ease, transform 0.15s ease;
+}
+
+.sl-link-card:hover .icon {
+	color: var(--bj-signal) !important;
+	transform: translateX(2px);
+}
+
+/* ── prev/next pager: LinkCard-style boxed panels in a 2-col grid ── */
+.pagination-links {
+	display: grid !important;
+	grid-template-columns: 1fr 1fr;
+	gap: 1rem;
+	margin-top: 3rem;
+}
+
+.pagination-links a {
+	text-decoration: none !important;
+	color: inherit !important;
+	display: flex !important;
+	align-items: center;
+	gap: 1rem;
+	font-family: var(--sl-font-mono);
+	font-size: 0.7rem;
+	letter-spacing: 0.08em;
+	text-transform: uppercase;
+	color: var(--sl-color-gray-3) !important;
+}
+
+.pagination-links a[rel='prev'] {
+	grid-column: 1;
+	text-align: left;
+}
+
+.pagination-links a[rel='next'] {
+	grid-column: 2;
+	text-align: right;
+	flex-direction: row-reverse;
+}
+
+/* single prev or single next should still sit on its correct side */
+.pagination-links:not(:has(a[rel='prev'])) a[rel='next'] {
+	grid-column: 2;
+}
+
+.pagination-links a > span {
+	display: block;
+	line-height: 1.3;
+	flex: 1;
+}
+
+.pagination-links .link-title {
+	display: block;
+	margin-top: 0.35rem;
+	font-family: var(--sl-font);
+	font-size: 1rem;
+	font-weight: 500;
+	letter-spacing: -0.005em;
+	text-transform: none;
+	color: var(--sl-color-white);
+}
+
+.pagination-links a svg {
+	flex-shrink: 0;
+	color: var(--sl-color-gray-3);
+	transition: color 0.15s ease, transform 0.15s ease;
+}
+
+.pagination-links a:hover svg {
+	color: var(--bj-signal);
+}
+
+.pagination-links a[rel='next']:hover svg {
+	transform: translateX(2px);
+}
+
+.pagination-links a[rel='prev']:hover svg {
+	transform: translateX(-2px);
+}
+
+/* stack on narrow viewports */
+@media (max-width: 50rem) {
+	.pagination-links {
+		grid-template-columns: 1fr;
+	}
+	.pagination-links a[rel='prev'],
+	.pagination-links a[rel='next'] {
+		grid-column: 1;
+	}
+}
+
+/* ── hero action buttons: arrow slides + signal green on hover ── */
+.sl-link-button svg {
+	transition: transform 0.15s ease, color 0.15s ease;
+}
+
+.sl-link-button:hover svg {
+	transform: translateX(2px);
+}
+
+.sl-link-button.minimal {
+	color: var(--sl-color-white) !important;
+	border: 1px solid var(--bj-frame) !important;
+	background: transparent !important;
+	padding: 0.4375rem 1.125rem !important;
+	transition: border-color 0.15s ease, background-color 0.15s ease;
+}
+
+.sl-link-button.minimal:hover {
+	border-color: var(--bj-frame) !important;
+	background: transparent !important;
+}
+
+.sl-link-button.minimal svg {
+	color: var(--sl-color-gray-3);
+}
+
+.sl-link-button.minimal:hover svg {
+	color: var(--bj-signal);
+}
+
+@media (min-width: 50rem) {
+	.sl-link-button.minimal {
+		padding: 0.9375rem 1.25rem !important;
+	}
+}
+
+/* primary button: bg is already Signal Green wash, so arrow stays
+   graphite for legibility but still slides on hover. */
 
 /* ── links: signal green on hover, hairline underline ── */
 .sl-markdown-content a:not([class]) {
@@ -380,6 +563,16 @@ pre:not(.astro-code-container) {
 /* ── top nav: single hairline below ── */
 header.header {
 	border-bottom: 1px solid var(--bj-rule);
+}
+
+/* ── social icons (GitHub etc.): Steel at rest, Signal Green on hover ── */
+.social-icons a {
+	color: var(--sl-color-gray-3) !important;
+	transition: color 0.15s ease;
+}
+
+.social-icons a:hover {
+	color: var(--bj-signal) !important;
 }
 
 /* ── site title: tighten tracking ── */
