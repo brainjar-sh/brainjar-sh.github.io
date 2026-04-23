@@ -3,7 +3,9 @@
   "type": "module",
   "version": "0.0.1",
   "scripts": {
+    "predev": "bash scripts/fetch-versions.sh",
     "dev": "astro dev",
+    "prestart": "bash scripts/fetch-versions.sh",
     "start": "astro dev",
     "build": "bash scripts/fetch-versions.sh && astro build && bash scripts/copy-raw-md.sh",
     "preview": "astro preview",
@@ -12,7 +14,7 @@
   "dependencies": {
     "@astrojs/starlight": "^0.38.2",
     "@fontsource-variable/inter": "^5.2.8",
-    "@fontsource-variable/jetbrains-mono": "^5.2.8",
+    "@fontsource/ibm-plex-mono": "^5.2.7",
     "astro": "^6.0.1",
     "sharp": "^0.34.2"
   }

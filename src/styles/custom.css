@@ -1,74 +1,133 @@
+/* ──────────────────────────────────────────────────────────────
+   THE INSTRUMENT — precision-tool identity for brainjar
+   Tokens defined in /DESIGN.md. Keep this file in sync.
+   ────────────────────────────────────────────────────────────── */
+
 @font-face {
-	font-family: 'JetBrains Mono Variable';
+	font-family: 'Inter Variable';
 	font-style: normal;
 	font-display: swap;
-	font-weight: 100 800;
-	src: url('@fontsource-variable/jetbrains-mono/files/jetbrains-mono-latin-wght-normal.woff2') format('woff2');
+	font-weight: 100 900;
+	src: url('@fontsource-variable/inter/files/inter-latin-wght-normal.woff2') format('woff2');
 }
 
-/* ── fonts — monospace everything ── */
+@font-face {
+	font-family: 'IBM Plex Mono';
+	font-style: normal;
+	font-display: swap;
+	font-weight: 400;
+	src: url('@fontsource/ibm-plex-mono/files/ibm-plex-mono-latin-400-normal.woff2') format('woff2');
+}
+
+@font-face {
+	font-family: 'IBM Plex Mono';
+	font-style: normal;
+	font-display: swap;
+	font-weight: 500;
+	src: url('@fontsource/ibm-plex-mono/files/ibm-plex-mono-latin-500-normal.woff2') format('woff2');
+}
+
+/* ── font stacks (territories defined in DESIGN.md) ── */
 :root {
-	--sl-font: 'JetBrains Mono Variable', 'SF Mono', 'Fira Code', monospace;
-	--sl-font-mono: 'JetBrains Mono Variable', 'SF Mono', 'Fira Code', monospace;
+	/* Body — Inter, per spec */
+	--sl-font: 'Inter Variable', 'Söhne', 'Basis Grotesque', system-ui, sans-serif;
+	/* Display — commercial grotesk preferred, Inter as free fallback */
+	--bj-font-display: 'Neue Haas Grotesk Display', 'GT America', 'Söhne Breit',
+		'Inter Variable', system-ui, sans-serif;
+	/* Mono — Berkeley Mono preferred, IBM Plex Mono shipped as fallback */
+	--sl-font-mono: 'Berkeley Mono', 'IBM Plex Mono', ui-monospace, monospace;
 }
 
-/* ── palette (dark) ── */
+/* ──────────────────────────────────────────────────────────────
+   Palette
+   Single source of truth: the 5 brand tokens below.
+   Everything else is derived via color-mix() so one edit ripples
+   through. Only --bj-surface and --bj-ink flip between modes;
+   all rules, frames, washes, and grays rebuild from them.
+   ────────────────────────────────────────────────────────────── */
+
 :root {
-	--sl-color-accent-low: #2d2438;
-	--sl-color-accent: #866db9;
-	--sl-color-accent-high: #b9a6d6;
-	--sl-color-bg-inline-code: rgba(134, 109, 185, 0.12);
-	--sl-color-bg-nav: #1a211bdd;
-	--sl-color-bg-sidebar: #1a211bcc;
-	--sl-color-hairline: rgba(212, 196, 160, 0.1);
-	--sl-color-gray-1: #d4c4a0;
-	--sl-color-gray-2: #b0a48a;
-	--sl-color-gray-3: #9a9078;
-	--sl-color-gray-4: #6b6356;
-	--sl-color-gray-5: #3d3830;
-	--sl-color-gray-6: #272320;
-	--sl-color-black: #1a211b;
-	--sl-color-white: #d4c4a0;
+	/* ── brand tokens (mirror DESIGN.md) ── */
+	--bj-graphite: #0e1013;
+	--bj-bone: #ededea;
+	--bj-steel: #8a8f94;
+	--bj-signal: #00e08a;
+	--bj-ember: #e8793a;
+
+	/* ── mode-dependent roots — flipped in light mode below ── */
+	--bj-surface: var(--bj-graphite);  /* page background */
+	--bj-ink: var(--bj-bone);          /* primary text */
+
+	/* ── structural rules (derived from ink) ── */
+	--bj-rule:           color-mix(in srgb, var(--bj-ink) 18%, transparent);
+	--bj-rule-strong:    color-mix(in srgb, var(--bj-ink) 38%, transparent);
+	--bj-frame:          color-mix(in srgb, var(--bj-ink) 42%, transparent);
+
+	/* ── accent washes (derived from brand accents) ── */
+	--bj-signal-wash:    color-mix(in srgb, var(--bj-signal) 14%, transparent);
+	--bj-signal-high:    color-mix(in srgb, var(--bj-signal) 60%, var(--bj-ink));
+	--bj-ember-wash:     color-mix(in srgb, var(--bj-ember) 10%, transparent);
+	--bj-ember-rule:     color-mix(in srgb, var(--bj-ember) 28%, transparent);
+
+	/* ── translucent surface variants ── */
+	--bj-inline-code-bg: color-mix(in srgb, var(--bj-ink) 6%, transparent);
+	--bj-nav-bg:         color-mix(in srgb, var(--bj-surface) 92%, transparent);
+	--bj-sidebar-bg:     color-mix(in srgb, var(--bj-surface) 88%, transparent);
+
+	/* ── starlight bindings (all derived) ── */
+	--sl-color-accent:      var(--bj-signal);
+	--sl-color-accent-low:  var(--bj-signal-wash);
+	--sl-color-accent-high: var(--bj-signal-high);
+	--sl-color-bg-inline-code: var(--bj-inline-code-bg);
+	--sl-color-bg-nav:      var(--bj-nav-bg);
+	--sl-color-bg-sidebar:  var(--bj-sidebar-bg);
+	--sl-color-hairline:    var(--bj-rule);
+	--sl-color-black:       var(--bj-surface);
+	--sl-color-white:       var(--bj-ink);
+	--sl-color-text-invert: var(--bj-graphite);
+
+	/* gray ramp derived by mixing ink into surface */
+	--sl-color-gray-1: var(--bj-ink);
+	--sl-color-gray-2: color-mix(in srgb, var(--bj-ink) 80%, var(--bj-surface));
+	--sl-color-gray-3: var(--bj-steel);
+	--sl-color-gray-4: color-mix(in srgb, var(--bj-steel) 55%, var(--bj-surface));
+	--sl-color-gray-5: color-mix(in srgb, var(--bj-steel) 22%, var(--bj-surface));
+	--sl-color-gray-6: color-mix(in srgb, var(--bj-steel) 10%, var(--bj-surface));
 }
 
-/* ── palette (light) — warm parchment ── */
+/* ── light mode: flip surface and ink — all derived tokens rebuild ── */
 :root[data-theme='light'] {
-	--sl-color-accent-low: #f3ebe2;
-	--sl-color-accent: #b97d3c;
-	--sl-color-accent-high: #6b4520;
-	--sl-color-bg-inline-code: rgba(185, 125, 60, 0.08);
-	--sl-color-bg-nav: #f5f0e8dd;
-	--sl-color-bg-sidebar: #f5f0e8cc;
-	--sl-color-hairline: rgba(60, 50, 35, 0.12);
-	--sl-color-gray-1: #2c2418;
-	--sl-color-gray-2: #4a3f30;
-	--sl-color-gray-3: #6b5d4a;
-	--sl-color-gray-4: #9a8d7a;
-	--sl-color-gray-5: #d5cbbe;
-	--sl-color-gray-6: #ebe4d8;
-	--sl-color-black: #f5f0e8;
-	--sl-color-white: #2c2418;
+	--bj-surface: var(--bj-bone);
+	--bj-ink: var(--bj-graphite);
+
+	/* Signal Green has poor WCAG contrast on Bone; darken the direct
+	   accent used for text-on-light only. The brand token stays #00E08A. */
+	--sl-color-accent:      #00a866;
+	--sl-color-accent-high: #005c39;
+}
+
+/* ── zero rounding, everywhere ── */
+:where(button, input, select, textarea, img, video, iframe,
+	.card, .sl-link-card, [class*='LinkCard'], pre, code, figure,
+	.expressive-code, .expressive-code *, summary, details) {
+	border-radius: 0 !important;
 }
 
 /* ── selection ── */
 ::selection {
-	background: rgba(134, 109, 185, 0.25);
-	color: var(--sl-color-white);
-}
-
-:root[data-theme='light'] ::selection {
-	background: rgba(185, 125, 60, 0.25);
-	color: var(--sl-color-white);
+	background: var(--bj-signal);
+	color: var(--bj-graphite);
 }
 
 /* ── scrollbar ── */
 html {
 	scrollbar-width: thin;
-	scrollbar-color: var(--sl-color-gray-4) transparent;
+	scrollbar-color: var(--bj-steel) transparent;
 }
 
 ::-webkit-scrollbar {
-	width: 6px;
+	width: 8px;
+	height: 8px;
 }
 
 ::-webkit-scrollbar-track {
@@ -76,12 +135,11 @@ html {
 }
 
 ::-webkit-scrollbar-thumb {
-	background: var(--sl-color-gray-4);
-	border-radius: 3px;
+	background: var(--bj-steel);
 }
 
 ::-webkit-scrollbar-thumb:hover {
-	background: var(--sl-color-gray-3);
+	background: var(--sl-color-white);
 }
 
 /* ── base typography ── */
@@ -89,150 +147,272 @@ body {
 	-webkit-font-smoothing: antialiased;
 	-moz-osx-font-smoothing: grayscale;
 	font-size: 15px;
-	line-height: 1.65;
+	line-height: 1.55;
+	font-feature-settings: 'ss01', 'cv11';
 }
 
-/* ── headings ── */
-h1, h2, h3, h4 {
-	font-weight: normal;
-	letter-spacing: 0.02em;
+/* ── headings: display grotesk for h1/h2, body grotesk for h3+ ── */
+h1, h2, h3, h4, h5, h6 {
+	letter-spacing: -0.015em;
+	font-weight: 500;
 }
 
-h2 {
-	font-size: 1.15em;
-	letter-spacing: 0.04em;
-	color: var(--sl-color-gray-2);
+h1, h2 {
+	font-family: var(--bj-font-display);
 }
 
-h3 {
-	font-size: 1em;
-	color: var(--sl-color-white);
+h3, h4, h5, h6 {
+	font-family: var(--sl-font);
 }
 
-h4 {
-	font-size: 0.9em;
-	color: var(--sl-color-gray-2);
-}
+h1 { font-size: 2.25rem; letter-spacing: -0.025em; }
+h2 { font-size: 1.5rem;  letter-spacing: -0.02em;  }
+h3 { font-size: 1.125rem; }
+h4 { font-size: 1rem; }
 
 /* ── hero ── */
 .hero {
-	padding-block: 5rem 3rem;
+	padding-block: 6rem 3rem;
 }
 
 .hero h1 {
-	font-size: clamp(2.4rem, 5vw, 3.2rem);
-	font-weight: 300;
-	letter-spacing: 0.03em;
+	font-family: var(--bj-font-display);
+	font-size: clamp(2.75rem, 6vw, 4rem);
+	font-weight: 600;
+	letter-spacing: -0.035em;
+	line-height: 1.02;
 }
 
 .hero .tagline {
-	font-size: clamp(1rem, 2.5vw, 1.2rem) !important;
-	max-width: 50ch;
-	line-height: 1.7;
+	font-size: clamp(1rem, 2vw, 1.125rem) !important;
+	max-width: 56ch;
+	line-height: 1.55;
 	color: var(--sl-color-gray-2);
+	letter-spacing: -0.005em;
 }
 
-/* ── splash page sections ── */
-[data-page-type="splash"] .sl-markdown-content h2 {
-	margin-top: 3.5rem;
-	padding-top: 1.5rem;
-	border-top: 1px solid var(--sl-color-hairline);
+/* ──────────────────────────────────────────────────────────────
+   Border grammar — see DESIGN.md §Shapes
+   Reusable gradient for double-line rules (1px + 1px gap + 1px).
+   Applied to the splash page only and to opt-in <hr class="double">.
+   ────────────────────────────────────────────────────────────── */
+
+:root {
+	--bj-double-rule-bg: linear-gradient(
+		to bottom,
+		var(--bj-rule) 0 1px,
+		transparent 1px 2px,
+		var(--bj-rule) 2px 3px
+	);
 }
 
-[data-page-type="splash"] .sl-markdown-content h2:first-child {
-	border-top: none;
+/* splash sections: double rule above every h2 except the first */
+[data-page-type='splash'] .sl-markdown-content h2 {
+	position: relative;
+	margin-top: 4rem;
+	padding-top: 2rem;
 }
 
-/* ── cards ── */
-.card {
-	border-radius: 0;
-	border: none;
-	border-left: 2px solid var(--sl-color-gray-5);
-	padding-left: 1.25rem;
-	transition: border-color 0.2s cubic-bezier(0.16, 1, 0.3, 1);
+[data-page-type='splash'] .sl-markdown-content h2::before {
+	content: '';
+	position: absolute;
+	top: 0;
+	left: 0;
+	right: 0;
+	height: 3px;
+	background: var(--bj-double-rule-bg);
 }
 
-.card:hover {
-	border-color: var(--sl-color-accent);
+[data-page-type='splash'] .sl-markdown-content h2:first-of-type {
+	margin-top: 0;
+	padding-top: 0;
 }
 
-.card:focus-within {
-	border-color: var(--sl-color-accent);
+[data-page-type='splash'] .sl-markdown-content h2:first-of-type::before {
+	content: none;
 }
 
-/* ── inline code ── */
-:not(pre) > code {
-	font-size: 0.9em;
-	border-radius: 2px;
-	padding: 0.1em 0.3em;
-	border: 1px solid var(--sl-color-hairline);
+/* ── cards: boxed panels with frame, square corners, no shadow ── */
+.card,
+.sl-link-card {
+	border: 1px solid var(--bj-frame) !important;
+	background: transparent !important;
+	padding: 1.25rem 1.5rem !important;
+	box-shadow: none !important;
+	transition: border-color 0.15s ease, background-color 0.15s ease;
 }
 
-/* ── links ── */
+.card:hover,
+.sl-link-card:hover {
+	border-color: var(--bj-signal) !important;
+	background: var(--sl-color-accent-low) !important;
+}
+
+.card:focus-within,
+.sl-link-card:focus-within {
+	border-color: var(--bj-signal) !important;
+}
+
+/* ── links: signal green on hover, hairline underline ── */
 .sl-markdown-content a:not([class]) {
-	transition: color 0.15s ease;
+	color: inherit;
+	text-decoration: underline;
+	text-decoration-color: var(--bj-rule-strong);
+	text-underline-offset: 3px;
+	text-decoration-thickness: 1px;
+	transition: color 0.12s ease, text-decoration-color 0.12s ease;
 }
 
 .sl-markdown-content a:not([class]):hover {
 	color: var(--sl-color-accent);
-	text-decoration: underline;
-	text-underline-offset: 3px;
-	text-decoration-thickness: 1px;
+	text-decoration-color: var(--sl-color-accent);
 }
 
-/* ── horizontal rules ── */
+/* ── inline code ── */
+:not(pre) > code {
+	font-family: var(--sl-font-mono);
+	font-size: 0.875em;
+	padding: 0.08em 0.36em;
+	border: 1px solid var(--bj-rule);
+	background: var(--bj-inline-code-bg);
+	color: var(--bj-ember);
+}
+
+/* ── code blocks: boxed panel, no rounding ── */
+.expressive-code pre,
+pre:not(.astro-code-container) {
+	border: 1px solid var(--bj-frame) !important;
+	border-radius: 0 !important;
+}
+
+/* ── terminal window dots: macOS traffic-light colors ── */
+.expressive-code .frame.is-terminal .header::before {
+	background-color: transparent !important;
+	opacity: 1 !important;
+	-webkit-mask-image: none !important;
+	mask-image: none !important;
+	background-image: url("data:image/svg+xml,%3Csvg%20xmlns%3D'http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg'%20viewBox%3D'0%200%2060%2016'%3E%3Ccircle%20cx%3D'8'%20cy%3D'8'%20r%3D'6'%20fill%3D'%23FF605C'%2F%3E%3Ccircle%20cx%3D'30'%20cy%3D'8'%20r%3D'6'%20fill%3D'%23FFBD44'%2F%3E%3Ccircle%20cx%3D'52'%20cy%3D'8'%20r%3D'6'%20fill%3D'%2300CA4E'%2F%3E%3C%2Fsvg%3E");
+	background-repeat: no-repeat;
+	background-size: contain;
+}
+
+/* ── horizontal rules: single hairline ── */
 .sl-markdown-content hr {
 	border: none;
-	border-top: 1px solid var(--sl-color-hairline);
+	border-top: 1px solid var(--bj-rule);
 	margin-block: 2.5rem;
 }
 
-/* ── noise texture overlay ── */
-starlight-theme-provider + *::after {
-	content: '';
-	position: fixed;
-	inset: 0;
-	opacity: 0.06;
-	background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='1'/%3E%3C/svg%3E");
-	background-repeat: repeat;
-	background-size: 180px 180px;
-	pointer-events: none;
-	z-index: 100;
+/* ── horizontal rules, double — opt-in via <hr class="double"> ── */
+.sl-markdown-content hr.double {
+	border: none;
+	height: 3px;
+	background: var(--bj-double-rule-bg);
+	margin-block: 3rem;
 }
 
-/* ── search results ── */
-#starlight__search .pagefind-ui__result-title:not(:where(.pagefind-ui__result-nested *)):hover,
+/* ── horizontal rules, dashed — opt-in via <hr class="dashed"> ── */
+.sl-markdown-content hr.dashed {
+	border: none;
+	border-top: 1px dashed var(--bj-rule-strong);
+	margin-block: 2.5rem;
+}
+
+/* ── tables: row hairlines ── */
+.sl-markdown-content table {
+	border-collapse: collapse;
+	width: 100%;
+}
+
+.sl-markdown-content th,
+.sl-markdown-content td {
+	border: none;
+	border-bottom: 1px solid var(--bj-rule);
+	padding: 0.6rem 0.8rem;
+	text-align: left;
+}
+
+.sl-markdown-content th {
+	font-family: var(--sl-font-mono);
+	font-weight: 500;
+	font-size: 0.75rem;
+	letter-spacing: 0.08em;
+	text-transform: uppercase;
+	color: var(--sl-color-gray-3);
+	border-bottom: 1px solid var(--bj-frame);
+}
+
+/* ── sidebar: hairline separators between groups ── */
+.sidebar-content details {
+	border-bottom: 1px solid var(--bj-rule);
+}
+
+.sidebar-content details:last-child {
+	border-bottom: none;
+}
+
+/* ── sidebar active item: Starlight sets text to accent-low in dark mode,
+   which for us is a near-transparent green. Force Graphite so text reads
+   against the Signal Green fill. Also keep the regular weight — Starlight
+   bumps active to 600 which reflows long link titles onto a second line. */
+:root {
+	--sl-color-text-invert: var(--bj-graphite);
+}
+
+/* Widen sidebar so long titles fit in one line even when bold-active.
+   Starlight default: 18.75rem. */
+:root {
+	--sl-sidebar-width: 21rem;
+	/* Widen the article/content panel. Starlight default: 45rem. */
+	--sl-content-width: 54rem;
+}
+
+/* Kill transitions on sidebar links so clicks don't animate padding or
+   background — prevents the brief expand/shrink flash on click. */
+.sidebar-content a,
+.sidebar-content a:hover,
+.sidebar-content a:focus,
+.sidebar-content a:active,
+.sidebar-content a[aria-current='page'] {
+	transition: none !important;
+}
+
+/* ── top nav: single hairline below ── */
+header.header {
+	border-bottom: 1px solid var(--bj-rule);
+}
+
+/* ── site title: tighten tracking ── */
+.site-title {
+	font-family: var(--sl-font-mono);
+	font-weight: 500;
+	letter-spacing: 0;
+}
+
+/* ── search ── */
+#starlight__search .pagefind-ui__result-title:hover,
 #starlight__search .pagefind-ui__result-nested:hover {
 	outline: none;
-	background-color: var(--sl-color-gray-5);
+	background-color: var(--sl-color-gray-6);
 }
 
-#starlight__search .pagefind-ui__result-title:not(:where(.pagefind-ui__result-nested *)):focus-within,
+#starlight__search .pagefind-ui__result-title:focus-within,
 #starlight__search .pagefind-ui__result-nested:focus-within {
-	outline: 2px solid var(--sl-color-accent);
-	outline-offset: 1px;
-	background-color: var(--sl-color-gray-5);
+	outline: 1px solid var(--bj-signal);
+	outline-offset: 0;
+	background-color: var(--sl-color-gray-6);
 }
 
-:root[data-theme='light'] #starlight__search .pagefind-ui__result-title:not(:where(.pagefind-ui__result-nested *)):hover,
-:root[data-theme='light'] #starlight__search .pagefind-ui__result-nested:hover {
-	background-color: var(--sl-color-gray-5);
-}
-
-:root[data-theme='light'] #starlight__search .pagefind-ui__result-title:not(:where(.pagefind-ui__result-nested *)):focus-within,
-:root[data-theme='light'] #starlight__search .pagefind-ui__result-nested:focus-within {
-	outline: 2px solid var(--sl-color-accent);
-	outline-offset: 1px;
-	background-color: var(--sl-color-gray-5);
-}
-
-/* ── version bar ── */
+/* ── version bar: small-caps mono, signal dot ── */
 .version-bar {
 	display: flex;
 	gap: 0.5em;
-	font-size: 0.85em;
+	font-family: var(--sl-font-mono);
+	font-size: 0.7rem;
+	letter-spacing: 0.08em;
+	text-transform: uppercase;
 	opacity: 0;
-	transition: opacity 0.3s ease;
+	transition: opacity 0.25s ease;
 	margin-bottom: 1.5rem;
 }
 
@@ -242,9 +422,8 @@ starlight-theme-provider + *::after {
 
 .version-bar span {
 	color: var(--sl-color-gray-3);
-	padding: 0.15em 0.5em;
-	border: 1px solid var(--sl-color-hairline);
-	border-radius: 3px;
+	padding: 0.2em 0.55em;
+	border: 1px solid var(--bj-rule);
 }
 
 .version-bar span::before {
@@ -252,11 +431,37 @@ starlight-theme-provider + *::after {
 	display: inline-block;
 	width: 6px;
 	height: 6px;
-	border-radius: 50%;
-	background: #4ade80;
-	margin-right: 0.4em;
+	background: var(--bj-signal);
+	margin-right: 0.5em;
 	vertical-align: middle;
-	box-shadow: 0 0 4px #4ade8066;
+}
+
+/* ── utility: small-caps mono label ── */
+.label-caps {
+	font-family: var(--sl-font-mono);
+	font-size: 0.75rem;
+	font-weight: 500;
+	letter-spacing: 0.08em;
+	text-transform: uppercase;
+	color: var(--sl-color-gray-3);
+}
+
+/* ── utility: boxed panel ── */
+.panel {
+	border: 1px solid var(--bj-frame);
+	padding: 1.25rem 1.5rem;
+}
+
+/* ── utility: dashed hairline divider ── */
+.rule-dashed {
+	border: none;
+	border-top: 1px dashed var(--bj-rule-strong);
+	margin-block: 2rem;
+}
+
+/* ── content width ── */
+.sl-markdown-content {
+	max-width: 80ch;
 }
 
 /* ── misc ── */
@@ -264,8 +469,4 @@ starlight-theme-provider + *::after {
 	html {
 		scroll-behavior: smooth;
 	}
-}
-
-.sl-markdown-content {
-	max-width: 72ch;
 }

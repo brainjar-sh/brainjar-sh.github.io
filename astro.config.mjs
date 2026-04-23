@@ -7,12 +7,24 @@ export default defineConfig({
 	site: 'https://brainjar.sh',
 	integrations: [
 		starlight({
-			title: '{ brainjar }',
+			title: '[ brainjar ]',
 			tagline: 'Shape how your AI thinks',
 			social: [
 				{ icon: 'github', label: 'GitHub', href: 'https://github.com/brainjar-sh/cli' },
 			],
 			customCss: ['./src/styles/custom.css'],
+			expressiveCode: {
+				themes: ['one-dark-pro', 'one-light'],
+				styleOverrides: {
+					borderRadius: '0',
+					borderColor: 'var(--bj-frame)',
+					codeFontFamily: 'var(--sl-font-mono)',
+					codeFontSize: '0.875rem',
+					frames: {
+						shadowColor: 'transparent',
+					},
+				},
+			},
 			head: [
 				{
 					tag: 'meta',
