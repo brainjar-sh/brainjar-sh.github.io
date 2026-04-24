@@ -5,16 +5,11 @@
     const res = await fetch('/versions.json');
     if (!res.ok) return;
     const v = await res.json();
-    if (v.cli) {
+    if (v.brainjar) {
       const s = document.createElement('span');
-      s.textContent = 'cli ' + v.cli;
+      s.textContent = 'brainjar ' + v.brainjar;
       el.appendChild(s);
+      el.classList.add('loaded');
     }
-    if (v.server) {
-      const s = document.createElement('span');
-      s.textContent = 'server ' + v.server;
-      el.appendChild(s);
-    }
-    if (el.children.length) el.classList.add('loaded');
   } catch {}
 })();
