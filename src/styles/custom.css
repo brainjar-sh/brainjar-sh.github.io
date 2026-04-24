@@ -685,6 +685,8 @@ header.header {
 }
 
 .version-bar span {
+	display: inline-flex;
+	align-items: center;
 	color: var(--sl-color-gray-3);
 	padding: 0.2em 0.55em;
 	border: 1px solid var(--bj-rule);
@@ -692,12 +694,10 @@ header.header {
 
 .version-bar span::before {
 	content: '';
-	display: inline-block;
 	width: 6px;
 	height: 6px;
 	background: var(--bj-signal);
 	margin-right: 0.5em;
-	vertical-align: middle;
 }
 
 /* ── utility: small-caps mono label ── */
