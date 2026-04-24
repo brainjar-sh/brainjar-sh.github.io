@@ -15,6 +15,7 @@ pnpm-debug.log*
 
 # generated at build time
 public/versions.json
+src/content/docs/reference/cli/
 
 # environment variables
 .env

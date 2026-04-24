@@ -3,11 +3,11 @@
   "type": "module",
   "version": "0.0.1",
   "scripts": {
-    "predev": "bash scripts/fetch-versions.sh",
+    "predev": "bash scripts/fetch-versions.sh && bash scripts/fetch-cli-docs.sh",
     "dev": "astro dev",
-    "prestart": "bash scripts/fetch-versions.sh",
+    "prestart": "bash scripts/fetch-versions.sh && bash scripts/fetch-cli-docs.sh",
     "start": "astro dev",
-    "build": "bash scripts/fetch-versions.sh && astro build && bash scripts/copy-raw-md.sh",
+    "build": "bash scripts/fetch-versions.sh && bash scripts/fetch-cli-docs.sh && astro build && bash scripts/copy-raw-md.sh",
     "preview": "astro preview",
     "astro": "astro"
   },
