@@ -525,6 +525,77 @@ pre:not(.astro-code-container) {
 	border-bottom: 1px solid var(--bj-frame);
 }
 
+/* ── blockquotes ──
+   Used throughout for command synopses (and anywhere the markdown
+   emits `>`). Square corners to match the Instrument identity,
+   signal-green accent line, subtle ink-tinted wash so quoted prose
+   reads as distinct from surrounding body without shouting. */
+
+.sl-markdown-content blockquote {
+	margin: 1.25rem 0;
+	padding: 0.9rem 1.1rem;
+	background: var(--bj-inline-code-bg);
+	border-left: 2px solid var(--bj-signal);
+	border-radius: 0;
+	color: var(--bj-ink);
+	font-size: 0.95rem;
+	line-height: 1.55;
+}
+
+.sl-markdown-content blockquote p {
+	margin: 0 0 0.7rem 0;
+}
+
+.sl-markdown-content blockquote p:last-child {
+	margin-bottom: 0;
+}
+
+/* Empty blockquote paragraphs (the `>` lines our synopsis post-
+   processor emits between prose paragraphs) render as gaps rather
+   than stray bullets or extra whitespace. */
+.sl-markdown-content blockquote > p:empty {
+	display: none;
+}
+
+/* Inline code inside blockquotes inherits the wash rather than
+   getting a second tint stacked on top — keeps the quote's
+   background a single tone. */
+.sl-markdown-content blockquote code {
+	background: transparent;
+	padding: 0 0.1em;
+}
+
+/* ── flag tables (CLI reference and similar) ──
+   Tables whose first header cell is "Flag" or "Option" get a fixed
+   layout: the flag column sizes to its widest entry, stays on one
+   line, and the description column takes the rest and wraps freely.
+   This keeps every flag table visually consistent across the page
+   regardless of how long any one flag's description is. */
+
+.sl-markdown-content table:has(th:first-child:is(:-webkit-any(th)))[data-flag-table],
+.sl-markdown-content table {
+	table-layout: auto;
+}
+
+.sl-markdown-content table th:first-child,
+.sl-markdown-content table td:first-child {
+	width: 1%;
+	white-space: nowrap;
+}
+
+.sl-markdown-content table th:first-child + th,
+.sl-markdown-content table td:first-child + td {
+	width: auto;
+	white-space: normal;
+	word-break: break-word;
+}
+
+/* Code spans inside flag cells should never add their own padding
+   or wrapping that would push the cell onto multiple lines. */
+.sl-markdown-content table td:first-child code {
+	white-space: nowrap;
+}
+
 /* ── sidebar: hairline separators between groups ── */
 .sidebar-content details {
 	border-bottom: 1px solid var(--bj-rule);
