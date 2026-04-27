@@ -8,10 +8,12 @@ Rules are behavioral constraints — guardrails that apply regardless of persona
 ## Creating a rule
 
 ```bash
-brainjar rules create no-delete --description "Never delete files without asking"
+cat no-delete.md | brainjar rule create no-delete
+# or
+brainjar rule create no-delete --file ./no-delete.md
 ```
 
-This creates a rule on the server with a template — a title, your description, and a **Constraints** section with bullet points to fill in. Let your AI agent populate it (see [Authoring with AI](/guides/authoring-with-ai/)).
+`create` is an upsert — it stores whatever content you hand it (stdin, `--content`, or `--file`, in that precedence order). There is no scaffolded template; let your AI agent populate the file (see [Authoring with AI](/guides/authoring-with-ai/)).
 
 Here's what a filled-in rule looks like:
 
@@ -27,36 +29,35 @@ Here's what a filled-in rule looks like:
 ## Activating rules
 
 ```bash
-brainjar rules add security              # Workspace scope (or project if auto-detected)
-brainjar rules add no-delete --project   # Explicitly force project scope
-brainjar rules drop security             # Deactivate
-brainjar rules delete security           # Permanently delete
+brainjar rule add security        # Add to the active state
+brainjar rule remove security     # Remove from the active state
+brainjar rule delete security     # Permanently delete the rule
 ```
 
-Project scope is auto-detected when your working directory contains a `.brainjar/` directory.
+`rule add` and `rule remove` write to the **workspace** state override. Project scope is auto-resolved from the basename of the nearest `.git` root (must be a valid slug — lowercase, hyphen-separated). `cd` into the right repo before running `rule add` to scope correctly to that project.
 
 Rules bundled with a persona activate automatically — you don't need to add them manually.
 
 ## Managing rules
 
 ```bash
-brainjar rules list                      # See all rules with status
-brainjar rules show security             # View a rule's content
-brainjar rules history security          # List version history
-brainjar rules show security --rev 2     # View a previous version
-brainjar rules revert security --to 2    # Restore a previous version
+brainjar rule list                       # See all rules with status
+brainjar rule show security              # View a rule's content
+brainjar versions rule security          # List version history
+brainjar versions rule security 2        # Print version 2's content to stdout
 ```
+
+There is no revert subcommand. To restore an old version, capture its content with `brainjar versions rule security <n>` and pipe it back into `brainjar rule create security`.
+
+See full flag and subcommand details in the [CLI reference for `rule`](/reference/cli/#rule) and [`versions`](/reference/cli/#versions).
 
 ## Scope annotations
 
-When you see scope labels in `status` and `rules list` output:
+When you see scope labels in `status` and `rule list` output:
 
 | Label | Meaning |
 |-------|---------|
-| `(workspace)` | Set at workspace scope on the server |
+| `(workspace)` | Set at workspace scope |
 | `(project)` | Overridden at project scope |
 | `(+project)` | Added by project override |
 | `(-project)` | Removed by project override |
-| `(env)` | Overridden by `BRAINJAR_*` env var |
-| `(+env)` | Added by env var |
-| `(-env)` | Removed by env var |

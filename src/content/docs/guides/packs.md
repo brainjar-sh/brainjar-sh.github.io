@@ -1,42 +1,27 @@
 ---
 title: Packs
-description: Export and share brain configurations as portable bundles.
+description: Export and import a workspace as a single JSON bundle.
 ---
 
-Packs are self-contained, shareable bundles of a brain and all its layers. Export a brain as a pack directory, hand it to a teammate, and they import it in one command.
+A pack is a single JSON document containing every soul, persona, rule, brain, and the active state for one workspace. It round-trips through `pack export` and `pack import`.
 
-## What's in a pack
-
-A pack is a directory with a `pack.yaml` manifest and the content files. No tarballs, no magic — just files you can inspect with `ls` and `cat`.
-
-```
-review/
-  pack.yaml
-  souls/
-    craftsman.md
-  personas/
-    reviewer.md
-  rules/
-    boundaries.md
-    task-completion.md
-    security.md
-  brains/
-    review.yaml
-```
+See [CLI reference](/reference/cli/#pack) for the full flag list.
 
 ## Exporting
 
 ```bash
-brainjar pack export review                        # Creates ./review/
-brainjar pack export review --out /tmp             # Creates /tmp/review/
-brainjar pack export review --name my-review       # Override pack name
-brainjar pack export review --version 1.0.0        # Set version (default: 0.1.0)
-brainjar pack export review --author frank         # Set author field
+brainjar pack export -o backup.json            # pretty-printed JSON
+brainjar pack export --compact -o backup.json  # single-line JSON
+brainjar pack export -o - | gzip > backup.json.gz
 ```
+
+Default output is pretty-printed to stdout; pass `-o <path>` to write to a file, or `-o -` to keep stdout explicit.
 
 ## Importing
 
 ```bash
-brainjar pack import ./review                      # Import into server
-brainjar pack import ./review --activate           # Activate the brain after import
+brainjar pack import -i backup.json
+cat backup.json | brainjar pack import
 ```
+
+Imports are additive — existing souls, personas, rules, and brains are upserted in place. Per-entity failures (e.g. dangling references) become warnings and do not abort the import. An unknown `schema_version` is a fatal `BAD_REQUEST`.

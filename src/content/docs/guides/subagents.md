@@ -3,7 +3,7 @@ title: Subagent Orchestration
 description: Dispatch subagents with full brain context using compose.
 ---
 
-Personas can spawn other personas as subagents. The `compose` tool assembles the full prompt — soul + persona + rules + task — in a single call. Pass the result to Claude Code's Agent tool to spawn the subagent.
+Personas can spawn other personas as subagents. The `compose` tool assembles the full prompt — soul + persona + procedure + rules + task — in a single call. Pass the result to Claude Code's Agent tool to spawn the subagent.
 
 ## How compose works
 
@@ -95,7 +95,7 @@ For more control, retrieve individual layers:
 
 ```bash
 brainjar persona show reviewer    # Get just the persona content
-brainjar rules show security      # Get just a rule's content
+brainjar rule show security       # Get just a rule's content
 brainjar soul show                # Get the active soul
 ```
 

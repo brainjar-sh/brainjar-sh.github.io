@@ -3,43 +3,55 @@ title: Recipes
 description: Common workflows and patterns for using brainjar.
 ---
 
+Each recipe links to the relevant [CLI reference](/reference/cli/) anchor for full flag details.
+
 ## Code review session
 
-Save a review brain once, activate it anytime:
+Save a review brain once, load or compose from it anytime. `brain save` takes the slugs directly — you do not have to mutate workspace state first. See [`brain`](/reference/cli/#brain), [`shell`](/reference/cli/#shell).
 
 ```bash
-# Set up the configuration
-brainjar soul use craftsman
-brainjar persona use reviewer
-brainjar rules add boundaries
-brainjar rules add security
-brainjar brain save review
+# Save the brain from existing slugs
+brainjar brain save review \
+  --soul craftsman \
+  --persona reviewer \
+  --rule boundaries \
+  --rule security
 
-# Activate anytime
+# Load the brain wholesale into workspace state (sync to push to CLAUDE.md)
 brainjar brain use review
+brainjar sync
 
-# Or scope to a single session
+# Or compose the prompt for an MCP tool or orchestrator
+brainjar compose review
+
+# Or scope to a single agent run (in-memory, nothing on disk)
 brainjar shell --brain review
 ```
 
-## CI pipeline — enforce rules without a persona
+## CI pipeline — bake config into the repo
 
-Use environment variables in CI to override behavior:
+There is no environment-variable override surface. The CI flow is: ship a workspace bundle in the repo, import it, optionally adjust the active state, then sync. See [`pack`](/reference/cli/#pack), [`sync`](/reference/cli/#sync).
 
 ```bash
-BRAINJAR_PERSONA=auditor \
-BRAINJAR_RULES_ADD=security,compliance \
-brainjar status --sync
+# Import the committed pack into the CI workspace
+brainjar pack import -i pack.json
+
+# Optionally activate a specific persona / rule for this run
+brainjar persona use auditor
+brainjar rule add compliance
+
+# Render the platform's managed config block
+brainjar sync
 ```
 
 ## Project-specific persona
 
-Override behavior for a specific project without affecting your global config. Project scope is auto-detected from the `.brainjar/` directory:
+Override behavior for a specific project without affecting your global config. Project scope is auto-resolved from the basename of the nearest `.git` root — no `.brainjar/` directory required.
 
 ```bash
-cd my-project
+cd my-project   # git root → project scope = "my-project"
 brainjar persona use planner
-brainjar rules add no-delete
+brainjar rule add no-delete
 
 brainjar status
 # soul     craftsman (workspace)
@@ -47,61 +59,81 @@ brainjar status
 # rules    boundaries (workspace), no-delete (+project)
 ```
 
+The status output annotates each layer with `(workspace)` or `(project)` so you can see which scope each entry came from. See [Project scope resolution](/guides/configuration/) for the full rules.
+
 ## Scoped shell sessions
 
-Temporarily switch context without changing any state files:
+Spawn an agent with a one-off composition — no workspace state is touched, nothing is written to disk. See [`shell`](/reference/cli/#shell).
 
 ```bash
-brainjar shell --persona reviewer --rules-add security
-# Inside this shell, BRAINJAR_* env vars are set
-# Exit the shell and everything reverts
+brainjar shell --persona reviewer --rules security --task "Audit"
 ```
+
+`--rules` takes a comma-separated list and is only valid with `--persona`. The agent inherits the current cwd and stdio; quitting the agent is the only "cleanup" — there's no shell session to exit.
+
+## Strict-isolation runs (Claude only)
+
+Skip Claude's ambient context — `CLAUDE.md` auto-discovery, hooks, LSP, plugin sync, and keychain — for a deterministic agent run. Requires `ANTHROPIC_API_KEY` (or an `apiKeyHelper`) since `--bare` disables keychain reads, which breaks Claude Max OAuth.
+
+```bash
+ANTHROPIC_API_KEY=sk-ant-... brainjar shell --bare --brain review --task "Audit src/auth/"
+```
+
+Use this for CI or any run where you want only the brainjar-composed prompt to drive the agent.
 
 ## Team sharing with packs
 
-Export your setup and share it with teammates:
+Export the workspace and share it with teammates. See [`pack`](/reference/cli/#pack).
 
 ```bash
 # You
-brainjar pack export review --author frank --version 1.0.0
+brainjar pack export -o review.json
 
 # Teammate
-brainjar pack import ./review --activate
+brainjar pack import -i review.json
 ```
+
+Imports are additive — existing entities are upserted, per-entity failures become warnings.
 
 ## MCP server registration
 
-Register brainjar as an MCP server so agents can discover and use all commands:
+Register brainjar as an MCP server so agents can discover and use all commands. See [`mcp`](/reference/cli/#mcp).
 
 ```bash
-brainjar mcp add                         # Global, auto-detect agent
-brainjar mcp add --agent cursor          # Target a specific agent
-brainjar mcp add --no-global             # Project-local only
+brainjar mcp install                     # Default scope: user (global)
+brainjar mcp install --scope project     # Committed per-repo (.mcp.json)
+brainjar mcp install --scope local       # Per-checkout, not shared
 ```
 
-## Skill files
-
-Sync brainjar skill files to your agent for slash-command integration:
-
-```bash
-brainjar skills add                      # Global install
-brainjar skills add --no-global          # Project-local only
-```
+The active platform adapter owns the actual file path; `--scope` selects which layer the registration is written to.
 
 ## Shell completions
 
-Set up tab completion for brainjar commands:
+Set up tab completion for brainjar commands. See [`completion`](/reference/cli/#completion).
 
 ```bash
-eval "$(brainjar completions zsh)"       # Add to ~/.zshrc
-eval "$(brainjar completions bash)"      # Add to ~/.bashrc
+brainjar completion zsh > "${fpath[1]}/_brainjar"   # zsh
+brainjar completion bash | sudo tee /etc/bash_completion.d/brainjar > /dev/null
+brainjar completion fish > ~/.config/fish/completions/brainjar.fish
 ```
 
-## Multiple backends
+## Multiple platforms via contexts
 
-Work with both Claude Code and Codex:
+Switch between Claude Code, Codex, and other platforms by maintaining separate contexts. See [`context`](/reference/cli/#context).
 
 ```bash
-brainjar init --backend claude    # Default
-brainjar init --backend codex     # Also set up Codex
+brainjar context add codex --platform codex --workspace <workspace-uuid>
+brainjar context use codex      # Flip the active platform target
+brainjar sync                   # Render the platform's managed config
+```
+
+Each context binds a platform adapter to a workspace; switching contexts retargets every subsequent command.
+
+## Upgrading the CLI
+
+For installs done via `get.brainjar.sh` (Homebrew/apt/nix users should upgrade through their package manager). See [`upgrade`](/reference/cli/#upgrade).
+
+```bash
+brainjar upgrade --check    # Print current vs latest, do nothing
+brainjar upgrade            # Verify cosign signature and atomically swap the binary
 ```

@@ -1,192 +1,124 @@
 ---
 title: Architecture
-description: How the CLI and server work together
+description: How the brainjar binary, local storage, contexts, and platforms fit together
 ---
 
-brainjar is a client-server system. The **CLI** is a thin client that manages your agent configuration. The **server** stores all content and state.
+brainjar is a single Go binary with an embedded local backend. The CLI you run on the command line and the optional HTTP server (`brainjar serve`) are the **same binary**, talking to the **same SQLite database**. There is no separate server to install, no Postgres, no daemon to manage.
 
 ## Components
 
-### CLI (`@brainjar/cli`)
+| Component | What it is | When you need it |
+|-----------|-----------|-------------------|
+| **CLI** (`brainjar`) | The command-line tool. Embeds the local backend, MCP server, HTTP server, and platform adapters. | Always — this is brainjar. |
+| **`brainjar serve`** | The same binary running an HTTP server that exposes brainjar's API. | Only when you want a shared server other CLIs (yours, a teammate's, CI) can point at as a remote context. |
 
-The command-line tool you interact with. It handles:
-
-- Creating and managing souls, personas, rules, and brains
-- Composing prompts for subagent orchestration
-- Syncing active configuration into your agent's config file (`CLAUDE.md` or `AGENTS.md`)
-- Downloading and managing the server binary
-
-The CLI makes HTTP requests to the server for every operation. It stores almost nothing locally — just a small config file at `~/.brainjar/config.yaml`.
-
-### Server (`brainjar-server`)
-
-A Go binary that provides the REST API and stores all content. It connects to a Postgres database that you provide. It runs in one of two modes:
-
-| Mode | Description |
-|------|-------------|
-| **Local** | Managed by the CLI. Auto-downloaded, auto-started. Requires Postgres on `localhost:2724`. |
-| **Remote** | You run the server yourself (Docker, bare metal, cloud). CLI connects to it by URL. |
-
-Local mode is the default. When you run `brainjar init`, the CLI downloads the server binary from `get.brainjar.sh`, starts it in the background, and creates your workspace. The server auto-creates the `brainjar` database and runs migrations on first connect.
-
-You can also install the server binary manually:
-
-```bash
-curl -fsSL https://get.brainjar.sh/install.sh | sh
-```
+The default backend is local SQLite. Remote mode is opt-in.
 
 ## Local files
 
-The only thing stored locally:
+Everything brainjar persists lives under one directory:
 
 ```
 ~/.brainjar/
-  config.yaml           # server contexts, backend
-  bin/brainjar-server   # server binary (local mode only)
-  server.pid            # process ID (local mode only)
-  server.log            # server logs (local mode only)
-  server-version        # installed version tracker
+  brainjar.db        # SQLite database — souls, personas, rules, brains, state, API keys
+  config.yaml        # active context + workspace pointer
 ```
 
-All content (souls, personas, rules, brains) and state (what's active) lives on the server.
+Override the location with `--home <path>` or `$BRAINJAR_HOME`. That's the only environment variable in the supported surface.
 
-## Config file
-
-`~/.brainjar/config.yaml` uses named contexts to manage multiple servers:
+`config.yaml` is what `brainjar init` writes (verbatim from a fresh init):
 
 ```yaml
-version: 2
-current_context: local
+active_context: default
 contexts:
-  local:
-    url: http://localhost:7742
-    mode: local
-    bin: ~/.brainjar/bin/brainjar-server
-    pid_file: ~/.brainjar/server.pid
-    log_file: ~/.brainjar/server.log
-    workspace: default
-  staging:
-    url: https://staging.brainjar.example.com
-    mode: remote
-    workspace: default
-backend: claude
+    default:
+        platform: claude
+        workspace_id: <uuid>
+schema_version: 1
 ```
 
-The `local` context is always present. Each context has its own URL, mode, and workspace. Switch between them with `brainjar context use <name>`.
+You should not edit it by hand. Manage it through `brainjar context …` and `brainjar workspace switch`.
 
-## Server modes
+## Contexts
 
-### Local mode (default)
+A context binds a workspace to a platform and an optional remote endpoint. Every brainjar invocation routes through the active context.
+
+| Type | What it is |
+|------|-----------|
+| **Local** (default) | Reads and writes `~/.brainjar/brainjar.db` directly. |
+| **Remote** | Talks to a `brainjar serve` instance over HTTPS using a stored API key. |
 
 ```bash
-brainjar init --default
+brainjar context list                                          # list every context, mark the active one
+brainjar context show                                          # full details for the active context
+brainjar context add staging --url https://brainjar.example.com \
+  --workspace <uuid> --platform claude --api-key-ref env:BRAINJAR_KEY
+brainjar context use staging                                   # route subsequent commands through staging
+brainjar context rename staging prod
+brainjar context remove staging                                # refuses if it's the active one
 ```
 
-The CLI:
-1. Creates the config file at `~/.brainjar/config.yaml`
-2. Downloads the server binary from `get.brainjar.sh`
-3. Starts it in the background (connects to Postgres on `localhost:2724`)
-4. Creates the `default` workspace
-5. Seeds starter content (if `--default` is passed)
-6. Writes `CLAUDE.md` with the active configuration
+`--platform` defaults to `claude`. `--workspace` is required (a UUID, not a name — get one from `brainjar workspace list`). See the [`context` reference](/reference/cli/#context).
 
-If Postgres isn't running, the CLI will suggest a Docker one-liner to start it.
+## Platforms
 
-Manage the local server with:
+A platform adapter knows where its agent reads its config, where to install hooks, and how to register MCP. The active context's platform decides where `brainjar sync` writes, which hook scopes are available, and which platform `brainjar shell` will spawn.
 
 ```bash
-brainjar server status    # check health, PID, mode, server version
-brainjar server logs      # view server logs
-brainjar server stop      # stop the daemon
-brainjar server start     # start the daemon
+brainjar platform list
 ```
 
-### Remote mode
+The current set:
 
-Add a remote server as a named context:
+| Platform | Sync | Hooks | MCP | Spawn | Scopes |
+|----------|------|-------|-----|-------|--------|
+| `claude` | yes | yes | yes | yes | project, local, user |
+| `codex`  | yes | yes | yes | yes | project, user |
+| `cursor` | yes | yes | yes | no  | project, user |
 
-```bash
-brainjar context add staging https://brainjar.example.com
-brainjar context use staging
-```
-
-This is useful for teams sharing a single server, or for running the server in Docker:
-
-```bash
-docker run -d \
-  -e BRAINJAR_POSTGRES_HOST=your-postgres-host \
-  -e BRAINJAR_POSTGRES_PORT=2724 \
-  -e BRAINJAR_POSTGRES_USERNAME=brainjar \
-  -e BRAINJAR_POSTGRES_PASSWORD=brainjar \
-  -e BRAINJAR_POSTGRES_DATABASE=brainjar \
-  -p 7742:7742 \
-  ghcr.io/brainjar-sh/server:latest
-```
-
-Or use the included `docker-compose.yml` to run both the server and Postgres together:
-
-```bash
-docker compose up -d
-```
-
-Switch back to local:
-
-```bash
-brainjar context use local
-```
-
-### Managing contexts
-
-```bash
-brainjar context list               # list all contexts
-brainjar context add prod <url>     # add a remote context
-brainjar context use staging        # switch active context
-brainjar context show               # show active context details
-brainjar context rename old new     # rename a context
-brainjar context remove staging     # remove a context
-```
+To switch platforms, switch contexts. There is no `--backend` flag on `init`. See the [`platform` reference](/reference/cli/#platform).
 
 ## Workspaces
 
-A workspace is an isolated namespace for all your content. By default, `brainjar init` creates a workspace called `default`. All content operations happen within your active workspace.
-
-## How sync works
-
-When you change the active soul, persona, or rules, the CLI fetches the composed configuration from the server and writes it to your agent's config file:
-
-- **Claude Code**: `~/.claude/CLAUDE.md` (global) or `.claude/CLAUDE.md` (project)
-- **Codex**: `~/.codex/AGENTS.md` (global) or `.codex/AGENTS.md` (project)
-
-Sync runs automatically after any state-changing command (`use`, `drop`, `add`, `remove`). You can also trigger it manually:
+A workspace is the isolation boundary for souls, personas, rules, and brains. `brainjar init` creates one called `default` and points the active context at it.
 
 ```bash
-brainjar sync
+brainjar workspace list
+brainjar workspace create scratch
+brainjar workspace switch scratch     # rewrites config.workspace_id for the active context
+brainjar workspace rename scratch playground
+brainjar workspace delete playground  # refuses if it holds content unless --purge is set
 ```
+
+See the [`workspace` reference](/reference/cli/#workspace).
+
+## Sync
+
+`brainjar sync` composes the effective prompt (active soul + persona + procedure + rules) and writes it into the platform's config file inside a managed section. Re-runs are idempotent. Content outside the managed section is left alone.
+
+Project scope is auto-resolved from the basename of the nearest `.git` root walking up from cwd. Pass `--project <slug>` to override. See the [`sync` reference](/reference/cli/#sync).
 
 ## Upgrading
 
-Upgrade both CLI and server in one command:
+```bash
+brainjar upgrade --check    # print current vs latest, install nothing
+brainjar upgrade            # download, verify cosign signature, atomic swap
+```
+
+`brainjar upgrade` is only meaningful for installs done via `get.brainjar.sh`. If you installed through Homebrew, apt, or nix, upgrade through your package manager — the binary detects managed installs and warns. Check the running version with `brainjar --version`. See the [`upgrade` reference](/reference/cli/#upgrade).
+
+## Remote mode (optional)
+
+Run the server somewhere reachable, then register it as a context:
 
 ```bash
-brainjar upgrade
+# on the server host
+brainjar serve --host 0.0.0.0 --port 8080
+
+# on the client
+brainjar context add prod --url https://brainjar.example.com \
+  --workspace <uuid> --api-key-ref env:BRAINJAR_KEY
+brainjar context use prod
 ```
 
-Or upgrade selectively:
-
-```bash
-brainjar upgrade --cli-only       # just the CLI
-brainjar upgrade --server-only    # just the server binary
-```
-
-The server upgrade always targets the local binary, regardless of which context is active.
-
-## Version compatibility
-
-The CLI checks the server version on connect. If the server is too old for the CLI, you'll get a clear error:
-
-```
-Server v0.2.3 is incompatible with this CLI (requires >= 0.2.4).
-Run `brainjar upgrade` to update both CLI and server.
-```
-
-Check the current server version with `brainjar server status`.
+`brainjar serve` defaults to `127.0.0.1:8080`. It uses the same `LocalBackend` as the CLI, against the same SQLite database under `--home`. Issue API keys with `brainjar api-key create` on the server host and reference them from the client via `--api-key-ref`. See the [`serve` reference](/reference/cli/#serve) and the [`reset` reference](/reference/cli/#reset) for cleanup.

@@ -46,6 +46,7 @@ export default defineConfig({
 						{ label: 'Souls', slug: 'concepts/souls' },
 						{ label: 'Personas', slug: 'concepts/personas' },
 						{ label: 'Rules', slug: 'concepts/rules' },
+						{ label: 'Procedures', slug: 'concepts/procedures' },
 						{ label: 'Brains', slug: 'concepts/brains' },
 					],
 				},

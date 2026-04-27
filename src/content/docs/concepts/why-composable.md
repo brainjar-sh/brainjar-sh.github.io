@@ -55,22 +55,22 @@ Composable layers let you change one concern without touching the others. Update
 
 ## What this enables
 
-**Instant context switching.** One command swaps the full agent configuration:
+**Instant context switching.** One command spawns an agent with the full composed configuration:
 
 ```bash
-brainjar brain use review
+brainjar shell --brain review
 ```
 
-No file editing. No copy-paste. The agent is now a reviewer with the right persona, voice, and rules. See [Brains](/concepts/brains/).
+No file editing. No copy-paste. The agent is now a reviewer with the right persona, voice, and rules. Use `brainjar compose review` instead when you want the prompt as text (for MCP, orchestration, or piping into another tool). See [Brains](/concepts/brains/).
 
-**Team alignment.** Export a brain as a pack. Teammates import it. The entire team runs the same agent behavior for the same workflow:
+**Team alignment.** Export the workspace as a pack. Teammates import it. The entire team runs the same agent behavior for the same workflow:
 
 ```bash
-brainjar pack export review --author yourname
-brainjar pack import ./review --activate
+brainjar pack export -o review.json
+brainjar pack import -i review.json
 ```
 
-One pack, version-controlled, shareable. See [Packs](/guides/packs/).
+One JSON bundle, version-controlled, shareable. See [Packs](/guides/packs/).
 
 **Subagent orchestration.** Compose a full prompt from named layers and dispatch it to a subagent. The lead agent doesn't paste raw text — it assembles a prompt from components via the MCP tool:
 

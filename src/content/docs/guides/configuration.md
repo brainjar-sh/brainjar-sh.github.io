@@ -1,38 +1,38 @@
 ---
 title: Configuration
-description: State cascade, environment variables, and backend configuration.
+description: State cascade, project scope, contexts, platforms, and config file.
 ---
+
+brainjar's configuration surface is small on purpose. Effective state comes from a two-layer cascade. Where things live on disk is governed by `~/.brainjar`. The active platform and remote endpoint are bundled into a *context*. That's the whole picture.
 
 ## State cascade
 
-brainjar state merges in three tiers. Each tier overrides the previous:
+State merges in two tiers. The lower tier overrides the higher one:
 
 ```
-workspace  →  project  →  env
+workspace  →  project
 ```
 
 ### Workspace state
 
-Stored on the server. Applies to all projects within the workspace.
+The default everyone in the workspace sees. Set without any extra flags:
 
 ```bash
-brainjar persona use engineer        # Sets workspace persona
-brainjar rules add security          # Adds to workspace rules
+brainjar persona use engineer    # workspace persona
+brainjar rule add security       # workspace rule
 ```
 
 ### Project state
 
-Stored on the server at project scope. Overrides workspace for that project only. Project scope is auto-detected when your working directory contains a `.brainjar/` directory — no `--project` flag needed.
+A per-repo override that only applies inside one project. Workspace settings still flow through — project state only changes the layers you explicitly set.
 
 ```bash
-cd my-project         # has .brainjar/ dir
-brainjar persona use planner     # auto-scoped to project
-brainjar rules add no-delete     # auto-scoped to project
+cd my-project       # inside a git repo with a slug-shaped directory name
+brainjar persona use planner       # project persona overrides workspace persona
+brainjar rule add no-delete        # project rule adds on top of workspace rules
 ```
 
-You can also use `--project` explicitly to force project scope.
-
-Workspace settings still apply — project only overrides what you specify:
+`brainjar status` annotates each line with the layer it came from:
 
 ```
 soul     craftsman (workspace)
@@ -40,61 +40,92 @@ persona  planner (project)
 rules    boundaries (workspace), no-delete (+project)
 ```
 
-### Environment variables
+The `(+project)` annotation marks rules added at project scope; `(-project)` marks rules masked off for this project only.
 
-Override everything for a single session:
+See [`brainjar status`](/reference/cli/#status) and [`brainjar sync`](/reference/cli/#sync).
+
+## Project scope resolution
+
+Project scope is auto-resolved from the working directory. The lookup order:
+
+1. **`--project <slug>` flag.** Always wins. Supported on commands that accept a project (e.g. `status`, `sync`).
+2. **Nearest `.git` root basename.** The CLI walks up from cwd to the first `.git` directory and uses its parent's basename as the project slug — but only if the basename is a valid slug (lowercase, hyphen-separated, must start with a letter and end alphanumeric: `^[a-z]([a-z0-9-]*[a-z0-9])?$`).
+3. **Fallback: workspace scope.** If the basename isn't a valid slug (contains dots, underscores, or capitals — for example `my.project` or `MyProject`), brainjar falls back to workspace scope and emits a warning on stderr.
+
+There is no `.brainjar/` discovery directory and no session scope. State is always either workspace or project.
+
+## Environment
+
+The only supported environment variable is:
 
 | Variable | Effect |
 |----------|--------|
-| `BRAINJAR_HOME` | Override `~/.brainjar/` location |
-| `BRAINJAR_SOUL` | Override active soul |
-| `BRAINJAR_PERSONA` | Override active persona |
-| `BRAINJAR_RULES_ADD` | Comma-separated rules to add |
-| `BRAINJAR_RULES_REMOVE` | Comma-separated rules to remove |
+| `BRAINJAR_HOME` | Override the brainjar home directory (default `~/.brainjar`). Equivalent to passing `--home <path>` on every invocation. |
 
-Set to empty string to explicitly unset (e.g., `BRAINJAR_SOUL=""` removes the soul for that session).
-
-```bash
-BRAINJAR_PERSONA=reviewer claude
-```
+There are no env vars for activating a soul, persona, or rule. State is set with `soul use` / `persona use` / `rule add`, and applied to the agent via [`brainjar sync`](/reference/cli/#sync) or [`brainjar shell`](/reference/cli/#shell).
 
 ## Config file
 
-The CLI config lives at `~/.brainjar/config.yaml` and uses named contexts:
+`~/.brainjar/config.yaml` holds the active context pointer and the registered contexts:
 
 ```yaml
-version: 2
-current_context: local
+active_context: default
 contexts:
-  local:
-    url: http://localhost:7742
-    mode: local
-    bin: ~/.brainjar/bin/brainjar-server
-    pid_file: ~/.brainjar/server.pid
-    log_file: ~/.brainjar/server.log
-    workspace: default
-backend: claude
+    default:
+        platform: claude
+        workspace_id: 767a626d-b7a7-4406-997a-0ee27370acab
+schema_version: 1
 ```
 
-Each context has its own URL, mode, and workspace. See [Architecture](/concepts/architecture/) for details on server modes and contexts.
+It is managed by [`brainjar context …`](/reference/cli/#context) and [`brainjar workspace switch`](/reference/cli/#workspace-switch). Don't edit it by hand — use the commands. Alongside it, `~/.brainjar/brainjar.db` is the SQLite database that stores souls, personas, rules, brains, state, and API keys.
 
-## Backends
+## Platforms
 
-brainjar supports multiple agent backends:
+A platform adapter knows where the agent's config lives, where to install hooks, and where to register MCP. The active context binds to one platform. The default is `claude`.
+
+List the registered adapters:
 
 ```bash
-brainjar init --backend claude   # Default — writes ~/.claude/CLAUDE.md
-brainjar init --backend codex    # Writes ~/.codex/AGENTS.md
+brainjar platform list
 ```
 
-Switch backends:
+```
+name      active  sync  hooks  mcp   spawn  scopes
+claude    *       yes   yes    yes   yes    project, local, user
+codex             yes   yes    yes   yes    project, user
+cursor            yes   yes    yes   no     project, user
+```
+
+Switch the active platform by switching contexts. There is no `--backend` or `--platform` flag on `init` or `reset`:
 
 ```bash
-brainjar reset --backend codex
+# Add a Codex context and use it
+brainjar context add codex --platform codex --workspace <uuid>
+brainjar context use codex
 ```
+
+See [`brainjar platform`](/reference/cli/#platform) and [`brainjar context`](/reference/cli/#context).
 
 ## Backup & restore
 
-On first sync, brainjar backs up any existing config to `CLAUDE.md.pre-brainjar`. Running `brainjar reset` removes brainjar-managed config and restores the backup.
+`brainjar sync` writes only inside a managed section delimited by markers in your platform's config file:
 
-For a step-by-step guide to decomposing an existing config file into brainjar layers, see [Migrating from Monolithic Prompts](/guides/migration/).
+```
+<!-- brainjar:begin -->
+… brainjar-managed content …
+<!-- brainjar:end -->
+```
+
+Everything outside the markers is yours. Re-running `sync` rewrites only what's between the markers; user content above and below is preserved verbatim.
+
+To pull brainjar out:
+
+```bash
+brainjar reset --yes
+```
+
+This removes `brainjar.db` and `config.yaml` from the brainjar home. Other files in the home (packs, exports) are left alone. `reset` does **not** touch the platform's config file — remove the brainjar-managed block from `CLAUDE.md` (or `AGENTS.md`) by hand if you want it gone.
+
+See [`brainjar reset`](/reference/cli/#reset).
+
+For decomposing an existing monolithic config into souls, personas, and rules, see [Migrating from Monolithic Prompts](/guides/migration/).

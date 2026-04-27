@@ -3,29 +3,26 @@ title: Authoring with AI
 description: Use your AI agent to help you create souls, personas, and rules.
 ---
 
-You don't have to write souls, personas, and rules from scratch. Every `create` command generates a **template** with structured sections — your agent sees the template and fills it in based on your description.
+You don't have to write souls, personas, and rules from scratch. Tell your agent what you want, let it draft the content, and pipe the result into `brainjar … create`. brainjar persists whatever you hand it — markdown is conventional but not enforced.
 
 If you already have a large config file, see [Migrating from Monolithic Prompts](/guides/migration/) for a step-by-step decomposition guide. This page covers creating new content from scratch.
 
-## How templates work
+See [CLI reference](/reference/cli/#soul) for `soul`, [`persona`](/reference/cli/#persona), [`rule`](/reference/cli/#rule), and [`versions`](/reference/cli/#versions).
 
-When you run a create command, brainjar generates a template on the server with section headers that guide the content:
+## How the workflow actually works
 
-- **Soul template:** title + space for voice, character, and standards
-- **Persona template:** YAML frontmatter for bundled rules + sections for direct mode, subagent mode, and baseline behaviors
-- **Rule template:** title + description placeholder + constraints section
+There is no scaffolded template. The agent decides the structure. brainjar's `create` commands upsert content from `--content`, `--file`, or stdin (precedence in that order). Re-running `create` with new content replaces the previous version — the old one is preserved in the version history (`brainjar versions <type> <slug>`).
 
-The workflow is create → show → update:
+The two-step flow:
+
+1. The agent drafts the content (in a temp file or on stdout).
+2. The agent runs `brainjar <type> create <slug> --file <path>` (or pipes via stdin).
+
+If the agent is iterating on existing content, it reads the current version with `show` first, then re-runs `create` with the revised text.
 
 ```bash
-# 1. Create — generates template on server
-brainjar soul create pragmatist --description "Direct and pragmatic"
-
-# 2. Show — agent reads the template to see the structure
-brainjar soul show pragmatist
-
-# 3. Update — agent writes the filled-in content back
-cat <<'EOF' | brainjar soul update pragmatist
+# 1. Agent writes the draft
+cat > /tmp/pragmatist.md <<'EOF'
 # Pragmatist
 
 Direct and pragmatic.
@@ -42,6 +39,10 @@ Direct and pragmatic.
 - If it's not tested, it's not done.
 - Simplest solution that solves the problem.
 EOF
+
+# 2. Agent upserts via create (stdin also works)
+brainjar soul create pragmatist --file /tmp/pragmatist.md
+cat /tmp/pragmatist.md | brainjar soul create pragmatist
 ```
 
 ## Creating a soul
@@ -53,7 +54,7 @@ Create a brainjar soul called "pragmatist" that's direct, avoids jargon,
 and values shipping over perfection.
 ```
 
-The agent runs `create`, reads the template with `show`, fills in the sections, and writes it back with `update`. The template's section headers (Voice, Character, Standards) guide what the agent writes.
+The agent drafts the content, then runs `brainjar soul create pragmatist --file <path>`. To refine later, the agent reads the existing content with `brainjar soul show pragmatist`, edits it, and re-runs `create` to upsert.
 
 ### Tips for good souls
 
@@ -79,7 +80,14 @@ Create a brainjar persona called "debugger". It should:
 Bundle the "boundaries" and "testing" rules.
 ```
 
-The agent runs `create` with `--rules boundaries,testing`, reads the template with `show`, and writes the filled-in content with `update`. The template includes section headers for **direct mode**, **subagent mode**, and **always** — which guide the agent's output.
+The agent drafts the persona content, then runs:
+
+```bash
+brainjar persona create debugger --file /tmp/debugger.md \
+  --rule boundaries --rule testing
+```
+
+`--rule` is repeatable — pass it once per bundled rule. To revise, the agent reads with `show`, edits, and re-runs `create`.
 
 ### Tips for good personas
 
@@ -105,7 +113,7 @@ from deleting any file without explicit user confirmation. It should
 list what will be deleted and why before asking.
 ```
 
-The agent creates the rule, reads the template with `show`, and writes the constraints with `update`. The template includes a **Constraints** section with bullet points to populate.
+The agent drafts the rule and runs `brainjar rule create no-delete --file <path>`. Same upsert semantics as souls and personas — re-running `create` replaces the content; old versions live in `brainjar versions rule no-delete`.
 
 ### Tips for good rules
 
@@ -124,23 +132,18 @@ Create a rule called "api-safety" with these constraints:
 
 ## Creating a brain
 
-Once your agent has created the layers you want, snapshot them:
-
-```
-Activate the "veteran" soul, "debugger" persona, and add the
-"no-delete" rule. Then save it all as a brain called "bug-hunt".
-```
-
-The agent runs:
+Once your agent has created the layers you want, bundle them into a brain. `brain save` takes the slugs directly — workspace state is not touched:
 
 ```bash
-brainjar soul use veteran
-brainjar persona use debugger
-brainjar rules add no-delete
-brainjar brain save bug-hunt
+brainjar brain save bug-hunt \
+  --soul veteran \
+  --persona debugger \
+  --rule no-delete
 ```
 
-Now `brainjar brain use bug-hunt` restores the full setup in one command.
+Add `--procedure <slug>` to bind a step-by-step playbook to the brain. Both `--soul` and `--persona` are required (pass `""` to leave either unset).
+
+Now `brainjar brain use bug-hunt` loads all four layers into workspace state in one shot, `brainjar shell --brain bug-hunt` spawns an agent with the full setup without touching state, or `brainjar compose bug-hunt` prints the composed prompt for use elsewhere.
 
 ## Iterating
 
@@ -156,7 +159,7 @@ The "veteran" soul is too terse. Add a line about being generous
 with explanations when the user asks "why".
 ```
 
-The agent reads the current content with `show`, modifies it, and writes it back with `update`. Run `brainjar sync` (or let hooks handle it) and the changes take effect immediately.
+The agent reads the current content with `show`, modifies it, and re-runs `create` to upsert. Run `brainjar sync` (or let hooks handle it) and the changes take effect immediately.
 
 ## Building a team of agents
 
@@ -186,10 +189,10 @@ See [Orchestration Patterns](/guides/orchestration-patterns/) for more multi-age
 
 ## Sharing what you built
 
-Export your setup as a pack so others can use it:
+Export the whole workspace as a JSON bundle so others can import it:
 
 ```bash
-brainjar pack export bug-hunt --author yourname --version 1.0.0
+brainjar pack export -o bug-hunt.json
 ```
 
-See [Packs](/guides/packs/) for details on sharing and importing.
+Packs are workspace-scoped — every soul, persona, rule, brain, and the active state ride along. See [Packs](/guides/packs/) for the import side.

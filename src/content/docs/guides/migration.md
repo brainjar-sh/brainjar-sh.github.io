@@ -7,11 +7,15 @@ This guide walks you through decomposing a single large config file into brainja
 
 ## Before you start
 
-brainjar backs up your existing config on first sync. The backup lives at `CLAUDE.md.pre-brainjar`. You can always restore it:
+`brainjar sync` writes only inside the markers `<!-- brainjar:begin -->` and `<!-- brainjar:end -->` in your platform's config file. Everything outside the markers is left alone.
+
+If you decide brainjar isn't for you, run:
 
 ```bash
-brainjar reset
+brainjar reset --yes
 ```
+
+That removes `brainjar.db` and `config.yaml` from the brainjar home. It does **not** restore your old `CLAUDE.md` — delete the brainjar-managed block by hand if you want it gone.
 
 If you haven't installed brainjar yet, start with [Getting Started](/getting-started/).
 
@@ -66,15 +70,17 @@ Speak with conviction. Own your mistakes.
 When you don't know something, say so plainly.
 ```
 
-Create a soul and put that content in it:
+Write the identity content to a file, then create the soul from it:
 
 ```bash
-brainjar soul create craftsman --description "Direct and rigorous"
+brainjar soul create craftsman --file ./craftsman.md
+# or pipe via stdin:
+cat craftsman.md | brainjar soul create craftsman
 ```
 
-Edit the soul template to include the identity lines. A good soul is typically 10-30 lines. If you're writing more than that, some of it probably belongs in a persona or rule.
+A good soul is typically 10-30 lines. If you're writing more than that, some of it probably belongs in a persona or rule.
 
-See [Souls](/concepts/souls/) for structure guidance.
+See [Souls](/concepts/souls/) for structure guidance, and the [`brainjar soul`](/reference/cli/#soul) reference.
 
 ## Step 2: Extract personas
 
@@ -86,14 +92,14 @@ Common patterns that indicate multiple personas:
 - "For design tasks, start with Z." — that's a third.
 - Different task types with different step-by-step instructions.
 
-From the example, there are two workflows. Create a persona for each:
+From the example, there are two workflows. Write each workflow to a file and create a persona for it:
 
 ```bash
-brainjar persona create engineer --description "Feature implementation workflow"
-brainjar persona create reviewer --description "Code review workflow"
+brainjar persona create engineer --file ./engineer.md
+brainjar persona create reviewer --file ./reviewer.md
 ```
 
-Move the workflow content into the appropriate persona. The engineer gets:
+The engineer's content:
 
 ```markdown
 When given a task:
@@ -103,7 +109,7 @@ When given a task:
 4. Commit in small logical chunks
 ```
 
-The reviewer gets:
+The reviewer's content:
 
 ```markdown
 When reviewing code:
@@ -112,17 +118,17 @@ When reviewing code:
 3. Suggest improvements, don't demand them
 ```
 
-See [Personas](/concepts/personas/) for more on persona structure.
+See [Personas](/concepts/personas/) for more on persona structure, and the [`brainjar persona`](/reference/cli/#persona) reference.
 
 ## Step 3: Extract rules
 
 Pull out every constraint, guardrail, and "never do X" statement. These are the hard boundaries on behavior.
 
-Group related constraints into named rules:
+Group related constraints into named rules. Write each rule's content to a file and create the rule from it:
 
 ```bash
-brainjar rules create git-discipline --description "Git workflow constraints"
-brainjar rules create security --description "Security and permission guardrails"
+brainjar rule create git-discipline --file ./git-discipline.md
+brainjar rule create security --file ./security.md
 ```
 
 From the example, `git-discipline` gets:
@@ -143,35 +149,30 @@ Always run tests before declaring done.
 
 One rule per concern. If a constraint doesn't fit an existing rule, create a new one. Don't force unrelated constraints into the same bucket.
 
-See [Rules](/concepts/rules/) for more detail.
+See [Rules](/concepts/rules/) for more detail, and the [`brainjar rule`](/reference/cli/#rule) reference.
 
 ## Step 4: Bundle and activate
 
-Some rules only matter for certain workflows. Bundle them with the persona:
+Some rules only matter for certain workflows. Bundle them with the persona at create time using the repeatable `--rule` flag:
 
 ```bash
-brainjar persona create reviewer --description "Code review" --rules security,boundaries
+brainjar persona create reviewer --file ./reviewer.md --rule security --rule boundaries
 ```
 
 Rules that apply to **all** workflows — activate them at workspace scope:
 
 ```bash
-brainjar rules add git-discipline
-brainjar rules add security
+brainjar rule add git-discipline
+brainjar rule add security
 ```
 
 Rules that apply to **specific** workflows — bundle them with the persona instead.
 
-Snapshot your configurations as brains so you can switch between them:
+Snapshot your configurations as brains so you can switch between them. `brain save` accepts the slugs directly, so you don't have to mutate workspace state first:
 
 ```bash
-brainjar soul use craftsman
-brainjar persona use engineer
-brainjar rules add git-discipline
-brainjar brain save build
-
-brainjar persona use reviewer
-brainjar brain save review
+brainjar brain save build --soul craftsman --persona engineer --rule git-discipline
+brainjar brain save review --soul craftsman --persona reviewer --rule security --rule boundaries
 ```
 
 Verify everything looks right:
@@ -180,11 +181,11 @@ Verify everything looks right:
 brainjar status
 ```
 
-See [Brains](/concepts/brains/) for more on saving and switching.
+See [Brains](/concepts/brains/) for more on saving and switching, and the [`brainjar brain`](/reference/cli/#brain) reference.
 
 ## What to keep outside brainjar
 
-Content between `<!-- brainjar:start -->` and `<!-- brainjar:end -->` is managed by brainjar. Everything outside those markers is yours.
+Content between `<!-- brainjar:begin -->` and `<!-- brainjar:end -->` is managed by brainjar. Everything outside those markers is yours.
 
 Good candidates to keep outside brainjar:
 
@@ -204,4 +205,4 @@ brainjar manages *behavior*. Project context stays in your config file, outside 
 - Bundle persona-specific rules with their persona
 - Save brains for each workflow
 - Test each brain in a short session
-- Export as a pack if sharing with teammates — see [Packs](/guides/packs/)
+- Export as a pack if sharing with teammates — `brainjar pack export -o myteam.json` produces a single JSON bundle. See [Packs](/guides/packs/) and the [`brainjar pack`](/reference/cli/#pack) reference.

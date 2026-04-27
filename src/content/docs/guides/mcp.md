@@ -29,38 +29,45 @@ The difference matters most for orchestration. The `compose` tool returns a stru
 Register brainjar as an MCP server:
 
 ```bash
-brainjar mcp add
+brainjar mcp install
 ```
 
-This auto-detects your agent (Claude Code, Cursor, etc.) and writes the MCP configuration globally. Options:
+This registers brainjar in the active platform's MCP config. Default scope is `user` (global across every project). Pass `--scope project` to commit a per-repo registration to `.mcp.json`, or `--scope local` for a per-checkout registration that is not shared with collaborators.
 
 ```bash
-brainjar mcp add --agent cursor     # Target a specific agent
-brainjar mcp add --no-global        # Project-local only
-brainjar mcp add -c "npx brainjar"  # Override the command
+brainjar mcp install --scope user      # Default — global across every project
+brainjar mcp install --scope project   # Committed per-repo registration (.mcp.json)
+brainjar mcp install --scope local     # Per-checkout, not shared with collaborators
 ```
 
-After registration, restart your agent session. The brainjar tools will appear automatically.
+The active platform adapter (Claude, Codex, …) decides where the registration is written. Switch platforms by switching contexts.
+
+After registration, restart your agent session. The brainjar tools will appear automatically. See the [CLI reference](/reference/cli/#mcp) for the full `mcp install / remove / status` surface.
 
 ## What's exposed
 
-Every brainjar operation is available as an MCP tool. The main categories:
+Every operation meaningful to an agent is available as an MCP tool. The main categories:
 
 | Tool | Description |
 |------|-------------|
-| `soul_create`, `soul_show`, `soul_update`, `soul_use`, `soul_drop` | Manage souls |
-| `persona_create`, `persona_show`, `persona_update`, `persona_use`, `persona_drop` | Manage personas |
-| `rules_create`, `rules_show`, `rules_update`, `rules_add`, `rules_remove` | Manage rules |
-| `brain_save`, `brain_show`, `brain_use`, `brain_drop` | Manage brains |
-| `compose` | Assemble a subagent prompt from brain or ad-hoc layers |
-| `status`, `sync` | Check and sync active configuration |
-| `pack_export`, `pack_import` | Share configurations |
+| `soul_save`, `soul_show`, `soul_list`, `soul_delete` | Manage souls |
+| `persona_save`, `persona_show`, `persona_list`, `persona_delete` | Manage personas |
+| `rule_save`, `rule_show`, `rule_list`, `rule_delete` | Manage rules |
+| `procedure_save`, `procedure_show`, `procedure_list`, `procedure_delete` | Manage procedures |
+| `brain_save`, `brain_show`, `brain_list`, `brain_delete` | Manage brains |
+| `compose` | Assemble a subagent prompt from a brain or ad-hoc layers |
+| `status` | Inspect active soul, persona, procedure, rules, and scope |
+| `state_get`, `state_set`, `state_delete` | Manage workspace and project state |
+| `version_list`, `version_show` | Browse prior versions of souls, personas, rules, procedures |
+| `workspace_create`, `workspace_list`, `workspace_get_by_name`, `workspace_rename`, `workspace_delete` | Manage workspaces |
+| `apikey_create`, `apikey_list`, `apikey_revoke` | Manage API keys |
+| `admin_export`, `admin_import` | Round-trip a workspace as a JSON pack |
 
-The full tool list matches the [CLI reference](/reference/cli/) — every command has an MCP equivalent.
+The MCP surface is similar to but not identical to the [CLI reference](/reference/cli/). The MCP server exposes only what's meaningful to an agent.
 
 ## Compose and orchestration
 
-The `compose` tool is the bridge between brainjar and multi-agent workflows. It assembles a full prompt (soul + persona + rules + task) and returns it as a structured response:
+The `compose` tool is the bridge between brainjar and multi-agent workflows. It assembles a full prompt (soul + persona + procedure + rules + task) and returns it as a structured response:
 
 ```
 result = mcp__brainjar__compose(brain="reviewer", task="Review the auth changes in src/auth/")
@@ -80,7 +87,7 @@ Agent(prompt=result.prompt, description="Implement auth module", isolation="work
 
 This is how coordinator personas (like a CTO or tech lead) orchestrate specialist teams — composing the right brain for each subtask and dispatching agents with full context. See [Orchestration Patterns](/guides/orchestration-patterns/) for detailed workflows.
 
-## MCP vs CLI vs skill files
+## MCP vs CLI vs shell
 
 brainjar offers three ways for agents to interact:
 
@@ -88,9 +95,9 @@ brainjar offers three ways for agents to interact:
 |--------|----------|
 | **MCP server** | Primary path. Native tool calls, structured responses, orchestration via compose. |
 | **CLI** | Scripting, CI pipelines, manual use in terminal. Agents can shell out but it's less ergonomic. |
-| **Skill files** | Slash-command shortcuts (e.g., `/brainjar status`). Complements MCP — doesn't replace it. |
+| **`brainjar shell`** | Spawn an agent with a composed prompt; no MCP needed. Useful for one-shot subagent runs from a terminal or another agent. |
 
-Use MCP as the default. Fall back to CLI for automation outside agent sessions. Add skill files if you want slash-command convenience on top.
+Use MCP as the default. Fall back to CLI for automation outside agent sessions. Reach for `brainjar shell` when you want to spawn an agent with a specific brain without registering MCP.
 
 ## Next steps
 

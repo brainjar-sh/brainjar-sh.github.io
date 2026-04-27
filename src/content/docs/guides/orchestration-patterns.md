@@ -5,7 +5,7 @@ description: Multi-agent workflow patterns using brainjar compose.
 
 ## Overview
 
-This page covers patterns for structuring multi-agent workflows. All patterns use `compose` as the building block — the MCP tool that assembles a full prompt from soul, persona, rules, and task. The assembled prompt is passed to Claude Code's Agent tool to spawn the subagent. See [Subagent Orchestration](/guides/subagents/) for compose basics.
+This page covers patterns for structuring multi-agent workflows. All patterns use `compose` as the building block — the MCP tool (and [CLI command](/reference/cli/#compose)) that assembles a full prompt from soul, persona, procedure, rules, and task. The assembled prompt is passed to Claude Code's Agent tool to spawn the subagent. See [Subagent Orchestration](/guides/subagents/) for compose basics.
 
 ## Sequential pipeline
 

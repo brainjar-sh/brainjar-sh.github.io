@@ -1,6 +1,6 @@
 ---
 title: brainjar
-description: Shape how your AI thinks — composable soul, persona, and rules for AI agents.
+description: Shape how your AI thinks — composable soul, persona, rules, and procedure for AI agents.
 template: splash
 hero:
   title: Shape how your AI thinks
@@ -26,13 +26,14 @@ Agent config files grow into unmanageable walls of text. One monolithic prompt f
 
 ## How it works
 
-Instead of one monolithic config file, brainjar separates agent behavior into composable layers. Each layer is a markdown document managed on the server. Mix and match them per project, per task, or per session.
+Instead of one monolithic config file, brainjar separates agent behavior into composable layers. Each layer is a markdown document under your local SQLite store (or a `brainjar serve` instance). Mix and match them per project or per task.
 
 <CardGrid>
 	<LinkCard title="Soul" href="/concepts/souls/" description="Who the agent is — voice, character, standards. The constant across all tasks." />
-	<LinkCard title="Persona" href="/concepts/personas/" description="How the agent works — role and workflow. Switch per task." />
+	<LinkCard title="Persona" href="/concepts/personas/" description="How the agent works — role and disposition. Switch per task." />
 	<LinkCard title="Rules" href="/concepts/rules/" description="What the agent must follow — behavioral constraints and guardrails." />
-	<LinkCard title="Brain" href="/concepts/brains/" description="A saved snapshot of soul + persona + rules. One command to activate." />
+	<LinkCard title="Procedure" href="/concepts/procedures/" description="The step-by-step playbook the agent runs. Swap method without changing role." />
+	<LinkCard title="Brain" href="/concepts/brains/" description="A saved bundle of soul + persona + rules + procedure. One command to load." />
 </CardGrid>
 
 ## Quick install
@@ -46,11 +47,11 @@ That gives you a workspace, a default API key, and everything you need to start 
 
 ## Built for agents
 
-brainjar is built with [incur](https://github.com/wevm/incur), a CLI framework designed for agent consumption. Every command auto-detects whether it's talking to a human or an agent — structured output (TOON, JSON, YAML) when piped, formatted text with context when interactive. Agents discover the full CLI via `--llms`, MCP server, or skill files.
+Every brainjar command takes `--json` for machine-readable output on stdout and a structured error envelope on stderr. The same binary doubles as an MCP server (`brainjar mcp`) so agents call composition, state, and content tools natively rather than shelling out.
 
 ```bash
-brainjar status                     # human: formatted with context
-brainjar status --format toon       # agent: structured data
+brainjar status                # human: formatted with context
+brainjar status --json         # agent: structured data
 ```
 
 These docs are agent-readable too. Point your agent at [`brainjar.sh/llms.txt`](https://brainjar.sh/llms.txt) for a doc index, or append `.md` to any page URL for raw markdown (e.g. [`/getting-started.md`](https://brainjar.sh/getting-started.md)).

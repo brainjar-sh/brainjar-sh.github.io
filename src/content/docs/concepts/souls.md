@@ -10,10 +10,12 @@ Think of it as the agent's **voice**.
 ## Creating a soul
 
 ```bash
-brainjar soul create mysoul --description "Direct and rigorous"
+cat mysoul.md | brainjar soul create mysoul
+# or
+brainjar soul create mysoul --file ./mysoul.md
 ```
 
-This creates a soul on the server with a starter template — a title and your description. You fill in the rest, or let your AI agent do it (see [Authoring with AI](/guides/authoring-with-ai/)).
+`create` is an upsert — it stores whatever content you hand it (stdin, `--content`, or `--file`, in that precedence order). There is no scaffolded template; author the content yourself or have your agent author it (see [Authoring with AI](/guides/authoring-with-ai/)).
 
 A good soul covers three areas:
 
@@ -42,15 +44,18 @@ brainjar soul use mysoul
 ## Managing souls
 
 ```bash
-brainjar soul list                  # See available souls
-brainjar soul show                  # View the active soul
-brainjar soul show mysoul           # View a specific soul
-brainjar soul history mysoul        # List version history
-brainjar soul show mysoul --rev 2   # View a previous version
-brainjar soul revert mysoul --to 2  # Restore a previous version
-brainjar soul drop mysoul           # Deactivate a soul
-brainjar soul delete mysoul         # Permanently delete a soul
+brainjar soul list                   # See available souls
+brainjar soul show                   # View the active soul
+brainjar soul show mysoul            # View a specific soul
+brainjar versions soul mysoul        # List version history
+brainjar versions soul mysoul 2      # Print version 2's content to stdout
+brainjar soul drop mysoul            # Deactivate (clear the active-soul override)
+brainjar soul delete mysoul          # Permanently delete a soul
 ```
+
+There is no revert subcommand. To restore an old version, capture its content with `brainjar versions soul mysoul <n>` and feed it back in: `brainjar versions soul mysoul 2 | brainjar soul create mysoul`.
+
+See full flag and subcommand details in the [CLI reference for `soul`](/reference/cli/#soul) and [`versions`](/reference/cli/#versions).
 
 ## When to use different souls
 

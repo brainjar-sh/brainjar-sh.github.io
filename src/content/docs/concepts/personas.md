@@ -10,15 +10,20 @@ Think of it as the agent's **job description**.
 ## Creating a persona
 
 ```bash
-brainjar persona create planner --description "Design and planning sessions"
+cat planner.md | brainjar persona create planner
+# or
+brainjar persona create planner --file ./planner.md
 ```
 
-This creates a persona on the server with a structured template — sections for **direct mode**, **subagent mode**, and **always** behaviors. Fill it in yourself or let your AI agent handle it (see [Authoring with AI](/guides/authoring-with-ai/)).
+`create` is an upsert — it stores whatever content you hand it (stdin, `--content`, or `--file`, in that precedence order). The CLI does not ship a template. A common shape is a short opener followed by sections for direct mode, subagent mode, and always-on behaviors, but the structure is up to you (or your agent — see [Authoring with AI](/guides/authoring-with-ai/)).
 
-You can also bundle rules at creation time:
+You can also bundle rules at creation time. The flag is `--rule` and is repeatable:
 
 ```bash
-brainjar persona create planner --description "Design and planning sessions" --rules boundaries,security
+brainjar persona create planner \
+  --file ./planner.md \
+  --rule boundaries \
+  --rule security
 ```
 
 Here's what a filled-in persona looks like:
@@ -46,16 +51,17 @@ requirements into concrete, actionable plans.
 
 ## Bundled rules
 
-Rules bundled at creation time (via `--rules`) automatically activate when the persona is active. They merge with any explicitly activated rules — deduplication is automatic.
+Rules bundled at creation time (via `--rule`, repeatable) automatically activate when the persona is active. They merge with any explicitly activated rules — deduplication is automatic.
 
 ## Activating a persona
 
 ```bash
-brainjar persona use planner            # Workspace scope (or project if auto-detected)
-brainjar persona use planner --project  # Explicitly force project scope
+brainjar persona use planner
 ```
 
-Project scope is auto-detected when your working directory contains a `.brainjar/` directory.
+`persona use` writes to the **workspace** state override. Project scope is auto-resolved from the basename of the nearest `.git` root (must be a valid slug — lowercase, hyphen-separated). Commands that accept a `--project <slug>` flag (`status`, `sync`, etc.) take that as an override; `persona use` itself does not take `--project`.
+
+After switching, run `brainjar sync` (or rely on the SessionStart hook) to push the change into the platform's managed CLAUDE.md block.
 
 ## Managing personas
 
@@ -63,12 +69,15 @@ Project scope is auto-detected when your working directory contains a `.brainjar
 brainjar persona list                    # See available personas
 brainjar persona show                    # View the active persona
 brainjar persona show reviewer           # View a specific persona
-brainjar persona history reviewer        # List version history
-brainjar persona show reviewer --rev 2   # View a previous version
-brainjar persona revert reviewer --to 2  # Restore a previous version
-brainjar persona drop reviewer           # Deactivate a persona
+brainjar versions persona reviewer       # List version history
+brainjar versions persona reviewer 2     # Print version 2's content to stdout
+brainjar persona drop reviewer           # Deactivate (clear the active-persona override)
 brainjar persona delete reviewer         # Permanently delete a persona
 ```
+
+There is no revert subcommand. To restore an old version, capture its content with `brainjar versions persona reviewer <n>` and pipe it back into `brainjar persona create reviewer`.
+
+See full flag and subcommand details in the [CLI reference for `persona`](/reference/cli/#persona) and [`versions`](/reference/cli/#versions).
 
 ## Switching per task
 
@@ -78,8 +87,8 @@ brainjar persona use reviewer   # Review session
 brainjar persona use planner    # Design session
 ```
 
-Or scope it to a single shell session:
+Or scope it to a single shell session — composed in memory, no disk write:
 
 ```bash
-brainjar shell --persona reviewer
+brainjar shell --persona reviewer --task "Audit src/auth"
 ```
