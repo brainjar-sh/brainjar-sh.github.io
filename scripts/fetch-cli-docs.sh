@@ -290,9 +290,15 @@ extract_section() {
                 # Strip the leading "<" and trailing ">" from tag so
                 # we can rebuild with sentinel bytes instead.
                 inner = substr(tag, 2, length(tag) - 2)
-                if (substr(before, length(before)) == "`") {
-                    # Already wrapped in backticks (cobra edge case or
-                    # re-run) — just sentinel-mark to move past.
+                # Count backticks in `before` to detect whether the
+                # match sits inside an already-open inline code span.
+                # An odd count means an open span is still active and
+                # the angle brackets will render literally without us
+                # adding more backticks; wrapping anyway would close
+                # the existing span and produce stray double backticks.
+                tmp = before
+                n_ticks = gsub(/`/, "&", tmp)
+                if (n_ticks % 2 == 1) {
                     $0 = before "\001" inner "\002" after
                 } else {
                     $0 = before "`\001" inner "\002`" after
