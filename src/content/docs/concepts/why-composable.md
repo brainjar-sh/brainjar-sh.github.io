@@ -21,7 +21,8 @@ The monolithic file is a dead end. It conflates identity, workflow, and constrai
 
 The most advanced AI agent systems don't use monolithic prompts. They assemble prompts from modular, composable sections at runtime:
 
-- **Cached identity sections** — who the agent is, how it behaves. Stable across sessions. Loaded once and reused.
+- **Cached identity sections** — who the agent is, how it sounds. Stable across sessions. Loaded once and reused.
+- **Role and method sections** — the role the agent is playing right now and the playbook it's following. Swappable per task.
 - **Dynamic task sections** — current context, active tools, user-specific state. Changes every turn or every session.
 - **Behavioral constraints** — guardrails applied conditionally based on context, project, or task type.
 
@@ -35,23 +36,25 @@ The industry is converging on composable prompt architectures. The question is w
 
 Software engineers already know this principle: separate things that change for different reasons. The same logic applies to prompt configuration.
 
-Three natural seams emerge:
+Four natural seams emerge:
 
 | Layer | Maps to | Changes when |
 |-------|---------|--------------|
 | [Soul](/concepts/souls/) | Identity — voice, character, standards | Rarely. Reflects *who* the agent is. |
-| [Persona](/concepts/personas/) | Role — workflow, methodology, tools | Per task. Reflects *what* the agent is doing. |
+| [Persona](/concepts/personas/) | Role — disposition, methodology | Per task. Reflects *what* the agent is doing. |
+| [Procedure](/concepts/procedures/) | Method — step-by-step playbook for a workflow | Per workflow. Reflects *how* the work gets done. |
 | [Rules](/concepts/rules/) | Constraints — guardrails, policies | Per project or context. Reflects *what the agent must not do*. |
 
 These aren't arbitrary divisions. They map to how behavior naturally decomposes:
 
 - *Who you are* doesn't change when you switch tasks.
 - *What you're doing* doesn't change your core character.
-- *What you must not do* depends on the project, not the persona.
+- *How you carry it out* can be swapped without changing role — a CTO running a delivery loop and a CTO triaging an incident share the same persona but follow different procedures.
+- *What you must not do* depends on the project, not the persona or the playbook.
 
-A monolithic file manages all three in one blob. When you change the voice, you risk breaking a guardrail. When you add a project rule, you're editing the same file that defines workflow. When you want to share just the guardrails with a teammate, you can't — they're tangled into everything else.
+A monolithic file manages all of these in one blob. When you change the voice, you risk breaking a guardrail. When you add a project rule, you're editing the same file that defines workflow. When you want to share just the guardrails with a teammate, you can't — they're tangled into everything else.
 
-Composable layers let you change one concern without touching the others. Update the voice across every project by editing one soul. Swap the workflow by switching one persona. Add a security constraint without reading 400 lines of unrelated config.
+Composable layers let you change one concern without touching the others. Update the voice across every project by editing one soul. Swap the workflow by switching one procedure. Add a security constraint without reading 400 lines of unrelated config.
 
 ## What this enables
 
@@ -72,19 +75,22 @@ brainjar pack import -i review.json
 
 One JSON bundle, version-controlled, shareable. See [Packs](/guides/packs/).
 
-**Subagent orchestration.** Compose a full prompt from named layers and dispatch it to a subagent. The lead agent doesn't paste raw text — it assembles a prompt from components via the MCP tool:
+**Subagent orchestration.** Compose a full prompt from named layers and dispatch it to a subagent. The lead agent doesn't paste raw text — it calls the MCP tool with a structured source:
 
-```
-mcp__brainjar__compose(brain="review", task="Review changes in src/sync.ts")
+```jsonc
+mcp__brainjar__compose({
+  source: { kind: "brain", brain_slug: "review" },
+  task:   "Review changes in src/sync.ts"
+})
 ```
 
-The returned prompt is passed to Claude Code's Agent tool to spawn the subagent. Each worker gets exactly the identity, role, and constraints it needs — with worktree isolation available for parallel dispatch. See [Subagent Orchestration](/guides/subagents/).
+The returned `prompt` is passed to Claude Code's Agent tool to spawn the subagent. Each worker gets exactly the identity, role, procedure, and constraints it needs — with worktree isolation available for parallel dispatch. See [Subagent Orchestration](/guides/subagents/).
 
 **Reproducibility.** Save a configuration, restore it anywhere. Same layers in, same behavior out. No drift, no "works on my machine" for agent setups. Debug a misbehaving agent by inspecting each layer independently — you can see exactly which layer introduced a behavior.
 
 ## brainjar's approach
 
-brainjar treats prompt configuration as a first-class engineering artifact. Souls, personas, and rules are version-controlled markdown documents. They compose into brains. Brains compose into full prompts. The CLI drives the workflow; the server holds the state.
+brainjar treats prompt configuration as a first-class engineering artifact. Souls, personas, procedures, and rules are version-controlled markdown documents stored in a local SQLite database (or a `brainjar serve` instance, if you want a shared one). They compose into brains. Brains compose into full prompts on demand — written into your platform's config file with `sync`, spawned in-memory with `shell`, or returned as text from `compose` for orchestration.
 
 The result: agent behavior that's modular, shareable, and reproducible — managed with the same rigor you'd apply to code.
 
