@@ -11,14 +11,27 @@ brainjar exposes `compose` as both an MCP tool and a CLI command. When orchestra
 
 **MCP tool (primary path — used inside Claude Code):**
 
-```
-mcp__brainjar__compose(brain="review", task="Review the changes in src/sync.ts")
+The MCP `compose` tool takes a `source` object that selects how the stack is resolved (a saved brain, a persona plus inferred soul, or the active state) plus an optional `task`:
+
+```jsonc
+mcp__brainjar__compose({
+  source: { kind: "brain", brain_slug: "review" },
+  task:   "Review the changes in src/sync.ts"
+})
 ```
 
-The tool returns a `prompt` field containing the assembled prompt. Feed it to the Agent tool to spawn the subagent:
+```jsonc
+// Ad-hoc — no saved brain needed
+mcp__brainjar__compose({
+  source: { kind: "persona", persona_slug: "reviewer", rule_slugs: ["security"] },
+  task:   "Review the changes in src/sync.ts"
+})
+```
+
+The tool returns a `prompt` field with the assembled text plus token estimates and warnings. Feed `prompt` to the Agent tool to spawn the subagent:
 
 ```
-Agent(prompt=<compose result>, description="Review sync changes")
+Agent(prompt=<compose result>.prompt, description="Review sync changes")
 ```
 
 **CLI (for scripting or manual use):**
@@ -66,24 +79,24 @@ Each agent gets its own copy of the repo. After all agents finish, the coordinat
 
 The lead persona's instructions include workflow phases. Here's how a review flow works in practice:
 
-```
-# 1. Compose the reviewer prompt
-result = mcp__brainjar__compose(
-  persona="reviewer",
-  task="Review changes in src/sync.ts against docs/design-sync.md"
-)
+```jsonc
+// 1. Compose the reviewer prompt
+result = mcp__brainjar__compose({
+  source: { kind: "persona", persona_slug: "reviewer" },
+  task:   "Review changes in src/sync.ts against docs/design-sync.md"
+})
 
-# 2. Spawn it as a subagent via Agent tool
+// 2. Spawn it as a subagent via Agent tool
 Agent(prompt=result.prompt, description="Review sync changes")
 
-# 3. Read the review results
-# 4. Fix issues if needed
+// 3. Read the review results
+// 4. Fix issues if needed
 
-# 5. Compose and spawn a documenter
-result = mcp__brainjar__compose(
-  persona="documenter",
-  task="Update docs to reflect changes in src/sync.ts"
-)
+// 5. Compose and spawn a documenter
+result = mcp__brainjar__compose({
+  source: { kind: "persona", persona_slug: "documenter" },
+  task:   "Update docs to reflect changes in src/sync.ts"
+})
 Agent(prompt=result.prompt, description="Update sync docs")
 ```
 

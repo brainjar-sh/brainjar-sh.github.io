@@ -3,7 +3,7 @@ title: Configuration
 description: State cascade, project scope, contexts, platforms, and config file.
 ---
 
-brainjar's configuration surface is small on purpose. Effective state comes from a two-layer cascade. Where things live on disk is governed by `~/.brainjar`. The active platform and remote endpoint are bundled into a *context*. That's the whole picture.
+brainjar's configuration surface is small on purpose. Effective state comes from a two-tier cascade (workspace → project). State is which soul, persona, procedure, and rules are active. Where things live on disk is governed by `~/.brainjar`. The active platform and remote endpoint are bundled into a *context*. That's the whole picture.
 
 ## State cascade
 
@@ -15,32 +15,53 @@ workspace  →  project
 
 ### Workspace state
 
-The default everyone in the workspace sees. Set without any extra flags:
+The default everyone in the workspace sees. Every CLI state command (`soul use`, `persona use`, `procedure use`, `rule add`, `rule remove`, etc.) writes here:
 
 ```bash
+brainjar soul use craftsman      # workspace soul
 brainjar persona use engineer    # workspace persona
+brainjar procedure use delivery  # workspace procedure
 brainjar rule add security       # workspace rule
 ```
 
 ### Project state
 
-A per-repo override that only applies inside one project. Workspace settings still flow through — project state only changes the layers you explicitly set.
+A per-repo override that only applies inside one project. Workspace settings still flow through — project state only changes the layers you explicitly set at project scope.
 
-```bash
-cd my-project       # inside a git repo with a slug-shaped directory name
-brainjar persona use planner       # project persona overrides workspace persona
-brainjar rule add no-delete        # project rule adds on top of workspace rules
+Project-scoped state is read at sync/status/compose time but is **not** writable from the regular CLI commands. `brainjar persona use`, `soul use`, `rule add`, and friends always write to **workspace** state regardless of cwd. To write a project-scoped override, call the `state_set` MCP tool with a `project` field — typically from inside an agent session, where the agent's MCP client targets a specific repo.
+
+```jsonc
+// From an agent — state_set with project field writes a project layer
+{
+  "tool": "state_set",
+  "input": {
+    "project": "my-project",
+    "persona_slug": "planner",
+    "rules_to_add": ["no-delete"]
+  }
+}
 ```
 
-`brainjar status` annotates each line with the layer it came from:
+Once a project layer exists, `brainjar status` shows both the effective state (resolved across all layers) and the raw layer chain underneath:
 
 ```
-soul     craftsman (workspace)
-persona  planner (project)
-rules    boundaries (workspace), no-delete (+project)
+workspace: <uuid>
+home:      ~/.brainjar
+
+effective state
+  soul:      craftsman
+  persona:   planner
+  procedure: (unset)
+  rules:
+    - boundaries
+    - no-delete
+
+layers
+  workspace/<uuid>      soul=craftsman persona=engineer procedure=(absent) +[boundaries] -[]
+  project/my-project    soul=(absent)  persona=planner  procedure=(absent) +[no-delete]  -[]
 ```
 
-The `(+project)` annotation marks rules added at project scope; `(-project)` marks rules masked off for this project only.
+Each layer entry shows `+[…]` for rules added at that scope and `-[…]` for rules masked off. The effective state is the merged view: project overrides workspace where set, otherwise workspace wins.
 
 See [`brainjar status`](/reference/cli/#status) and [`brainjar sync`](/reference/cli/#sync).
 

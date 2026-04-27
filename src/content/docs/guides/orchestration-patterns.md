@@ -13,27 +13,39 @@ One agent's output feeds the next. Each stage uses a different brain tuned to it
 
 **Example: Design, Build, Review**
 
-```
-# Stage 1 — architect produces a design doc
-prompt = mcp__brainjar__compose(brain="architect", task="Design the caching layer for src/api/")
-Agent(prompt=prompt, description="Design caching layer")
+```jsonc
+// Stage 1 — architect produces a design doc
+result = mcp__brainjar__compose({
+  source: { kind: "brain", brain_slug: "architect" },
+  task:   "Design the caching layer for src/api/"
+})
+Agent(prompt=result.prompt, description="Design caching layer")
 
-# Stage 2 — engineer implements the design (after reading the design doc)
-prompt = mcp__brainjar__compose(brain="engineer", task="Implement the design in docs/design-cache.md")
-Agent(prompt=prompt, description="Implement caching layer")
+// Stage 2 — engineer implements the design
+result = mcp__brainjar__compose({
+  source: { kind: "brain", brain_slug: "engineer" },
+  task:   "Implement the design in docs/design-cache.md"
+})
+Agent(prompt=result.prompt, description="Implement caching layer")
 
-# Stage 3 — reviewer validates the implementation
-prompt = mcp__brainjar__compose(brain="reviewer", task="Review the implementation against docs/design-cache.md")
-Agent(prompt=prompt, description="Review caching implementation")
+// Stage 3 — reviewer validates the implementation
+result = mcp__brainjar__compose({
+  source: { kind: "brain", brain_slug: "reviewer" },
+  task:   "Review the implementation against docs/design-cache.md"
+})
+Agent(prompt=result.prompt, description="Review caching implementation")
 ```
 
 Each stage writes its output to a known file path. The next stage references that path in its `task` string. The architect writes `docs/design-cache.md`. The engineer reads it and writes code. The reviewer reads both.
 
 You can extend the pipeline. A four-stage version might add a documenter at the end:
 
-```
-prompt = mcp__brainjar__compose(brain="documenter", task="Update docs/ to reflect the caching changes in src/api/")
-Agent(prompt=prompt, description="Document caching changes")
+```jsonc
+result = mcp__brainjar__compose({
+  source: { kind: "brain", brain_slug: "documenter" },
+  task:   "Update docs/ to reflect the caching changes in src/api/"
+})
+Agent(prompt=result.prompt, description="Document caching changes")
 ```
 
 **When to use:** Tasks with clear phase dependencies where each phase needs different expertise. Design-then-build is the most common case.
@@ -46,16 +58,19 @@ Multiple agents work on independent subtasks simultaneously. Each agent gets a s
 
 A coordinator breaks a feature into independent modules, then dispatches N agents in parallel. Each agent uses the same brain but gets a task-specific assignment. Use **worktree isolation** so agents don't conflict on files:
 
-```
-# All three dispatched in the same message — they run concurrently
-prompt1 = mcp__brainjar__compose(brain="engineer", task="Implement the auth module per docs/design.md#auth")
-Agent(prompt=prompt1, description="Implement auth module", isolation="worktree")
+```jsonc
+// All three dispatched in the same message — they run concurrently
+r1 = mcp__brainjar__compose({ source: { kind: "brain", brain_slug: "engineer" },
+                              task:   "Implement the auth module per docs/design.md#auth" })
+Agent(prompt=r1.prompt, description="Implement auth module", isolation="worktree")
 
-prompt2 = mcp__brainjar__compose(brain="engineer", task="Implement the storage module per docs/design.md#storage")
-Agent(prompt=prompt2, description="Implement storage module", isolation="worktree")
+r2 = mcp__brainjar__compose({ source: { kind: "brain", brain_slug: "engineer" },
+                              task:   "Implement the storage module per docs/design.md#storage" })
+Agent(prompt=r2.prompt, description="Implement storage module", isolation="worktree")
 
-prompt3 = mcp__brainjar__compose(brain="engineer", task="Implement the API module per docs/design.md#api")
-Agent(prompt=prompt3, description="Implement API module", isolation="worktree")
+r3 = mcp__brainjar__compose({ source: { kind: "brain", brain_slug: "engineer" },
+                              task:   "Implement the API module per docs/design.md#api" })
+Agent(prompt=r3.prompt, description="Implement API module", isolation="worktree")
 ```
 
 Each agent works in its own worktree — an isolated copy of the repo. When all agents finish, the coordinator merges results into the main branch and resolves any integration issues (import conflicts, API mismatches, etc.).
@@ -95,21 +110,25 @@ When given a feature request:
 
 The coordinator itself does phase 2 (synthesis and approval). It delegates phases 1, 3, and 4 via compose calls:
 
-```
-# Phase 1 — research
-prompt = mcp__brainjar__compose(persona="architect", task="Analyze the auth requirements in src/auth/")
-Agent(prompt=prompt, description="Research auth requirements")
+```jsonc
+// Phase 1 — research
+r = mcp__brainjar__compose({ source: { kind: "persona", persona_slug: "architect" },
+                             task:   "Analyze the auth requirements in src/auth/" })
+Agent(prompt=r.prompt, description="Research auth requirements")
 
-# Phase 3 — implementation (after user approves the design)
-prompt = mcp__brainjar__compose(brain="builder", task="Implement the auth changes per docs/design-auth.md")
-Agent(prompt=prompt, description="Build auth module", isolation="worktree")
+// Phase 3 — implementation (after user approves the design)
+r = mcp__brainjar__compose({ source: { kind: "brain", brain_slug: "builder" },
+                             task:   "Implement the auth changes per docs/design-auth.md" })
+Agent(prompt=r.prompt, description="Build auth module", isolation="worktree")
 
-# Phase 4 — verification (both dispatched in the same message for parallel execution)
-prompt = mcp__brainjar__compose(persona="reviewer", task="Review auth implementation against docs/design-auth.md")
-Agent(prompt=prompt, description="Review auth changes")
+// Phase 4 — verification (both dispatched in the same message for parallel execution)
+r = mcp__brainjar__compose({ source: { kind: "persona", persona_slug: "reviewer" },
+                             task:   "Review auth implementation against docs/design-auth.md" })
+Agent(prompt=r.prompt, description="Review auth changes")
 
-prompt = mcp__brainjar__compose(persona="documenter", task="Document the auth changes in docs/auth.md")
-Agent(prompt=prompt, description="Document auth changes")
+r = mcp__brainjar__compose({ source: { kind: "persona", persona_slug: "documenter" },
+                             task:   "Document the auth changes in docs/auth.md" })
+Agent(prompt=r.prompt, description="Document auth changes")
 ```
 
 See [Personas](/concepts/personas/) for structuring coordinator personas.
@@ -118,30 +137,34 @@ See [Personas](/concepts/personas/) for structuring coordinator personas.
 
 A persistent team of agents with fixed roles. The coordinator dispatches to known specialists by brain name.
 
-**Setup:**
+**Setup:** save one brain per specialist. `brain save` requires `--soul` and `--persona`; `--rule` and `--procedure` are optional and `--rule` is repeatable.
 
 ```bash
-brainjar brain save architect
-brainjar brain save builder
-brainjar brain save reviewer
-brainjar brain save documenter
+brainjar brain save architect  --soul craftsman --persona architect  --rule boundaries
+brainjar brain save builder    --soul craftsman --persona engineer   --rule git-discipline --rule testing
+brainjar brain save reviewer   --soul craftsman --persona reviewer   --rule security --rule boundaries
+brainjar brain save documenter --soul craftsman --persona documenter
 ```
 
-Each brain has its own soul, persona, and rules tuned to its role. The coordinator knows the team roster and picks the right specialist for each task:
+Each brain bundles its own soul, persona, rules, and (optionally) procedure tuned to its role. The coordinator knows the team roster and picks the right specialist for each task:
 
-```
-# Coordinator dispatches based on the task type
-prompt = mcp__brainjar__compose(brain="architect", task="Analyze the performance bottleneck in src/sync/")
-Agent(prompt=prompt, description="Analyze perf bottleneck")
+```jsonc
+// Coordinator dispatches based on the task type
+r = mcp__brainjar__compose({ source: { kind: "brain", brain_slug: "architect" },
+                             task:   "Analyze the performance bottleneck in src/sync/" })
+Agent(prompt=r.prompt, description="Analyze perf bottleneck")
 
-prompt = mcp__brainjar__compose(brain="builder", task="Implement the fix outlined in docs/design-perf.md")
-Agent(prompt=prompt, description="Implement perf fix", isolation="worktree")
+r = mcp__brainjar__compose({ source: { kind: "brain", brain_slug: "builder" },
+                             task:   "Implement the fix outlined in docs/design-perf.md" })
+Agent(prompt=r.prompt, description="Implement perf fix", isolation="worktree")
 
-prompt = mcp__brainjar__compose(brain="reviewer", task="Review the perf changes in src/sync/")
-Agent(prompt=prompt, description="Review perf changes")
+r = mcp__brainjar__compose({ source: { kind: "brain", brain_slug: "reviewer" },
+                             task:   "Review the perf changes in src/sync/" })
+Agent(prompt=r.prompt, description="Review perf changes")
 
-prompt = mcp__brainjar__compose(brain="documenter", task="Document the new caching behavior in docs/")
-Agent(prompt=prompt, description="Document caching behavior")
+r = mcp__brainjar__compose({ source: { kind: "brain", brain_slug: "documenter" },
+                             task:   "Document the new caching behavior in docs/" })
+Agent(prompt=r.prompt, description="Document caching behavior")
 ```
 
 The team stays stable across projects. You define the brains once and reuse them. New projects inherit the same specialists — only the tasks change. Over time, you refine each specialist's persona and rules based on the quality of its output.

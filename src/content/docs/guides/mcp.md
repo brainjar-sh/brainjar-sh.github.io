@@ -17,9 +17,12 @@ brainjar compose review --task "Review src/sync.ts"
 
 With MCP, the agent calls tools directly:
 
-```
-mcp__brainjar__persona_show(name="reviewer")
-mcp__brainjar__compose(brain="review", task="Review src/sync.ts")
+```jsonc
+mcp__brainjar__persona_show({ slug: "reviewer" })
+mcp__brainjar__compose({
+  source: { kind: "brain", brain_slug: "review" },
+  task:   "Review src/sync.ts"
+})
 ```
 
 The difference matters most for orchestration. The `compose` tool returns a structured prompt that feeds directly into the Agent tool for subagent dispatch — no shell capture, no string wrangling. See [Subagent Orchestration](/guides/subagents/).
@@ -67,13 +70,16 @@ The MCP surface is similar to but not identical to the [CLI reference](/referenc
 
 ## Compose and orchestration
 
-The `compose` tool is the bridge between brainjar and multi-agent workflows. It assembles a full prompt (soul + persona + procedure + rules + task) and returns it as a structured response:
+The `compose` tool is the bridge between brainjar and multi-agent workflows. It takes a `source` object that selects how the stack is resolved (saved brain, persona plus inferred soul, or active state) and returns the assembled prompt with token estimates and warnings:
 
-```
-result = mcp__brainjar__compose(brain="reviewer", task="Review the auth changes in src/auth/")
+```jsonc
+result = mcp__brainjar__compose({
+  source: { kind: "brain", brain_slug: "reviewer" },
+  task:   "Review the auth changes in src/auth/"
+})
 ```
 
-The returned prompt is ready to pass to the Agent tool:
+The returned `prompt` field is ready to pass to the Agent tool:
 
 ```
 Agent(prompt=result.prompt, description="Review auth changes")

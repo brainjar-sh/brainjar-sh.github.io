@@ -1,13 +1,13 @@
 ---
 title: Authoring with AI
-description: Use your AI agent to help you create souls, personas, and rules.
+description: Use your AI agent to help you create souls, personas, rules, and procedures.
 ---
 
-You don't have to write souls, personas, and rules from scratch. Tell your agent what you want, let it draft the content, and pipe the result into `brainjar … create`. brainjar persists whatever you hand it — markdown is conventional but not enforced.
+You don't have to write souls, personas, rules, or procedures from scratch. Tell your agent what you want, let it draft the content, and pipe the result into `brainjar … create`. brainjar persists whatever you hand it — markdown is conventional but not enforced.
 
 If you already have a large config file, see [Migrating from Monolithic Prompts](/guides/migration/) for a step-by-step decomposition guide. This page covers creating new content from scratch.
 
-See [CLI reference](/reference/cli/#soul) for `soul`, [`persona`](/reference/cli/#persona), [`rule`](/reference/cli/#rule), and [`versions`](/reference/cli/#versions).
+See the CLI reference for [`soul`](/reference/cli/#soul), [`persona`](/reference/cli/#persona), [`rule`](/reference/cli/#rule), [`procedure`](/reference/cli/#procedure), and [`versions`](/reference/cli/#versions).
 
 ## How the workflow actually works
 
@@ -115,6 +115,21 @@ list what will be deleted and why before asking.
 
 The agent drafts the rule and runs `brainjar rule create no-delete --file <path>`. Same upsert semantics as souls and personas — re-running `create` replaces the content; old versions live in `brainjar versions rule no-delete`.
 
+## Creating a procedure
+
+A procedure is a step-by-step playbook — the *method* the agent follows. Lift one out when the same sequence of phases applies to multiple personas.
+
+```
+Create a brainjar procedure called "delivery" with phases:
+- design (architect produces a design doc)
+- approve (user signs off)
+- build (engineer implements)
+- verify (reviewer checks against the design)
+Define inputs and outputs for each phase.
+```
+
+The agent drafts the playbook and runs `brainjar procedure create delivery --file <path>`. Bind it to a brain via `brainjar brain save … --procedure delivery`, or activate it directly in workspace state with `brainjar procedure use delivery`. See [Procedures](/concepts/procedures/) for guidance on when a procedure earns its keep vs. living inside a persona.
+
 ### Tips for good rules
 
 - One rule, one concern. Don't cram multiple unrelated constraints into one file.
@@ -159,7 +174,7 @@ The "veteran" soul is too terse. Add a line about being generous
 with explanations when the user asks "why".
 ```
 
-The agent reads the current content with `show`, modifies it, and re-runs `create` to upsert. Run `brainjar sync` (or let hooks handle it) and the changes take effect immediately.
+The agent reads the current content with `show`, modifies it, and re-runs `create` to upsert. Each re-create stores a new version — old content stays accessible via `brainjar versions <type> <slug> [n]`. Run `brainjar sync` (or let hooks handle it) and the changes take effect immediately.
 
 ## Building a team of agents
 
@@ -195,4 +210,4 @@ Export the whole workspace as a JSON bundle so others can import it:
 brainjar pack export -o bug-hunt.json
 ```
 
-Packs are workspace-scoped — every soul, persona, rule, brain, and the active state ride along. See [Packs](/guides/packs/) for the import side.
+Packs are workspace-scoped — every soul, persona, rule, procedure, and brain plus the active state ride along. See [Packs](/guides/packs/) for the import side.

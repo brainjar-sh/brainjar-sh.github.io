@@ -44,22 +44,23 @@ brainjar rule add compliance
 brainjar sync
 ```
 
-## Project-specific persona
+## Project-specific overrides (agent-driven)
 
-Override behavior for a specific project without affecting your global config. Project scope is auto-resolved from the basename of the nearest `.git` root — no `.brainjar/` directory required.
+Project-scoped state is read by `status`, `sync`, and `compose` based on the basename of the nearest `.git` root, but **the CLI's `persona use` / `rule add` always write to workspace state**. To set a project-scoped override, call the `state_set` MCP tool with a `project` field — typically from inside an agent session pointed at the repo.
 
-```bash
-cd my-project   # git root → project scope = "my-project"
-brainjar persona use planner
-brainjar rule add no-delete
-
-brainjar status
-# soul     craftsman (workspace)
-# persona  planner (project)
-# rules    boundaries (workspace), no-delete (+project)
+```jsonc
+// MCP call from an agent working in my-project/
+{
+  "tool": "state_set",
+  "input": {
+    "project": "my-project",
+    "persona_slug": "planner",
+    "rules_to_add": ["no-delete"]
+  }
+}
 ```
 
-The status output annotates each layer with `(workspace)` or `(project)` so you can see which scope each entry came from. See [Project scope resolution](/guides/configuration/) for the full rules.
+`brainjar status` then shows both the resolved effective state and the raw layer chain (workspace + project), so you can see which scope contributed each entry. See [Configuration → State cascade](/guides/configuration/#state-cascade).
 
 ## Scoped shell sessions
 

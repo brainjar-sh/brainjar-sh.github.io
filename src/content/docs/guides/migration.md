@@ -3,7 +3,7 @@ title: Migrating from Monolithic Prompts
 description: Decompose a large config file into composable brainjar layers.
 ---
 
-This guide walks you through decomposing a single large config file into brainjar's composable layers: souls, personas, and rules.
+This guide walks you through decomposing a single large config file into brainjar's composable layers: souls, personas, rules, and (optionally) procedures.
 
 ## Before you start
 
@@ -151,6 +151,16 @@ One rule per concern. If a constraint doesn't fit an existing rule, create a new
 
 See [Rules](/concepts/rules/) for more detail, and the [`brainjar rule`](/reference/cli/#rule) reference.
 
+## Step 3.5 (optional): Extract a procedure
+
+If your existing config bakes in a *step-by-step playbook* — phases, handoffs, ordered checkpoints — that runbook is a [procedure](/concepts/procedures/). Lift it out and create one:
+
+```bash
+brainjar procedure create delivery --file ./delivery.md
+```
+
+Procedures are most useful when the same playbook is reused by different personas. If the steps are tightly bound to one persona's identity, leave them inside the persona instead. Procedures are optional — many configs ship without one.
+
 ## Step 4: Bundle and activate
 
 Some rules only matter for certain workflows. Bundle them with the persona at create time using the repeatable `--rule` flag:
@@ -200,8 +210,9 @@ brainjar manages *behavior*. Project context stays in your config file, outside 
 - Install brainjar and run `brainjar init`
 - Read through your existing config — mark identity, workflow, and constraint sections
 - Create soul with identity content
-- Create persona(s) with workflow content
+- Create persona(s) with role content
 - Create rules with constraint content
+- (Optional) Create a procedure with step-by-step playbook content
 - Bundle persona-specific rules with their persona
 - Save brains for each workflow
 - Test each brain in a short session
