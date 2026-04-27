@@ -23,7 +23,55 @@ brainjar procedure create delivery --file ./delivery.md
 
 `create` is an upsert — it stores whatever content you hand it (`--content`, `--file`, or stdin, in that precedence order). Re-running `create` with new content replaces the previous version; the prior version stays in the version history (`brainjar versions procedure delivery`).
 
-A typical procedure spells out phases, the inputs each phase consumes, and the artifacts each phase produces. There's no required structure — the content is plain markdown.
+A typical procedure spells out phases, the inputs each phase consumes, and the artifacts each phase produces. There's no required structure — the content is plain markdown — but the shape that holds up across delivery, advisory, and autonomy-loop procedures is:
+
+```markdown
+# Delivery
+
+A phased loop for shipping a non-trivial change end to end:
+design → approve → build → verify.
+Run by anyone owning a delivery.
+
+## Overview
+
+One paragraph: what this procedure governs, what triggers it,
+what "done" looks like.
+
+## Phase 1: Design
+
+1. Step one — what to do, what to read.
+2. Step two — what artifact to produce, where to write it.
+3. Step three — what to hand to the next phase.
+
+## Phase 2: Approve
+
+- Gate criteria — what must be true before advancing.
+- Who approves and how the approval is captured.
+
+## Phase 3: Build
+
+(repeat the structure for each remaining phase)
+
+## Collaborators
+
+| Dispatch | Type | When to dispatch |
+|---|---|---|
+| `architect` | persona | Design phase — system analysis, tradeoffs, design docs |
+| `reviewer` | persona | Verify phase — code review against the design doc |
+
+## When to skip / compress
+
+For trivial changes, compress phases — but still touch design and verify.
+Announce when compressing.
+
+## Always
+
+- Be explicit about which phase you're in.
+- Don't advance until the prior phase is closed.
+- Hand artifacts forward by file path, not by re-explaining.
+```
+
+The phases vary — `delivery` is linear (design → build → verify), `advisory` is decompose → dispatch → synthesize, `autonomy-loop` is spec → sim → bench → field. Pick the shape that matches the work; reuse the headings (`Overview`, `Phase N: …`, `Collaborators`, `When to skip / compress`, `Always`) so anyone running a procedure knows where to look.
 
 ## Activating a procedure
 

@@ -34,7 +34,7 @@ brainjar rule remove security     # Remove from the active state
 brainjar rule delete security     # Permanently delete the rule
 ```
 
-`rule add` and `rule remove` write to the **workspace** state override. Project scope is auto-resolved from the basename of the nearest `.git` root (must be a valid slug — lowercase, hyphen-separated). `cd` into the right repo before running `rule add` to scope correctly to that project.
+`rule add` and `rule remove` write to the **workspace** state override. They do not take `--project`, and `cd`-ing into a repo does not change that — these CLI commands always target workspace state. Project-scoped rule overrides can only be set via the `state_set` MCP tool with a `project` field, typically from inside an agent session. See [Configuration → State cascade](/guides/configuration/#state-cascade).
 
 Rules bundled with a persona activate automatically — you don't need to add them manually.
 
