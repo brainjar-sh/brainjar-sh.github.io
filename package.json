@@ -9,7 +9,8 @@
     "start": "astro dev",
     "build": "bash scripts/fetch-versions.sh && bash scripts/fetch-cli-docs.sh && node scripts/generate-llms-txt.mjs && astro build && bash scripts/copy-raw-md.sh",
     "preview": "astro preview",
-    "astro": "astro"
+    "astro": "astro",
+    "demo": "vhs demo/quickstart.tape"
   },
   "dependencies": {
     "@astrojs/starlight": "^0.38.2",
