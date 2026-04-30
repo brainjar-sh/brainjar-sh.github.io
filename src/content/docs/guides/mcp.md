@@ -57,11 +57,13 @@ Every operation meaningful to an agent is available as an MCP tool. The main cat
 | `persona_save`, `persona_show`, `persona_list`, `persona_delete` | Manage personas |
 | `rule_save`, `rule_show`, `rule_list`, `rule_delete` | Manage rules |
 | `procedure_save`, `procedure_show`, `procedure_list`, `procedure_delete` | Manage procedures |
+| `skill_save`, `skill_show`, `skill_list`, `skill_delete`, `skill_attach`, `skill_detach` | Manage skills |
 | `brain_save`, `brain_show`, `brain_list`, `brain_delete` | Manage brains |
 | `compose` | Assemble a subagent prompt from a brain or ad-hoc layers |
-| `status` | Inspect active soul, persona, procedure, rules, and scope |
+| `status` | Inspect active soul, persona, procedure, rules, skills, and scope |
 | `state_get`, `state_set`, `state_delete` | Manage workspace and project state |
-| `version_list`, `version_show` | Browse prior versions of souls, personas, rules, procedures |
+| `version_list`, `version_show` | Browse prior versions of souls, personas, rules, procedures, skills |
+| `guide_list`, `guide_show` | Browse operational guides shipped with brainjar |
 | `workspace_create`, `workspace_list`, `workspace_get_by_name`, `workspace_rename`, `workspace_delete` | Manage workspaces |
 | `apikey_create`, `apikey_list`, `apikey_revoke` | Manage API keys |
 | `admin_export`, `admin_import` | Round-trip a workspace as a JSON pack |

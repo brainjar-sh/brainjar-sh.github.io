@@ -3,7 +3,7 @@ title: Brains
 description: Save and recall complete agent configurations in one shot.
 ---
 
-A brain is a named bundle of soul + persona + rules + an optional procedure, plus an optional preferred model identifier. Instead of switching four things separately, save the bundle once and realize it whenever you need it.
+A brain is a named bundle of soul + persona + rules + an optional procedure + optional skills, plus an optional preferred model identifier. Instead of switching five things separately, save the bundle once and realize it whenever you need it.
 
 ## Saving a brain
 
@@ -15,10 +15,11 @@ brainjar brain save review \
   --persona reviewer \
   --procedure delivery \
   --rule boundaries \
-  --rule security
+  --rule security \
+  --skill review-checklist
 ```
 
-`brain save` is an upsert. The referenced soul, persona, rule, and procedure slugs must already exist in the workspace. `--procedure` is optional; omit it to bind the brain to no procedure. Pass `--soul ""` or `--persona ""` to leave either side unset.
+`brain save` is an upsert. The referenced soul, persona, rule, procedure, and skill slugs must already exist in the workspace. `--procedure` and `--skill` are optional; omit them to bind the brain to no procedure or skills. Pass `--soul ""` or `--persona ""` to leave either side unset.
 
 ## Using a brain
 
@@ -31,7 +32,7 @@ brainjar brain use review
 brainjar sync
 ```
 
-`brain use <slug>` writes the brain's soul, persona, procedure, and rules into the workspace state in one shot, replacing whatever was there at the workspace layer. The brain on disk is unchanged — `brain use` mutates state, not the brain. Run `brain use` again with a different slug to switch.
+`brain use <slug>` writes the brain's soul, persona, procedure, rules, and skills into the workspace state in one shot, replacing whatever was there at the workspace layer. The brain on disk is unchanged — `brain use` mutates state, not the brain. Run `brain use` again with a different slug to switch.
 
 **As a composed prompt** — for MCP clients and orchestrators that need the prompt as text:
 
@@ -39,7 +40,7 @@ brainjar sync
 brainjar compose review --task "Review the changes in src/sync"
 ```
 
-`compose` prints the assembled prompt (soul + persona + procedure + rules + task) to stdout. Use this from an orchestrator that hands the prompt to a subagent.
+`compose` prints the assembled prompt (soul + persona + procedure + rules + task) to stdout and lists resolved skills in the JSON output. Use this from an orchestrator that hands the prompt to a subagent.
 
 **As an interactive shell** — for hands-on use without touching state:
 
@@ -58,7 +59,7 @@ brainjar brain show review    # Inspect a brain's bundle
 brainjar brain delete review  # Permanently delete the bundle
 ```
 
-`brain delete` removes the saved bundle only. It does not clear workspace state — to undo a `brain use`, run another `brain use` or set the layers individually with `soul use` / `persona use` / `procedure use` / `rule add`.
+`brain delete` removes the saved bundle only. It does not clear workspace state — to undo a `brain use`, run another `brain use` or set the layers individually with `soul use` / `persona use` / `procedure use` / `rule add` / `skill use`.
 
 See full flag and subcommand details in the [CLI reference for `brain`](/reference/cli/#brain), [`compose`](/reference/cli/#compose), and [`shell`](/reference/cli/#shell).
 
@@ -77,4 +78,4 @@ Brains are the primary input to `compose`, which assembles a full prompt for sub
 mcp__brainjar__compose(brain="review", task="Review the changes in src/sync.ts")
 ```
 
-This returns the complete prompt (soul + persona + procedure + rules + task) ready to pass to Claude Code's Agent tool. See [Subagent Orchestration](/guides/subagents/) for compose basics and [Orchestration Patterns](/guides/orchestration-patterns/) for multi-agent workflow patterns.
+This returns the complete prompt (soul + persona + procedure + rules + task), resolved skills, and platform metadata ready to pass to Claude Code's Agent tool. See [Subagent Orchestration](/guides/subagents/) for compose basics and [Orchestration Patterns](/guides/orchestration-patterns/) for multi-agent workflow patterns.

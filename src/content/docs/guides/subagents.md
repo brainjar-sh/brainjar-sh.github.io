@@ -3,7 +3,7 @@ title: Subagent Orchestration
 description: Dispatch subagents with full brain context using compose.
 ---
 
-Personas can spawn other personas as subagents. The `compose` tool assembles the full prompt — soul + persona + procedure + rules + task — in a single call. Pass the result to Claude Code's Agent tool to spawn the subagent.
+Personas can spawn other personas as subagents. The `compose` tool assembles the full prompt — soul + persona + procedure + rules + task — and resolves skills in a single call. Pass the result to Claude Code's Agent tool to spawn the subagent.
 
 ## How compose works
 
@@ -28,7 +28,7 @@ mcp__brainjar__compose({
 })
 ```
 
-The tool returns a `prompt` field with the assembled text plus token estimates and warnings. Feed `prompt` to the Agent tool to spawn the subagent:
+The tool returns a `prompt` field with the assembled text, resolved skills, plus token estimates and warnings. Feed `prompt` to the Agent tool to spawn the subagent:
 
 ```
 Agent(prompt=<compose result>.prompt, description="Review sync changes")

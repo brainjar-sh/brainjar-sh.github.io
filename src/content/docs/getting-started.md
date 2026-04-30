@@ -36,6 +36,7 @@ effective state
   persona:   (unset)
   procedure: (unset)
   rules:     (none)
+  skills:    (none)
 ```
 
 For a one-line summary suitable for shell prompts:
@@ -72,11 +73,11 @@ Use `shell` for one-off agent runs, scoped audits, or experiments where you don'
 
 ## What happened
 
-`brainjar sync` composed your active soul, persona, procedure, and rules into a single prompt and wrote it into your agent's config file between `<!-- brainjar:begin -->` / `<!-- brainjar:end -->` markers. Everything outside the markers is yours.
+`brainjar sync` composed your active soul, persona, procedure, and rules into a single prompt, emitted resolved skills to disk, and wrote the prompt into your agent's config file between `<!-- brainjar:begin -->` / `<!-- brainjar:end -->` markers. Everything outside the markers is yours.
 
 ## Next steps
 
-- Learn about the [core concepts](/concepts/overview/) — soul, persona, rules, procedure, brain
+- Learn about the [core concepts](/concepts/overview/) — soul, persona, rules, procedure, skill, brain
 - [Register brainjar as an MCP server](/guides/mcp/) — give your agent native access to all brainjar tools
 - [Migrate an existing config](/guides/migration/) into composable layers
 - See the full [CLI reference](/reference/cli/)

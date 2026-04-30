@@ -13,6 +13,7 @@ export const sidebar = [
 			{ label: 'Personas', slug: 'concepts/personas' },
 			{ label: 'Rules', slug: 'concepts/rules' },
 			{ label: 'Procedures', slug: 'concepts/procedures' },
+			{ label: 'Skills', slug: 'concepts/skills' },
 			{ label: 'Brains', slug: 'concepts/brains' },
 		],
 	},
@@ -20,6 +21,7 @@ export const sidebar = [
 		label: 'Guides',
 		items: [
 			{ label: 'Configuration', slug: 'guides/configuration' },
+			{ label: 'Platforms', slug: 'guides/platforms' },
 			{ label: 'MCP Integration', slug: 'guides/mcp' },
 			{ label: 'Migrating from Monolithic Prompts', slug: 'guides/migration' },
 			{ label: 'Subagent Orchestration', slug: 'guides/subagents' },

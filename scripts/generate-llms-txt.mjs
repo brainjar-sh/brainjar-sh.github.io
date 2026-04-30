@@ -45,9 +45,9 @@ const out = [];
 const push = (...lines) => out.push(...lines);
 
 push('# brainjar', '');
-push('> Shape how your AI thinks — composable soul, persona, rules, and procedures for AI agents.', '');
+push('> Shape how your AI thinks — composable soul, persona, rules, procedure, and skill for AI agents.', '');
 push(
-	'brainjar manages AI agent behavior through composable layers. Instead of one monolithic config file, you separate what the agent sounds like (soul), how it works (persona), what constraints it follows (rules), and the playbook it runs (procedure). Each layer is a markdown document held in a local SQLite store. The CLI is a single Go binary; the same binary serves an optional HTTP/MCP server.',
+	'brainjar manages AI agent behavior through composable layers. Instead of one monolithic config file, you separate what the agent sounds like (soul), how it works (persona), what constraints it follows (rules), the playbook it runs (procedure), and the on-demand capabilities the platform loads (skill). Each layer is a markdown document held in a local SQLite store. The CLI is a single Go binary; the same binary serves an optional HTTP/MCP server.',
 	'',
 );
 

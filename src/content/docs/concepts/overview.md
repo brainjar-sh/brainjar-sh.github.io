@@ -13,7 +13,8 @@ brainjar manages AI agent behavior through composable layers. Each layer is a ma
 | [Persona](/concepts/personas/) | The role the agent plays | Per task or session |
 | [Rules](/concepts/rules/) | What constraints apply — guardrails | Per project or persona |
 | [Procedure](/concepts/procedures/) | The step-by-step playbook the agent follows | Per workflow (delivery, incident, migration) |
-| [Brain](/concepts/brains/) | Saved bundle of the four above | When you want a repeatable setup |
+| [Skill](/concepts/skills/) | On-demand capabilities the platform loads — runbooks, tools, glossaries | Per task or contextual need |
+| [Brain](/concepts/brains/) | Saved bundle of the five above | When you want a repeatable setup |
 
 ## How they compose
 

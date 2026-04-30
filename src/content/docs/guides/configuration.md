@@ -3,7 +3,7 @@ title: Configuration
 description: State cascade, project scope, contexts, platforms, and config file.
 ---
 
-brainjar's configuration surface is small on purpose. Effective state comes from a two-tier cascade (workspace → project). State is which soul, persona, procedure, and rules are active. Where things live on disk is governed by `~/.brainjar`. The active platform and remote endpoint are bundled into a *context*. That's the whole picture.
+brainjar's configuration surface is small on purpose. Effective state comes from a two-tier cascade (workspace → project). State is which soul, persona, procedure, rules, and skills are active. Where things live on disk is governed by `~/.brainjar`. The active platform and remote endpoint are bundled into a *context*. That's the whole picture.
 
 ## State cascade
 

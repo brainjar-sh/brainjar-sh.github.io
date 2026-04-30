@@ -23,9 +23,9 @@ Scope availability varies by platform — `brainjar platform list` shows which s
 
 The hook runs `brainjar sync` on the platform's session-start event. This means:
 
-1. You change a soul, persona, procedure, or rule (or load a different brain)
+1. You change a soul, persona, procedure, rule, or skill (or load a different brain)
 2. Next time the agent starts a session, the hook fires
-3. The platform's managed config block (e.g. `CLAUDE.md`, `AGENTS.md`) is rewritten with the latest composed prompt
+3. The platform's managed config block (e.g. `CLAUDE.md`, `AGENTS.md`) is rewritten with the latest composed prompt and skills are emitted to disk
 4. The agent picks up the new behavior
 
 No manual sync step needed. The hook is idempotent — it only rewrites the brainjar-managed section between the `<!-- brainjar:begin -->` / `<!-- brainjar:end -->` markers.
