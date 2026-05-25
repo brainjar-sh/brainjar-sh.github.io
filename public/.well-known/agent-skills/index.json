@@ -1,0 +1,49 @@
+{
+  "version": "1.0",
+  "name": "brainjar agent skills",
+  "description": "Server-shipped skills for brainjar. Install all with: npx skills add brainjar-sh/skills -g --all -y",
+  "skills": [
+    {
+      "name": "brainjar-authoring",
+      "title": "Brainjar authoring",
+      "description": "Create or update brainjar content: souls, personas, rules, procedures, skills, brains.",
+      "url": "https://raw.githubusercontent.com/brainjar-sh/skills/main/brainjar-authoring/SKILL.md"
+    },
+    {
+      "name": "brainjar-orchestration",
+      "title": "Brainjar orchestration",
+      "description": "Dispatch a brainjar-composed subagent over MCP. Open a fresh context window for a focused task.",
+      "url": "https://raw.githubusercontent.com/brainjar-sh/skills/main/brainjar-orchestration/SKILL.md"
+    },
+    {
+      "name": "brainjar-write-soul",
+      "title": "Write a brainjar soul",
+      "description": "Author a soul: the agent's voice, character, values, and standards.",
+      "url": "https://raw.githubusercontent.com/brainjar-sh/skills/main/brainjar-write-soul/SKILL.md"
+    },
+    {
+      "name": "brainjar-write-persona",
+      "title": "Write a brainjar persona",
+      "description": "Author a persona: the role the agent plays (architect, reviewer, CTO, infra engineer).",
+      "url": "https://raw.githubusercontent.com/brainjar-sh/skills/main/brainjar-write-persona/SKILL.md"
+    },
+    {
+      "name": "brainjar-write-rule",
+      "title": "Write a brainjar rule",
+      "description": "Author a rule: a constraint or convention (security, git-discipline, testing).",
+      "url": "https://raw.githubusercontent.com/brainjar-sh/skills/main/brainjar-write-rule/SKILL.md"
+    },
+    {
+      "name": "brainjar-write-procedure",
+      "title": "Write a brainjar procedure",
+      "description": "Author a procedure: a step-by-step playbook the agent runs (incident response, code review, oncall handoff).",
+      "url": "https://raw.githubusercontent.com/brainjar-sh/skills/main/brainjar-write-procedure/SKILL.md"
+    },
+    {
+      "name": "brainjar-write-skill",
+      "title": "Write a brainjar skill",
+      "description": "Author a skill: an on-demand capability the agent loads when triggers match. Carries the canonical body templates and scope guidance.",
+      "url": "https://raw.githubusercontent.com/brainjar-sh/skills/main/brainjar-write-skill/SKILL.md"
+    }
+  ]
+}
